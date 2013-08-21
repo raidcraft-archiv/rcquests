@@ -1,0 +1,8 @@
+main: de.raidcraft.quests.QuestPlugin
+name: Quests
+version: ${project.version}#${build.number}
+description: API for creating and using custom quests.
+author: Silthus
+website: http://www.raid-craft.de
+depend: [RaidCraft-API]
+database: true
