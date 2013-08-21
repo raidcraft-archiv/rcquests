@@ -1,8 +1,11 @@
 package de.raidcraft.quests;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.Component;
 import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.QuestProvider;
 import de.raidcraft.api.quests.QuestType;
+import de.raidcraft.quests.api.QuestTemplate;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -18,15 +21,29 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public final class QuestManager implements QuestProvider {
+public final class QuestManager implements QuestProvider, Component {
 
     private final QuestPlugin plugin;
+    private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
     private final Map<String, Method> actionMethods = new CaseInsensitiveMap<>();
     private final Map<String, Method> requirementMethods = new CaseInsensitiveMap<>();
 
     protected QuestManager(QuestPlugin plugin) {
 
         this.plugin = plugin;
+        RaidCraft.registerComponent(QuestManager.class, this);
+        load();
+    }
+
+    private void load() {
+
+
+    }
+
+    public void reload() {
+
+        loadedQuests.clear();
+        load();
     }
 
     @Override

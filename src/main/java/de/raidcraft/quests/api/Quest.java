@@ -9,6 +9,14 @@ import java.sql.Timestamp;
  */
 public interface Quest {
 
+    public String getId();
+
+    public String getName();
+
+    public String getFriendlyName();
+
+    public String getDescription();
+
     public QuestTemplate getTemplate();
 
     public QuestHolder getHolder();
@@ -22,4 +30,6 @@ public interface Quest {
     public Timestamp getStartTime();
 
     public Timestamp getCompletionTime();
+
+    public void start();
 }
