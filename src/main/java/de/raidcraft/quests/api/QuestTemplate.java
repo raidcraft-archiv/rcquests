@@ -19,5 +19,5 @@ public interface QuestTemplate {
 
     public Trigger[] getTrigger();
 
-    public Action[] getCompletionActions();
+    public Action[] getActions();
 }

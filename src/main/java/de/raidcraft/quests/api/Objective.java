@@ -5,7 +5,7 @@ package de.raidcraft.quests.api;
  */
 public interface Objective {
 
-    public String getId();
+    public int getId();
 
     public String getFriendlyName();
 
@@ -15,5 +15,5 @@ public interface Objective {
 
     public Trigger[] getTrigger();
 
-    public Action[] getCompletionActions();
+    public Action[] getActions();
 }

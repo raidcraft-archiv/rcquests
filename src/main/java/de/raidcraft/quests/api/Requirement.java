@@ -7,7 +7,7 @@ public interface Requirement {
 
     public int getId();
 
-    public String getName();
+    public String getType();
 
     public boolean isMet(Quest quest);
 }

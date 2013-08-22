@@ -7,7 +7,7 @@ public interface Action {
 
     public int getId();
 
-    public String getName();
+    public String getType();
 
     public void execute(Quest quest);
 }
