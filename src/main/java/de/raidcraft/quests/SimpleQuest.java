@@ -2,6 +2,7 @@ package de.raidcraft.quests;
 
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.AbstractQuest;
 import de.raidcraft.quests.api.Action;
 import de.raidcraft.quests.api.Objective;
@@ -11,6 +12,7 @@ import de.raidcraft.quests.api.QuestTemplate;
 import de.raidcraft.quests.api.Requirement;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
@@ -71,7 +73,11 @@ public class SimpleQuest extends AbstractQuest {
             setCompletionTime(new Timestamp(System.currentTimeMillis()));
             // give rewards and execute completion actions
             for (Action<QuestTemplate> action : getTemplate().getActions()) {
-                action.execute(getPlayer(), getTemplate());
+                try {
+                    action.execute(getPlayer(), getTemplate());
+                } catch (QuestException e) {
+                    getPlayer().sendMessage(ChatColor.RED + e.getMessage());
+                }
             }
         }
     }
@@ -84,11 +90,16 @@ public class SimpleQuest extends AbstractQuest {
         }
         boolean meetsRequirements = false;
         if (getTemplate().getRequirements().length > 0) {
-            for (Requirement requirement : getTemplate().getRequirements()) {
-                if (!requirement.isMet(player)) {
-                    meetsRequirements = false;
-                    break;
+            try {
+                for (Requirement requirement : getTemplate().getRequirements()) {
+                    if (!requirement.isMet(player)) {
+                        meetsRequirements = false;
+                        break;
+                    }
                 }
+            } catch (QuestException e) {
+                meetsRequirements = false;
+                getPlayer().sendMessage(ChatColor.RED + e.getMessage());
             }
         } else {
             meetsRequirements = true;

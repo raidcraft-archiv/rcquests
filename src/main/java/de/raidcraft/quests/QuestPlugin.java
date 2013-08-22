@@ -6,6 +6,7 @@ import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.actions.Item;
+import de.raidcraft.quests.actions.QuestActions;
 import de.raidcraft.quests.actions.Text;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
@@ -54,6 +55,7 @@ public class QuestPlugin extends BasePlugin {
         try {
             questManager.registerQuestType(new Text());
             questManager.registerQuestType(new Item());
+            questManager.registerQuestType(new QuestActions());
         } catch (InvalidTypeException e) {
             getLogger().warning(e.getMessage());
         }

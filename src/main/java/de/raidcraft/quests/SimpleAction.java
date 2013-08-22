@@ -1,6 +1,7 @@
 package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.AbstractAction;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -19,7 +20,7 @@ public class SimpleAction<T> extends AbstractAction<T> {
     }
 
     @Override
-    public void execute(Player player, T holder) {
+    public void execute(Player player, T holder) throws QuestException {
 
         RaidCraft.getComponent(QuestManager.class).executeAction(getName(), player, data);
     }

@@ -1,5 +1,6 @@
 package de.raidcraft.quests.api;
 
+import de.raidcraft.api.quests.QuestException;
 import org.bukkit.entity.Player;
 
 /**
@@ -11,5 +12,5 @@ public interface Requirement {
 
     public String getType();
 
-    public boolean isMet(Player player);
+    public boolean isMet(Player player) throws QuestException;
 }

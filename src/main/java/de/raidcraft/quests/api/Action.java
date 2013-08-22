@@ -1,5 +1,6 @@
 package de.raidcraft.quests.api;
 
+import de.raidcraft.api.quests.QuestException;
 import org.bukkit.entity.Player;
 
 /**
@@ -13,5 +14,5 @@ public interface Action<T> {
 
     public T getProvider();
 
-    public void execute(Player player, T holder);
+    public void execute(Player player, T holder) throws QuestException;
 }

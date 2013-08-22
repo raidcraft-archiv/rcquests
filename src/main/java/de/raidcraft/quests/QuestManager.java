@@ -5,6 +5,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.InvalidTypeException;
+import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestProvider;
 import de.raidcraft.api.quests.QuestTrigger;
 import de.raidcraft.api.quests.QuestType;
@@ -86,12 +87,12 @@ public final class QuestManager implements QuestProvider, Component {
         this.plugin.getTriggerManager().callTrigger(trigger.getName(), player);
     }
 
-    public boolean checkRequirement(String name, Player player, ConfigurationSection data) {
+    public boolean checkRequirement(String name, Player player, ConfigurationSection data) throws QuestException {
 
         return requirementMethods.containsKey(name) && (boolean) invokeMethod(requirementMethods.get(name), player, data);
     }
 
-    public void executeAction(String name, Player player, ConfigurationSection data) {
+    public void executeAction(String name, Player player, ConfigurationSection data) throws QuestException {
 
         if (!actionMethods.containsKey(name)) {
             return;
@@ -169,7 +170,7 @@ public final class QuestManager implements QuestProvider, Component {
         }
     }
 
-    private Object invokeMethod(Method method, Player player, ConfigurationSection data) {
+    private Object invokeMethod(Method method, Player player, ConfigurationSection data) throws QuestException {
 
         try {
             method.setAccessible(true);
@@ -216,5 +217,10 @@ public final class QuestManager implements QuestProvider, Component {
             questPlayers.put(name, new BukkitQuestHolder(table.getId(), name));
         }
         return questPlayers.get(name);
+    }
+
+    public QuestTemplate getQuestTemplate(String name) {
+
+        return loadedQuests.get(name);
     }
 }
