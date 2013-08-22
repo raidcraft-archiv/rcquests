@@ -100,4 +100,27 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
 
         this.actions = actions;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof AbstractQuestTemplate)) return false;
+
+        AbstractQuestTemplate that = (AbstractQuestTemplate) o;
+
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return id.hashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return id;
+    }
 }

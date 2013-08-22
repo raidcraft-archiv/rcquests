@@ -43,16 +43,14 @@ public final class QuestManager implements QuestProvider, Component {
 
         this.plugin = plugin;
         RaidCraft.registerComponent(QuestManager.class, this);
-        load();
     }
 
-    private void load() {
+    public void load() {
 
         // we need to look recursivly thru all folders under the defined base folder
         File baseFolder = new File(plugin.getDataFolder(), plugin.getConfiguration().quests_base_folder);
-        if (baseFolder.mkdirs()) {
-            loadQuests(baseFolder, "");
-        }
+        baseFolder.mkdirs();
+        loadQuests(baseFolder, "");
     }
 
     public void reload() {
@@ -76,10 +74,10 @@ public final class QuestManager implements QuestProvider, Component {
 
     private void loadQuest(File file, String path) {
 
-        String questId = (path + file.getName().toLowerCase()).substring(1);
+        String questId = (path + "." + file.getName().toLowerCase()).substring(1).replace(QUEST_FILE_SUFFIX, "");
         SimpleQuestTemplate quest = new SimpleQuestTemplate(questId, plugin.configure(new SimpleConfiguration<>(plugin, file)));
         loadedQuests.put(questId, quest);
-        plugin.getLogger().info("Loaded quest: " + quest.getName() + " - " + quest.getFriendlyName());
+        plugin.getLogger().info("Loaded quest: " + questId + " - " + quest.getFriendlyName());
     }
 
     @Override
@@ -154,6 +152,7 @@ public final class QuestManager implements QuestProvider, Component {
 
     public void registerMethod(String name, Method method, QuestType.Type type) throws InvalidTypeException {
 
+        name = name.substring(1);
         switch (type) {
 
             case ACTION:
@@ -206,14 +205,16 @@ public final class QuestManager implements QuestProvider, Component {
         if (!questPlayers.containsKey(name)) {
             TPlayer table = plugin.getDatabase().find(TPlayer.class).where()
                     .eq("player", name.toLowerCase()).findUnique();
-            if (table == null && bukkitPlayer != null) {
-                table = new TPlayer();
-                table.setCompletedQuests(0);
-                table.setActiveQuests(0);
-                table.setPlayer(name.toLowerCase());
-                plugin.getDatabase().save(table);
-            } else {
-                throw new UnknownPlayerException("Der Spieler " + name + " war noch nie auf RaidCraft eingeloggt.");
+            if (table == null) {
+                if (bukkitPlayer != null) {
+                    table = new TPlayer();
+                    table.setCompletedQuests(0);
+                    table.setActiveQuests(0);
+                    table.setPlayer(name.toLowerCase());
+                    plugin.getDatabase().save(table);
+                } else {
+                    throw new UnknownPlayerException("Der Spieler " + name + " war noch nie auf RaidCraft eingeloggt.");
+                }
             }
             questPlayers.put(name, new BukkitQuestHolder(table.getId(), name));
         }

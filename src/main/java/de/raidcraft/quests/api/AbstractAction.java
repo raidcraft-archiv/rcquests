@@ -10,12 +10,14 @@ public abstract class AbstractAction<T> implements Action<T> {
     private final int id;
     private final String name;
     private final T provider;
+    private final boolean executedOnce;
 
     public AbstractAction(int id, T provider, ConfigurationSection data) {
 
         this.id = id;
         this.name = data.getString("type");
         this.provider = provider;
+        this.executedOnce = data.getBoolean("executed-once", true);
     }
 
     @Override
@@ -31,8 +33,39 @@ public abstract class AbstractAction<T> implements Action<T> {
     }
 
     @Override
+    public boolean isExecutedOnce() {
+
+        return executedOnce;
+    }
+
+    @Override
     public T getProvider() {
 
         return provider;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof AbstractAction)) return false;
+
+        AbstractAction that = (AbstractAction) o;
+
+        return id == that.id && name.equals(that.name);
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = id;
+        result = 31 * result + name.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+
+        return name;
     }
 }

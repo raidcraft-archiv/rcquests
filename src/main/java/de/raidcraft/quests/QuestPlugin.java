@@ -8,10 +8,13 @@ import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.actions.Item;
 import de.raidcraft.quests.actions.QuestActions;
 import de.raidcraft.quests.actions.Text;
+import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
+import de.raidcraft.quests.tables.TQuestAction;
 import de.raidcraft.quests.trigger.LocationTrigger;
+import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +39,16 @@ public class QuestPlugin extends BasePlugin {
 
         registerGlobalQuestTypes();
         registerGlobalTrigger();
+        // register our events
+        registerEvents(new PlayerListener(this));
+        // load all of the quests after 2sec server start delay
+        Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+            @Override
+            public void run() {
+
+                questManager.load();
+            }
+        }, 40L);
     }
 
     @Override
@@ -77,6 +90,7 @@ public class QuestPlugin extends BasePlugin {
         tables.add(TPlayer.class);
         tables.add(TPlayerQuest.class);
         tables.add(TPlayerObjective.class);
+        tables.add(TQuestAction.class);
         return tables;
     }
 

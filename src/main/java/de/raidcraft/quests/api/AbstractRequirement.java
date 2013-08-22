@@ -27,4 +27,10 @@ public abstract class AbstractRequirement implements Requirement {
 
         return type;
     }
+
+    @Override
+    public String toString() {
+
+        return getType();
+    }
 }

@@ -104,4 +104,27 @@ public abstract class AbstractQuest implements Quest {
 
         this.completionTime = completionTime;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof AbstractQuest)) return false;
+
+        AbstractQuest that = (AbstractQuest) o;
+
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return id;
+    }
+
+    @Override
+    public String toString() {
+
+        return getTemplate().toString() + "." + getHolder().toString();
+    }
 }

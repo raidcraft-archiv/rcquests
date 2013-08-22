@@ -61,4 +61,30 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
 
         this.completionTime = timestamp;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof AbstractPlayerObjective)) return false;
+
+        AbstractPlayerObjective that = (AbstractPlayerObjective) o;
+
+        return id == that.id && objective.equals(that.objective) && quest.equals(that.quest);
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = id;
+        result = 31 * result + quest.hashCode();
+        result = 31 * result + objective.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+
+        return getPlayer().getName() + "." + getObjective().toString();
+    }
 }

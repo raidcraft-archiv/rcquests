@@ -115,7 +115,9 @@ public class SimpleQuest extends AbstractQuest {
     @Override
     public void start() {
 
-        setStartTime(new Timestamp(System.currentTimeMillis()));
+        if (!isActive()) {
+            setStartTime(new Timestamp(System.currentTimeMillis()));
+        }
     }
 
     @Override
@@ -134,6 +136,10 @@ public class SimpleQuest extends AbstractQuest {
         // also save all quest objectives
         for (PlayerObjective objective : getPlayerObjectives()) {
             objective.save();
+        }
+        // and actions
+        for (Action<QuestTemplate> action : getTemplate().getActions()) {
+            action.save();
         }
     }
 }

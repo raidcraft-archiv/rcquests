@@ -80,4 +80,27 @@ public abstract class AbstractQuestHolder implements QuestHolder {
 
         quest.abort();
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof AbstractQuestHolder)) return false;
+
+        AbstractQuestHolder that = (AbstractQuestHolder) o;
+
+        return player.equals(that.player);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return player.hashCode();
+    }
+
+    @Override
+    public String toString() {
+
+        return player;
+    }
 }

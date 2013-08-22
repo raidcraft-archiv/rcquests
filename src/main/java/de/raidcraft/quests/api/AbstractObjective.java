@@ -81,4 +81,29 @@ public abstract class AbstractObjective implements Objective {
 
         this.actions = actions;
     }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof AbstractObjective)) return false;
+
+        AbstractObjective that = (AbstractObjective) o;
+
+        return id == that.id && questTemplate.equals(that.questTemplate);
+    }
+
+    @Override
+    public int hashCode() {
+
+        int result = id;
+        result = 31 * result + questTemplate.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+
+        return questTemplate.toString() + ".objective." + getId();
+    }
 }

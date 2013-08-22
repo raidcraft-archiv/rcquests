@@ -80,4 +80,10 @@ public abstract class AbstractTrigger implements Trigger {
 
         listeners.remove(listener);
     }
+
+    @Override
+    public String toString() {
+
+        return getName();
+    }
 }

@@ -14,5 +14,9 @@ public interface Action<T> {
 
     public T getProvider();
 
+    public boolean isExecutedOnce();
+
     public void execute(Player player, T holder) throws QuestException;
+
+    public void save();
 }

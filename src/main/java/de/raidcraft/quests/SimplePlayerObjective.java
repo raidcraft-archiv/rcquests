@@ -4,6 +4,7 @@ import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.AbstractPlayerObjective;
+import de.raidcraft.quests.api.Action;
 import de.raidcraft.quests.api.Objective;
 import de.raidcraft.quests.api.Quest;
 import de.raidcraft.quests.api.Requirement;
@@ -53,5 +54,9 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
         TPlayerObjective objective = database.find(TPlayerObjective.class, getId());
         objective.setCompletionTime(getCompletionTime());
         database.save(objective);
+        // save actions
+        for (Action<Objective> action : getObjective().getActions()) {
+            action.save();
+        }
     }
 }

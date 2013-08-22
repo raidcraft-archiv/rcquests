@@ -8,6 +8,8 @@ import de.raidcraft.quests.api.QuestTemplate;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerQuest;
 
+import java.util.List;
+
 /**
  * @author Silthus
  */
@@ -16,6 +18,20 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
     public BukkitQuestHolder(int id, String player) {
 
         super(id, player);
+        loadExistingQuests();
+    }
+
+    private void loadExistingQuests() {
+
+        QuestManager component = RaidCraft.getComponent(QuestManager.class);
+        EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
+        List<TPlayerQuest> quests = database.find(TPlayerQuest.class).where().eq("player_id", getId()).findList();
+        for (TPlayerQuest quest : quests) {
+            QuestTemplate questTemplate = component.getQuestTemplate(quest.getQuest());
+            if (questTemplate != null) {
+                addQuest(new SimpleQuest(quest.getId(), questTemplate, this));
+            }
+        }
     }
 
     @Override
