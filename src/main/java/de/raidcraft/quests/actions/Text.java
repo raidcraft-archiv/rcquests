@@ -1,4 +1,4 @@
-package de.raidcraft.quests.questtypes;
+package de.raidcraft.quests.actions;
 
 import de.raidcraft.api.quests.QuestType;
 import org.bukkit.ChatColor;

@@ -1,4 +1,4 @@
-package de.raidcraft.quests.questtypes;
+package de.raidcraft.quests.actions;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;

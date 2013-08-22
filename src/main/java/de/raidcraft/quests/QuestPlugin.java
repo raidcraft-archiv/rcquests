@@ -5,9 +5,12 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.Quests;
-import de.raidcraft.quests.questtypes.Item;
-import de.raidcraft.quests.questtypes.Text;
+import de.raidcraft.quests.actions.Item;
+import de.raidcraft.quests.actions.Text;
 import de.raidcraft.quests.tables.TPlayer;
+import de.raidcraft.quests.tables.TPlayerObjective;
+import de.raidcraft.quests.tables.TPlayerQuest;
+import de.raidcraft.quests.trigger.LocationTrigger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +34,7 @@ public class QuestPlugin extends BasePlugin {
         Quests.enable(questManager);
 
         registerGlobalQuestTypes();
+        registerGlobalTrigger();
     }
 
     @Override
@@ -55,11 +59,22 @@ public class QuestPlugin extends BasePlugin {
         }
     }
 
+    private void registerGlobalTrigger() {
+
+        try {
+            Quests.registerTrigger(this, LocationTrigger.class, true);
+        } catch (InvalidTypeException e) {
+            getLogger().warning(e.getMessage());
+        }
+    }
+
     @Override
     public List<Class<?>> getDatabaseClasses() {
 
         ArrayList<Class<?>> tables = new ArrayList<>();
         tables.add(TPlayer.class);
+        tables.add(TPlayerQuest.class);
+        tables.add(TPlayerObjective.class);
         return tables;
     }
 
