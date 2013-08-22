@@ -2,9 +2,9 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
+import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.api.Trigger;
 import de.raidcraft.util.CaseInsensitiveMap;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.Map;
@@ -27,14 +27,16 @@ public final class TriggerManager implements Component {
 
         for (Trigger trigger : triggers) {
             loadedTriggers.put(trigger.getName(), trigger);
+            // also load the counter part that actually triggers this
+            Quests.initializeTrigger(trigger.getName(), trigger.getConfig());
         }
     }
 
-    protected void callTrigger(String name, Player player, ConfigurationSection data) {
+    protected void callTrigger(String name, Player player) {
 
         if (!loadedTriggers.containsKey(name)) {
             return;
         }
-        loadedTriggers.get(name).inform(player, data);
+        loadedTriggers.get(name).trigger(player);
     }
 }

@@ -14,6 +14,8 @@ public interface Trigger {
 
     public String getName();
 
+    public ConfigurationSection getConfig();
+
     public QuestTemplate getQuestTemplate();
 
     public List<TriggerListener> getListeners();
@@ -24,5 +26,5 @@ public interface Trigger {
 
     public List<Action<Trigger>> getActions();
 
-    public void inform(Player player, ConfigurationSection data);
+    public void trigger(Player player);
 }

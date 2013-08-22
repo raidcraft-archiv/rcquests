@@ -14,6 +14,7 @@ public abstract class AbstractTrigger implements Trigger {
     private final String name;
     private final QuestTemplate questTemplate;
     private final List<TriggerListener> listeners = new ArrayList<>();
+    private final ConfigurationSection config;
     private List<Action<Trigger>> actions = new ArrayList<>();
 
     public AbstractTrigger(int id, QuestTemplate questTemplate, ConfigurationSection data) {
@@ -21,6 +22,7 @@ public abstract class AbstractTrigger implements Trigger {
         this.id = id;
         this.name = data.getString("type");
         this.questTemplate = questTemplate;
+        this.config = data;
         loadActions(data.getConfigurationSection("actions"));
     }
 
@@ -42,6 +44,12 @@ public abstract class AbstractTrigger implements Trigger {
     public QuestTemplate getQuestTemplate() {
 
         return questTemplate;
+    }
+
+    @Override
+    public ConfigurationSection getConfig() {
+
+        return config;
     }
 
     @Override

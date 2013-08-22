@@ -5,6 +5,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.QuestProvider;
+import de.raidcraft.api.quests.QuestTrigger;
 import de.raidcraft.api.quests.QuestType;
 import de.raidcraft.quests.api.QuestTemplate;
 import de.raidcraft.util.CaseInsensitiveMap;
@@ -75,9 +76,9 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     @Override
-    public void callTrigger(JavaPlugin plugin, String name, Player player, ConfigurationSection data) {
+    public void callTrigger(QuestTrigger trigger, Player player) {
 
-        this.plugin.getTriggerManager().callTrigger((plugin.getName() + "." + name).toLowerCase(), player, data);
+        this.plugin.getTriggerManager().callTrigger(trigger.getName(), player);
     }
 
     public boolean checkRequirement(String name, Player player, ConfigurationSection data) {

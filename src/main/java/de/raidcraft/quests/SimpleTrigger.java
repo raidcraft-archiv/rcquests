@@ -14,12 +14,9 @@ import org.bukkit.entity.Player;
  */
 public class SimpleTrigger extends AbstractTrigger {
 
-    private final ConfigurationSection data;
-
     public SimpleTrigger(int id, QuestTemplate questTemplate, ConfigurationSection data) {
 
         super(id, questTemplate, data);
-        this.data = data;
     }
 
     @Override
@@ -29,19 +26,8 @@ public class SimpleTrigger extends AbstractTrigger {
     }
 
     @Override
-    public void inform(Player player, ConfigurationSection data) {
+    public void trigger(Player player) {
 
-        // we need to check if our information matches the given information
-        for (String key : data.getKeys(false)) {
-            if (key.equals("type") || key.equals("actions")) {
-                continue;
-            }
-            Object sourceValue = this.data.get(key);
-            Object targetValue = data.get(key);
-            if (sourceValue == null || targetValue == null || !sourceValue.equals(targetValue)) {
-                return;
-            }
-        }
         // we have a match now lets execute our actions
         for (Action<Trigger> action : getActions()) {
             action.execute(player, this);
