@@ -8,6 +8,7 @@ import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.actions.Item;
 import de.raidcraft.quests.actions.QuestActions;
 import de.raidcraft.quests.actions.Text;
+import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
@@ -41,6 +42,8 @@ public class QuestPlugin extends BasePlugin {
         registerGlobalTrigger();
         // register our events
         registerEvents(new PlayerListener(this));
+        // commands
+        registerCommands(BaseCommands.class);
         // load all of the quests after 2sec server start delay
         Bukkit.getScheduler().runTaskLater(this, new Runnable() {
             @Override
