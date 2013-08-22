@@ -29,10 +29,7 @@ public class QuestUtil {
         Set <String> keys = data.getKeys(false);
         if (keys != null) {
             for (String key : keys) {
-                ConfigurationSection section = data.getConfigurationSection(key);
-                if (section.getString("type").startsWith("this")) {
-                    section.set("type", section.getString("type").replace("this", basePath));
-                }
+                ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), basePath);
                 SimpleRequirement requirement = new SimpleRequirement(Integer.parseInt(key), section);
                 requirements.add(requirement.getId(), requirement);
             }
@@ -49,10 +46,7 @@ public class QuestUtil {
         Set<String> keys = data.getKeys(false);
         if (keys != null) {
             for (String key : keys) {
-                ConfigurationSection section = data.getConfigurationSection(key);
-                if (section.getString("type").startsWith("this")) {
-                    section.set("type", section.getString("type").replace("this", questTemplate.getBasePath()));
-                }
+                ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), questTemplate.getBasePath());
                 triggers.add(new SimpleTrigger(Integer.parseInt(key), questTemplate, section));
             }
         }
@@ -70,13 +64,20 @@ public class QuestUtil {
         Set<String> keys = data.getKeys(false);
         if (keys != null) {
             for (String key : keys) {
-                ConfigurationSection section = data.getConfigurationSection(key);
-                if (section.getString("type").startsWith("this")) {
-                    section.set("type", section.getString("type").replace("this", basePath));
-                }
+                ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), basePath);
                 actions.add(new SimpleAction<>(Integer.parseInt(key), provider, section));
             }
         }
         return actions;
+    }
+
+    private static ConfigurationSection replaceThisReferences(ConfigurationSection section, String basePath) {
+
+        for (String key : section.getKeys(true)) {
+            if (section.getString(key).startsWith("this")) {
+                section.set(key, section.getString(key).replace("this", basePath));
+            }
+        }
+        return section;
     }
 }

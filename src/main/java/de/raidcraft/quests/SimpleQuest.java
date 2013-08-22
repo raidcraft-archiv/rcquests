@@ -1,5 +1,7 @@
 package de.raidcraft.quests;
 
+import com.avaje.ebean.EbeanServer;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.quests.api.AbstractQuest;
 import de.raidcraft.quests.api.Action;
 import de.raidcraft.quests.api.Objective;
@@ -7,6 +9,8 @@ import de.raidcraft.quests.api.PlayerObjective;
 import de.raidcraft.quests.api.QuestHolder;
 import de.raidcraft.quests.api.QuestTemplate;
 import de.raidcraft.quests.api.Requirement;
+import de.raidcraft.quests.tables.TPlayerObjective;
+import de.raidcraft.quests.tables.TPlayerQuest;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
@@ -19,17 +23,31 @@ import java.util.List;
 public class SimpleQuest extends AbstractQuest {
 
     private final List<PlayerObjective> playerObjectives = new ArrayList<>();
-    private final List<PlayerObjective> uncompletedObjectives;
-    private boolean meetsRequirements = false;
+    private final List<PlayerObjective> uncompletedObjectives = new ArrayList<>();
 
-    protected SimpleQuest(QuestTemplate template, QuestHolder holder) {
+    protected SimpleQuest(int id, QuestTemplate template, QuestHolder holder) {
 
-        super(template, holder);
+        super(id, template, holder);
+
         for (Objective objective : template.getObjectives()) {
-            playerObjectives.add(new SimplePlayerObjective(this, objective));
+            EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
+            TPlayerObjective entry = database.find(TPlayerObjective.class).where()
+                    .eq("quest_id", getId())
+                    .eq("objective_id", objective.getId()).findUnique();
+            // create a new db entry if none exists
+            if (entry == null) {
+                entry = new TPlayerObjective();
+                entry.setObjectiveId(objective.getId());
+                entry.setQuest(database.find(TPlayerQuest.class, getId()));
+                database.save(entry);
+            }
+            playerObjectives.add(new SimplePlayerObjective(entry.getId(), this, objective));
         }
-        // TODO: filter out completed objectives that are stored in the database
-        uncompletedObjectives = playerObjectives;
+        for (PlayerObjective objective : playerObjectives) {
+            if (!objective.isCompleted()) {
+                uncompletedObjectives.add(objective);
+            }
+        }
     }
 
     @Override
@@ -59,31 +77,52 @@ public class SimpleQuest extends AbstractQuest {
     }
 
     @Override
-    public void start() {
-
-        setStartTime(new Timestamp(System.currentTimeMillis()));
-    }
-
-    @Override
     public void trigger(Player player) {
 
-        if (!getPlayer().equals(player) || !isActive()) {
+        if (!getPlayer().equals(player) || !isActive() || isCompleted()) {
             return;
         }
-        if (!meetsRequirements && getTemplate().getRequirements().length > 0) {
-            meetsRequirements = true;
+        boolean meetsRequirements = false;
+        if (getTemplate().getRequirements().length > 0) {
             for (Requirement requirement : getTemplate().getRequirements()) {
                 if (!requirement.isMet(player)) {
                     meetsRequirements = false;
                     break;
                 }
             }
+        } else {
+            meetsRequirements = true;
         }
         // dont trigger objectives when no requirements are met
         if (meetsRequirements) {
             for (PlayerObjective playerObjective : getUncompletedObjectives()) {
                 playerObjective.trigger(player);
             }
+        }
+    }
+
+    @Override
+    public void start() {
+
+        setStartTime(new Timestamp(System.currentTimeMillis()));
+    }
+
+    @Override
+    public void abort() {
+
+        setStartTime(null);
+    }
+
+    public void save() {
+
+        EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
+        TPlayerQuest quest = database.find(TPlayerQuest.class, getId());
+        quest.setStartTime(getStartTime());
+        quest.setCompletionTime(getCompletionTime());
+        database.save(quest);
+        // also save all quest objectives
+        for (PlayerObjective objective : getPlayerObjectives()) {
+            objective.save();
         }
     }
 }

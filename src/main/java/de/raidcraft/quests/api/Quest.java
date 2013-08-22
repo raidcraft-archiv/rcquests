@@ -10,9 +10,11 @@ import java.util.List;
  */
 public interface Quest extends TriggerListener {
 
-    public String getId();
+    public int getId();
 
     public String getName();
+
+    public String getFullName();
 
     public String getFriendlyName();
 
@@ -39,4 +41,8 @@ public interface Quest extends TriggerListener {
     public Timestamp getCompletionTime();
 
     public void start();
+
+    public void abort();
+
+    public void save();
 }

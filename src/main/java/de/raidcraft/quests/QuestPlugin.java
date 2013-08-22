@@ -7,7 +7,7 @@ import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.questtypes.Item;
 import de.raidcraft.quests.questtypes.Text;
-import de.raidcraft.quests.tables.TQuestHolder;
+import de.raidcraft.quests.tables.TPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,7 +59,7 @@ public class QuestPlugin extends BasePlugin {
     public List<Class<?>> getDatabaseClasses() {
 
         ArrayList<Class<?>> tables = new ArrayList<>();
-        tables.add(TQuestHolder.class);
+        tables.add(TPlayer.class);
         return tables;
     }
 

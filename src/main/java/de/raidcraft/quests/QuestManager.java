@@ -3,12 +3,16 @@ package de.raidcraft.quests;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
+import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.QuestProvider;
 import de.raidcraft.api.quests.QuestTrigger;
 import de.raidcraft.api.quests.QuestType;
+import de.raidcraft.quests.api.QuestHolder;
 import de.raidcraft.quests.api.QuestTemplate;
+import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.util.CaseInsensitiveMap;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -32,6 +36,7 @@ public final class QuestManager implements QuestProvider, Component {
     private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
     private final Map<String, Method> actionMethods = new CaseInsensitiveMap<>();
     private final Map<String, Method> requirementMethods = new CaseInsensitiveMap<>();
+    private final Map<String, QuestHolder> questPlayers = new CaseInsensitiveMap<>();
 
     protected QuestManager(QuestPlugin plugin) {
 
@@ -173,5 +178,43 @@ public final class QuestManager implements QuestProvider, Component {
             plugin.getLogger().warning(e.getMessage());
         }
         return null;
+    }
+
+    public QuestHolder clearPlayerCache(String player) {
+
+        return questPlayers.remove(player);
+    }
+
+    public QuestHolder getPlayer(Player player) {
+
+        try {
+            return getPlayer(player.getName());
+        } catch (UnknownPlayerException e) {
+            // will never occur
+        }
+        return null;
+    }
+
+    public QuestHolder getPlayer(String name) throws UnknownPlayerException {
+
+        Player bukkitPlayer = Bukkit.getPlayer(name);
+        if (bukkitPlayer != null) {
+            name = bukkitPlayer.getName();
+        }
+        if (!questPlayers.containsKey(name)) {
+            TPlayer table = plugin.getDatabase().find(TPlayer.class).where()
+                    .eq("player", name.toLowerCase()).findUnique();
+            if (table == null && bukkitPlayer != null) {
+                table = new TPlayer();
+                table.setCompletedQuests(0);
+                table.setActiveQuests(0);
+                table.setPlayer(name.toLowerCase());
+                plugin.getDatabase().save(table);
+            } else {
+                throw new UnknownPlayerException("Der Spieler " + name + " war noch nie auf RaidCraft eingeloggt.");
+            }
+            questPlayers.put(name, new BukkitQuestHolder(table.getId(), name));
+        }
+        return questPlayers.get(name);
     }
 }

@@ -9,6 +9,8 @@ import java.util.List;
  */
 public interface QuestHolder {
 
+    public int getId();
+
     public String getName();
 
     public Player getPlayer();
@@ -18,4 +20,12 @@ public interface QuestHolder {
     public List<Quest> getCompletedQuests();
 
     public List<Quest> getActiveQuests();
+
+    public void addQuest(Quest quest);
+
+    public void abortQuest(Quest quest);
+
+    public void startQuest(QuestTemplate template);
+
+    public void save();
 }

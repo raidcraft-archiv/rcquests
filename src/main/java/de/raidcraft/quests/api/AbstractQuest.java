@@ -9,28 +9,36 @@ import java.sql.Timestamp;
  */
 public abstract class AbstractQuest implements Quest {
 
+    private final int id;
     private final QuestTemplate template;
     private final QuestHolder holder;
 
     private Timestamp startTime;
     private Timestamp completionTime;
 
-    public AbstractQuest(QuestTemplate template, QuestHolder holder) {
+    public AbstractQuest(int id, QuestTemplate template, QuestHolder holder) {
 
+        this.id = id;
         this.template = template;
         this.holder = holder;
     }
 
     @Override
-    public String getId() {
+    public int getId() {
 
-        return getTemplate().getId();
+        return id;
     }
 
     @Override
     public String getName() {
 
         return getTemplate().getName();
+    }
+
+    @Override
+    public String getFullName() {
+
+        return getTemplate().getId();
     }
 
     @Override

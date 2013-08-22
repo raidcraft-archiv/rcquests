@@ -2,19 +2,29 @@ package de.raidcraft.quests.api;
 
 import org.bukkit.entity.Player;
 
+import java.sql.Timestamp;
+
 /**
  * @author Silthus
  */
 public abstract class AbstractPlayerObjective implements PlayerObjective {
 
+    private final int id;
     private final Quest quest;
     private final Objective objective;
-    private boolean completed = false;
+    private Timestamp completionTime;
 
-    public AbstractPlayerObjective(Quest quest, Objective objective) {
+    public AbstractPlayerObjective(int id, Quest quest, Objective objective) {
 
+        this.id = id;
         this.quest = quest;
         this.objective = objective;
+    }
+
+    @Override
+    public int getId() {
+
+        return id;
     }
 
     @Override
@@ -36,13 +46,19 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     }
 
     @Override
-    public boolean isCompleted() {
+    public Timestamp getCompletionTime() {
 
-        return completed;
+        return completionTime;
     }
 
-    protected void setCompleted(boolean completed) {
+    @Override
+    public boolean isCompleted() {
 
-        this.completed = completed;
+        return completionTime != null;
+    }
+
+    protected void setCompleted(Timestamp timestamp) {
+
+        this.completionTime = timestamp;
     }
 }
