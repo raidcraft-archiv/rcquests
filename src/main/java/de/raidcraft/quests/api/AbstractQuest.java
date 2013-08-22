@@ -11,6 +11,7 @@ public abstract class AbstractQuest implements Quest {
 
     private final QuestTemplate template;
     private final QuestHolder holder;
+
     private Timestamp startTime;
     private Timestamp completionTime;
 

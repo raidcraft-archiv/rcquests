@@ -1,8 +1,10 @@
 package de.raidcraft.quests.util;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.quests.SimpleAction;
 import de.raidcraft.quests.SimpleRequirement;
 import de.raidcraft.quests.SimpleTrigger;
+import de.raidcraft.quests.TriggerManager;
 import de.raidcraft.quests.api.Action;
 import de.raidcraft.quests.api.QuestTemplate;
 import de.raidcraft.quests.api.Requirement;
@@ -54,7 +56,9 @@ public class QuestUtil {
                 triggers.add(new SimpleTrigger(Integer.parseInt(key), questTemplate, section));
             }
         }
-        return triggers.toArray(new Trigger[triggers.size()]);
+        Trigger[] loadedTriggers = triggers.toArray(new Trigger[triggers.size()]);
+        RaidCraft.getComponent(TriggerManager.class).registerTrigger(loadedTriggers);
+        return loadedTriggers;
     }
 
     public static <T> List<Action<T>> loadActions(T provider, ConfigurationSection data, String basePath) {

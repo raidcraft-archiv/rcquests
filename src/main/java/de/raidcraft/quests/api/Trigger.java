@@ -12,7 +12,7 @@ public interface Trigger {
 
     public int getId();
 
-    public String getType();
+    public String getName();
 
     public QuestTemplate getQuestTemplate();
 

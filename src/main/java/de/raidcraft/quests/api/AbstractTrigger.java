@@ -11,7 +11,7 @@ import java.util.List;
 public abstract class AbstractTrigger implements Trigger {
 
     private final int id;
-    private final String type;
+    private final String name;
     private final QuestTemplate questTemplate;
     private final List<TriggerListener> listeners = new ArrayList<>();
     private List<Action<Trigger>> actions = new ArrayList<>();
@@ -19,7 +19,7 @@ public abstract class AbstractTrigger implements Trigger {
     public AbstractTrigger(int id, QuestTemplate questTemplate, ConfigurationSection data) {
 
         this.id = id;
-        this.type = data.getString("type");
+        this.name = data.getString("type");
         this.questTemplate = questTemplate;
         loadActions(data.getConfigurationSection("actions"));
     }
@@ -33,9 +33,9 @@ public abstract class AbstractTrigger implements Trigger {
     }
 
     @Override
-    public String getType() {
+    public String getName() {
 
-        return type;
+        return name;
     }
 
     @Override

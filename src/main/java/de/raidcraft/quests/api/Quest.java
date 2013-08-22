@@ -3,6 +3,7 @@ package de.raidcraft.quests.api;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -16,6 +17,10 @@ public interface Quest extends TriggerListener {
     public String getFriendlyName();
 
     public String getDescription();
+
+    public List<PlayerObjective> getPlayerObjectives();
+
+    public List<PlayerObjective> getUncompletedObjectives();
 
     public QuestTemplate getTemplate();
 
