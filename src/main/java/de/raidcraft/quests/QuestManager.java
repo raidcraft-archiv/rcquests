@@ -2,6 +2,7 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
+import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.QuestProvider;
 import de.raidcraft.api.quests.QuestType;
@@ -11,6 +12,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -22,6 +24,8 @@ import java.util.Map;
  * @author Silthus
  */
 public final class QuestManager implements QuestProvider, Component {
+
+    private static final String QUEST_FILE_SUFFIX = ".quest.yml";
 
     private final QuestPlugin plugin;
     private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
@@ -37,13 +41,56 @@ public final class QuestManager implements QuestProvider, Component {
 
     private void load() {
 
-
+        // we need to look recursivly thru all folders under the defined base folder
+        File baseFolder = new File(plugin.getDataFolder(), plugin.getConfiguration().quests_base_folder);
+        if (baseFolder.mkdirs()) {
+            loadQuests(baseFolder, "");
+        }
     }
 
     public void reload() {
 
         loadedQuests.clear();
         load();
+    }
+
+    private void loadQuests(File baseFolder, String path) {
+
+        for (File file : baseFolder.listFiles()) {
+            if (file.isDirectory()) {
+                path += "." + file.getName().toLowerCase();
+                loadQuests(file, path);
+            } else if (file.getName().endsWith(QUEST_FILE_SUFFIX)) {
+                // this will load the quest file
+                loadQuest(file, path);
+            }
+        }
+    }
+
+    private void loadQuest(File file, String path) {
+
+        String questId = (path + file.getName().toLowerCase()).substring(1);
+        SimpleQuestTemplate quest = new SimpleQuestTemplate(questId, plugin.configure(new SimpleConfiguration<>(plugin, file)));
+        loadedQuests.put(questId, quest);
+    }
+
+    @Override
+    public void callTrigger(JavaPlugin plugin, String name, Player player, ConfigurationSection data) {
+
+        this.plugin.getTriggerManager().callTrigger((plugin.getName() + "." + name).toLowerCase(), player, data);
+    }
+
+    public boolean checkRequirement(String name, Player player, ConfigurationSection data) {
+
+        return requirementMethods.containsKey(name) && (boolean) invokeMethod(requirementMethods.get(name), player, data);
+    }
+
+    public void executeAction(String name, Player player, ConfigurationSection data) {
+
+        if (!actionMethods.containsKey(name)) {
+            return;
+        }
+        invokeMethod(actionMethods.get(name), player, data);
     }
 
     @Override

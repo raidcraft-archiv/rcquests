@@ -1,11 +1,15 @@
 package de.raidcraft.quests.api;
 
+import java.util.List;
+
 /**
  * @author Silthus
  */
 public interface QuestTemplate {
 
     public String getId();
+
+    public String getBasePath();
 
     public String getName();
 
@@ -19,5 +23,5 @@ public interface QuestTemplate {
 
     public Trigger[] getTrigger();
 
-    public Action[] getActions();
+    public List<Action<QuestTemplate>> getActions();
 }

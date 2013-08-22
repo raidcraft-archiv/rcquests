@@ -1,5 +1,7 @@
 package de.raidcraft.quests.api;
 
+import org.bukkit.entity.Player;
+
 /**
  * @author Silthus
  */
@@ -9,5 +11,5 @@ public interface Requirement {
 
     public String getType();
 
-    public boolean isMet(Quest quest);
+    public boolean isMet(Player player);
 }

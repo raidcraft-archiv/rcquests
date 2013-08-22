@@ -1,13 +1,17 @@
 package de.raidcraft.quests.api;
 
+import org.bukkit.entity.Player;
+
 /**
  * @author Silthus
  */
-public interface Action {
+public interface Action<T> {
 
     public int getId();
 
     public String getType();
 
-    public void execute(Quest quest);
+    public T getProvider();
+
+    public void execute(Player player, T holder);
 }

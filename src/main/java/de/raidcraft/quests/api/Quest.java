@@ -7,7 +7,7 @@ import java.sql.Timestamp;
 /**
  * @author Silthus
  */
-public interface Quest {
+public interface Quest extends TriggerListener {
 
     public String getId();
 

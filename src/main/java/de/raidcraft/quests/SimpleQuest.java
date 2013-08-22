@@ -3,6 +3,7 @@ package de.raidcraft.quests;
 import de.raidcraft.quests.api.AbstractQuest;
 import de.raidcraft.quests.api.QuestHolder;
 import de.raidcraft.quests.api.QuestTemplate;
+import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
 
@@ -11,7 +12,7 @@ import java.sql.Timestamp;
  */
 public class SimpleQuest extends AbstractQuest {
 
-    public SimpleQuest(QuestTemplate template, QuestHolder holder) {
+    protected SimpleQuest(QuestTemplate template, QuestHolder holder) {
 
         super(template, holder);
     }
@@ -21,5 +22,10 @@ public class SimpleQuest extends AbstractQuest {
 
         setStartTime(new Timestamp(System.currentTimeMillis()));
         // TODO
+    }
+
+    @Override
+    public void trigger(Player player) {
+        //TODO: implement
     }
 }

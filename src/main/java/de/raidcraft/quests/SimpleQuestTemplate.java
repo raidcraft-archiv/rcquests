@@ -1,10 +1,9 @@
 package de.raidcraft.quests;
 
 import de.raidcraft.quests.api.AbstractQuestTemplate;
-import de.raidcraft.quests.api.Action;
 import de.raidcraft.quests.api.Objective;
-import de.raidcraft.quests.api.Requirement;
-import de.raidcraft.quests.api.Trigger;
+import de.raidcraft.quests.api.QuestTemplate;
+import de.raidcraft.quests.util.QuestUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ import java.util.Set;
  */
 public class SimpleQuestTemplate extends AbstractQuestTemplate {
 
-    public SimpleQuestTemplate(String id, ConfigurationSection data) {
+    protected SimpleQuestTemplate(String id, ConfigurationSection data) {
 
         super(id, data);
     }
@@ -24,17 +23,7 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     @Override
     protected void loadRequirements(ConfigurationSection data) {
 
-        if (data == null) {
-            return;
-        }
-        List<Requirement> requirements = new ArrayList<>();
-        Set<String> keys = data.getKeys(false);
-        if (keys != null) {
-            for (String key : keys) {
-                requirements.add(new SimpleRequirement(Integer.parseInt(key), data.getConfigurationSection(key)));
-            }
-        }
-        this.requirements = requirements.toArray(new Requirement[requirements.size()]);
+        this.requirements = QuestUtil.loadRequirements(data, getBasePath());
     }
 
     @Override
@@ -47,7 +36,7 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
         Set <String> keys = data.getKeys(false);
         if (keys != null) {
             for (String key : keys) {
-                objectives.add(new SimpleObjective(Integer.parseInt(key), data.getConfigurationSection(key)));
+                objectives.add(new SimpleObjective(Integer.parseInt(key), this, data.getConfigurationSection(key)));
             }
         }
         this.objectives = objectives.toArray(new Objective[objectives.size()]);
@@ -56,32 +45,12 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     @Override
     protected void loadTriggers(ConfigurationSection data) {
 
-        if (data == null) {
-            return;
-        }
-        List<Trigger> triggers = new ArrayList<>();
-        Set <String> keys = data.getKeys(false);
-        if (keys != null) {
-            for (String key : keys) {
-                triggers.add(new SimpleTrigger(Integer.parseInt(key), data.getConfigurationSection(key)));
-            }
-        }
-        this.triggers = triggers.toArray(new Trigger[triggers.size()]);
+        this.triggers = QuestUtil.loadTriggers(data, this);
     }
 
     @Override
     protected void loadActions(ConfigurationSection data) {
 
-        if (data == null) {
-            return;
-        }
-        List<Action> actions = new ArrayList<>();
-        Set <String> keys = data.getKeys(false);
-        if (keys != null) {
-            for (String key : keys) {
-                actions.add(new SimpleAction(Integer.parseInt(key), data.getConfigurationSection(key)));
-            }
-        }
-        this.actions = actions.toArray(new Action[actions.size()]);
+        setActions(QuestUtil.loadActions((QuestTemplate) this, data, getBasePath()));
     }
 }

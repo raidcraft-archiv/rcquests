@@ -16,6 +16,7 @@ public class QuestPlugin extends BasePlugin {
 
     private LocalConfiguration configuration;
     private QuestManager questManager;
+    private TriggerManager triggerManager;
 
     @Override
     public void enable() {
@@ -23,6 +24,7 @@ public class QuestPlugin extends BasePlugin {
         configuration = configure(new LocalConfiguration(this));
 
         questManager = new QuestManager(this);
+        triggerManager = new TriggerManager(this);
         Quests.enable(questManager);
 
         registerGlobalQuestTypes();
@@ -61,6 +63,11 @@ public class QuestPlugin extends BasePlugin {
     public QuestManager getQuestManager() {
 
         return questManager;
+    }
+
+    public TriggerManager getTriggerManager() {
+
+        return triggerManager;
     }
 
     public static class LocalConfiguration extends ConfigurationBase<QuestPlugin> {

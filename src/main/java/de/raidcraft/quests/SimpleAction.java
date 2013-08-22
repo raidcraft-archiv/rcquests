@@ -1,21 +1,26 @@
 package de.raidcraft.quests;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.quests.api.AbstractAction;
-import de.raidcraft.quests.api.Quest;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 /**
  * @author Silthus
  */
-public class SimpleAction extends AbstractAction {
+public class SimpleAction<T> extends AbstractAction<T> {
 
-    public SimpleAction(int id, ConfigurationSection data) {
+    private final ConfigurationSection data;
 
-        super(id, data);
+    public SimpleAction(int id, T provider, ConfigurationSection data) {
+
+        super(id, provider, data);
+        this.data = data;
     }
 
     @Override
-    public void execute(Quest quest) {
-        //TODO: implement
+    public void execute(Player player, T holder) {
+
+        RaidCraft.getComponent(QuestManager.class).executeAction(getType(), player, data);
     }
 }
