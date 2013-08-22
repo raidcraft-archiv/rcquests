@@ -79,6 +79,7 @@ public final class QuestManager implements QuestProvider, Component {
         String questId = (path + file.getName().toLowerCase()).substring(1);
         SimpleQuestTemplate quest = new SimpleQuestTemplate(questId, plugin.configure(new SimpleConfiguration<>(plugin, file)));
         loadedQuests.put(questId, quest);
+        plugin.getLogger().info("Loaded quest: " + quest.getName() + " - " + quest.getFriendlyName());
     }
 
     @Override
