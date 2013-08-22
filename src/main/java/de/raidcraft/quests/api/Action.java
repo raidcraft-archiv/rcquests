@@ -9,7 +9,7 @@ public interface Action<T> {
 
     public int getId();
 
-    public String getType();
+    public String getName();
 
     public T getProvider();
 

@@ -30,6 +30,8 @@ public interface Quest extends TriggerListener {
 
     public boolean isCompleted();
 
+    public void completeObjective(PlayerObjective objective);
+
     public boolean isActive();
 
     public Timestamp getStartTime();

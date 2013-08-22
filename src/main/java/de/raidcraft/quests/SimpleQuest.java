@@ -1,10 +1,12 @@
 package de.raidcraft.quests;
 
 import de.raidcraft.quests.api.AbstractQuest;
+import de.raidcraft.quests.api.Action;
 import de.raidcraft.quests.api.Objective;
 import de.raidcraft.quests.api.PlayerObjective;
 import de.raidcraft.quests.api.QuestHolder;
 import de.raidcraft.quests.api.QuestTemplate;
+import de.raidcraft.quests.api.Requirement;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
@@ -18,6 +20,7 @@ public class SimpleQuest extends AbstractQuest {
 
     private final List<PlayerObjective> playerObjectives = new ArrayList<>();
     private final List<PlayerObjective> uncompletedObjectives;
+    private boolean meetsRequirements = false;
 
     protected SimpleQuest(QuestTemplate template, QuestHolder holder) {
 
@@ -42,21 +45,45 @@ public class SimpleQuest extends AbstractQuest {
     }
 
     @Override
+    public void completeObjective(PlayerObjective objective) {
+
+        uncompletedObjectives.remove(objective);
+        if (uncompletedObjectives.isEmpty()) {
+            // complete the quest and trigger the complete actions
+            setCompletionTime(new Timestamp(System.currentTimeMillis()));
+            // give rewards and execute completion actions
+            for (Action<QuestTemplate> action : getTemplate().getActions()) {
+                action.execute(getPlayer(), getTemplate());
+            }
+        }
+    }
+
+    @Override
     public void start() {
 
         setStartTime(new Timestamp(System.currentTimeMillis()));
-        // TODO
     }
 
     @Override
     public void trigger(Player player) {
 
-        if (!getPlayer().equals(player)) {
+        if (!getPlayer().equals(player) || !isActive()) {
             return;
         }
-        for (PlayerObjective playerObjective : getUncompletedObjectives()) {
-            playerObjective.trigger(player);
+        if (!meetsRequirements && getTemplate().getRequirements().length > 0) {
+            meetsRequirements = true;
+            for (Requirement requirement : getTemplate().getRequirements()) {
+                if (!requirement.isMet(player)) {
+                    meetsRequirements = false;
+                    break;
+                }
+            }
         }
-        // TODO: check requirements
+        // dont trigger objectives when no requirements are met
+        if (meetsRequirements) {
+            for (PlayerObjective playerObjective : getUncompletedObjectives()) {
+                playerObjective.trigger(player);
+            }
+        }
     }
 }

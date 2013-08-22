@@ -12,4 +12,6 @@ public interface PlayerObjective extends TriggerListener {
     public Objective getObjective();
 
     public Player getPlayer();
+
+    public boolean isCompleted();
 }

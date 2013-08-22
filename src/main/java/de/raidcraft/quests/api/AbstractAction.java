@@ -8,13 +8,13 @@ import org.bukkit.configuration.ConfigurationSection;
 public abstract class AbstractAction<T> implements Action<T> {
 
     private final int id;
-    private final String type;
+    private final String name;
     private final T provider;
 
     public AbstractAction(int id, T provider, ConfigurationSection data) {
 
         this.id = id;
-        this.type = data.getString("type");
+        this.name = data.getString("type");
         this.provider = provider;
     }
 
@@ -25,9 +25,9 @@ public abstract class AbstractAction<T> implements Action<T> {
     }
 
     @Override
-    public String getType() {
+    public String getName() {
 
-        return type;
+        return name;
     }
 
     @Override

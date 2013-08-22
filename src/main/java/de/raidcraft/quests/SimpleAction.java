@@ -21,6 +21,6 @@ public class SimpleAction<T> extends AbstractAction<T> {
     @Override
     public void execute(Player player, T holder) {
 
-        RaidCraft.getComponent(QuestManager.class).executeAction(getType(), player, data);
+        RaidCraft.getComponent(QuestManager.class).executeAction(getName(), player, data);
     }
 }

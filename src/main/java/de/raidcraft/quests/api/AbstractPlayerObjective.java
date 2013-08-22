@@ -9,6 +9,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
 
     private final Quest quest;
     private final Objective objective;
+    private boolean completed = false;
 
     public AbstractPlayerObjective(Quest quest, Objective objective) {
 
@@ -32,5 +33,16 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     public Player getPlayer() {
 
         return quest.getPlayer();
+    }
+
+    @Override
+    public boolean isCompleted() {
+
+        return completed;
+    }
+
+    protected void setCompleted(boolean completed) {
+
+        this.completed = completed;
     }
 }

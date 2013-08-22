@@ -3,6 +3,7 @@ package de.raidcraft.quests;
 import de.raidcraft.quests.api.AbstractPlayerObjective;
 import de.raidcraft.quests.api.Objective;
 import de.raidcraft.quests.api.Quest;
+import de.raidcraft.quests.api.Requirement;
 import org.bukkit.entity.Player;
 
 /**
@@ -18,9 +19,19 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
     @Override
     public void trigger(Player player) {
 
-        if (!getPlayer().equals(player)) {
+        if (!getPlayer().equals(player) || isCompleted()) {
             return;
         }
-        // TODO: check requirements
+        boolean complete = true;
+        for (Requirement requirement : getObjective().getRequirements()) {
+            if (!requirement.isMet(player)) {
+                complete = false;
+                break;
+            }
+        }
+        if (complete) {
+            setCompleted(true);
+            getQuest().completeObjective(this);
+        }
     }
 }
