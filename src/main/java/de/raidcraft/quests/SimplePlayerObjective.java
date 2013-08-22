@@ -2,11 +2,13 @@ package de.raidcraft.quests;
 
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.AbstractPlayerObjective;
 import de.raidcraft.quests.api.Objective;
 import de.raidcraft.quests.api.Quest;
 import de.raidcraft.quests.api.Requirement;
 import de.raidcraft.quests.tables.TPlayerObjective;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
@@ -28,11 +30,15 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
             return;
         }
         boolean complete = true;
-        for (Requirement requirement : getObjective().getRequirements()) {
-            if (!requirement.isMet(player)) {
-                complete = false;
-                break;
+        try {
+            for (Requirement requirement : getObjective().getRequirements()) {
+                if (!requirement.isMet(player)) {
+                    complete = false;
+                    break;
+                }
             }
+        } catch (QuestException e) {
+            player.sendMessage(ChatColor.RED + e.getMessage());
         }
         if (complete) {
             setCompleted(new Timestamp(System.currentTimeMillis()));

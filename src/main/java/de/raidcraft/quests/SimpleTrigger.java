@@ -1,11 +1,13 @@
 package de.raidcraft.quests;
 
+import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.AbstractTrigger;
 import de.raidcraft.quests.api.Action;
 import de.raidcraft.quests.api.QuestTemplate;
 import de.raidcraft.quests.api.Trigger;
 import de.raidcraft.quests.api.TriggerListener;
 import de.raidcraft.quests.util.QuestUtil;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -30,7 +32,11 @@ public class SimpleTrigger extends AbstractTrigger {
 
         // we have a match now lets execute our actions
         for (Action<Trigger> action : getActions()) {
-            action.execute(player, this);
+            try {
+                action.execute(player, this);
+            } catch (QuestException e) {
+                player.sendMessage(ChatColor.RED + e.getMessage());
+            }
         }
         // and inform our listeners
         for (TriggerListener listener : getListeners()) {
