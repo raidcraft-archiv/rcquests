@@ -96,6 +96,16 @@ public final class QuestManager implements QuestProvider, Component {
     @Override
     public void registerQuestType(JavaPlugin plugin, QuestType questType) throws InvalidTypeException {
 
+        registerQuestType(plugin.getName(), questType);
+    }
+
+    public void registerQuestType(QuestType questType) throws InvalidTypeException {
+
+        registerQuestType("", questType);
+    }
+
+    public void registerQuestType(String baseName, QuestType questType) throws InvalidTypeException {
+
         if (!questType.getClass().isAnnotationPresent(QuestType.Name.class)) {
             throw new InvalidTypeException(
                     plugin.getName() + " tried to register invalid quest type: " + questType.getClass().getCanonicalName());
@@ -123,7 +133,7 @@ public final class QuestManager implements QuestProvider, Component {
             throw new InvalidTypeException(plugin.getName() + " failed to register quest type "
                     + questType.getClass().getCanonicalName() + ": No valid methods defined!");
         }
-        String baseName = plugin.getName().replace(" ", "-") + "."
+        baseName = baseName.replace(" ", "-") + "."
                 + questType.getClass().getAnnotation(QuestType.Name.class).value() + ".";
         // actually register the methods into our system
         for (Method method : validMethods) {

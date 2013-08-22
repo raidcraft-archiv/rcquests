@@ -3,7 +3,10 @@ package de.raidcraft.quests;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.Quests;
+import de.raidcraft.quests.questtypes.Item;
+import de.raidcraft.quests.questtypes.Text;
 import de.raidcraft.quests.tables.TQuestHolder;
 
 import java.util.ArrayList;
@@ -44,7 +47,12 @@ public class QuestPlugin extends BasePlugin {
 
     private void registerGlobalQuestTypes() {
 
-        // TODO: add global quest types, like text.whisper
+        try {
+            questManager.registerQuestType(new Text());
+            questManager.registerQuestType(new Item());
+        } catch (InvalidTypeException e) {
+            getLogger().warning(e.getMessage());
+        }
     }
 
     @Override
