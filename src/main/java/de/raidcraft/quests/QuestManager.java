@@ -7,7 +7,6 @@ import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestProvider;
-import de.raidcraft.api.quests.QuestTrigger;
 import de.raidcraft.api.quests.QuestType;
 import de.raidcraft.quests.api.QuestHolder;
 import de.raidcraft.quests.api.QuestTemplate;
@@ -81,9 +80,9 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     @Override
-    public void callTrigger(QuestTrigger trigger, Player player) {
+    public void callTrigger(String name, Player player) {
 
-        this.plugin.getTriggerManager().callTrigger(trigger.getName(), player);
+        this.plugin.getTriggerManager().callTrigger(name, player);
     }
 
     public boolean checkRequirement(String name, Player player, ConfigurationSection data) throws QuestException {

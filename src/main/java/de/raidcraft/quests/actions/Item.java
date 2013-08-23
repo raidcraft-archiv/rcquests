@@ -24,4 +24,16 @@ public class Item implements QuestType {
             RaidCraft.LOGGER.warning(e.getMessage());
         }
     }
+
+    @Method(name = "has", type = Type.REQUIREMENT)
+    public static boolean hasItem(Player player, ConfigurationSection data) {
+
+        try {
+            ItemStack item = RaidCraft.getItem(data.getString("item"));
+            return player.getInventory().contains(item);
+        } catch (CustomItemException e) {
+            RaidCraft.LOGGER.warning(e.getMessage());
+        }
+        return false;
+    }
 }
