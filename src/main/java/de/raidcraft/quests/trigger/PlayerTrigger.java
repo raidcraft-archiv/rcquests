@@ -29,6 +29,7 @@ public class PlayerTrigger extends QuestTrigger implements Listener {
         }
     }
 
+    @Method("craft")
     @EventHandler(ignoreCancelled = true)
     public void onItemCraft(CraftItemEvent event) {
 
