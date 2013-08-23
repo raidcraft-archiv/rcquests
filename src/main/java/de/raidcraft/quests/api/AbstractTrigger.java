@@ -1,5 +1,6 @@
 package de.raidcraft.quests.api;
 
+import de.raidcraft.util.TimeUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public abstract class AbstractTrigger implements Trigger {
 
     private final int id;
     private final String name;
+    private final long delay;
     private final QuestTemplate questTemplate;
     private final List<TriggerListener> listeners = new ArrayList<>();
     private final ConfigurationSection config;
@@ -21,6 +23,7 @@ public abstract class AbstractTrigger implements Trigger {
 
         this.id = id;
         this.name = data.getString("type");
+        this.delay = TimeUtil.secondsToTicks(data.getDouble("delay"));
         this.questTemplate = questTemplate;
         this.config = data;
         loadActions(data.getConfigurationSection("actions"));
@@ -38,6 +41,12 @@ public abstract class AbstractTrigger implements Trigger {
     public String getName() {
 
         return name;
+    }
+
+    @Override
+    public long getDelay() {
+
+        return delay;
     }
 
     @Override

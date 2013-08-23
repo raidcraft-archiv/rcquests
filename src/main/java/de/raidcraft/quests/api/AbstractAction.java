@@ -1,5 +1,6 @@
 package de.raidcraft.quests.api;
 
+import de.raidcraft.util.TimeUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -10,6 +11,7 @@ public abstract class AbstractAction<T> implements Action<T> {
     private final int id;
     private final String name;
     private final T provider;
+    private final long delay;
     private final boolean executedOnce;
 
     public AbstractAction(int id, T provider, ConfigurationSection data) {
@@ -17,6 +19,7 @@ public abstract class AbstractAction<T> implements Action<T> {
         this.id = id;
         this.name = data.getString("type");
         this.provider = provider;
+        this.delay = TimeUtil.secondsToTicks(data.getDouble("delay"));
         this.executedOnce = data.getBoolean("executed-once", true);
     }
 
@@ -42,6 +45,12 @@ public abstract class AbstractAction<T> implements Action<T> {
     public T getProvider() {
 
         return provider;
+    }
+
+    @Override
+    public long getDelay() {
+
+        return delay;
     }
 
     @Override

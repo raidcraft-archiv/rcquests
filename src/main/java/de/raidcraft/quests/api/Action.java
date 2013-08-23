@@ -16,6 +16,8 @@ public interface Action<T> {
 
     public boolean isExecutedOnce();
 
+    public long getDelay();
+
     public void execute(Player player, T holder) throws QuestException;
 
     public void save();

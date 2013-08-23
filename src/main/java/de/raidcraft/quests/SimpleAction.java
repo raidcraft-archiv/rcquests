@@ -5,6 +5,8 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.AbstractAction;
 import de.raidcraft.quests.tables.TQuestAction;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -35,15 +37,34 @@ public class SimpleAction<T> extends AbstractAction<T> {
     }
 
     @Override
-    public void execute(Player player, T holder) throws QuestException {
+    public void execute(final Player player, T holder) throws QuestException {
 
         if (isExecutedOnce() && executedPlayers.contains(player.getName().toLowerCase())) {
             return;
         }
-        RaidCraft.getComponent(QuestManager.class).executeAction(getName(), player, data);
-        if (isExecutedOnce()) {
-            executedPlayers.add(player.getName().toLowerCase());
-            save();
+        if (getDelay() > 0) {
+            Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(QuestPlugin.class), new Runnable() {
+                @Override
+                public void run() {
+
+                    execute(player);
+                }
+            }, getDelay());
+        } else {
+            execute(player);
+        }
+    }
+
+    private void execute(final Player player) {
+
+        try {
+            RaidCraft.getComponent(QuestManager.class).executeAction(getName(), player, data);
+            if (isExecutedOnce()) {
+                executedPlayers.add(player.getName().toLowerCase());
+                save();
+            }
+        } catch (QuestException e) {
+            player.sendMessage(ChatColor.RED + e.getMessage());
         }
     }
 

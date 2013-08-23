@@ -14,6 +14,8 @@ public interface Trigger {
 
     public String getName();
 
+    public long getDelay();
+
     public ConfigurationSection getConfig();
 
     public QuestTemplate getQuestTemplate();
