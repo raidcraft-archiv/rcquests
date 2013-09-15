@@ -1,4 +1,4 @@
-package de.raidcraft.quests.api;
+package de.raidcraft.quests.api.quest.requirement;
 
 import de.raidcraft.api.quests.QuestException;
 import org.bukkit.entity.Player;

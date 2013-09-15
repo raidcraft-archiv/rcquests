@@ -1,4 +1,4 @@
-package de.raidcraft.quests.api;
+package de.raidcraft.quests.api.quest.requirement;
 
 import org.bukkit.configuration.ConfigurationSection;
 

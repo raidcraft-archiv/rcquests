@@ -2,7 +2,7 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
-import de.raidcraft.quests.api.AbstractRequirement;
+import de.raidcraft.quests.api.quest.requirement.AbstractRequirement;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

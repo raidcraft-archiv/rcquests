@@ -1,4 +1,4 @@
-package de.raidcraft.quests.api;
+package de.raidcraft.quests.api.quest.action;
 
 import de.raidcraft.util.TimeUtil;
 import org.bukkit.configuration.ConfigurationSection;

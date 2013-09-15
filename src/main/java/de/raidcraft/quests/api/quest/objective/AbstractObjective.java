@@ -1,5 +1,9 @@
-package de.raidcraft.quests.api;
+package de.raidcraft.quests.api.quest.objective;
 
+import de.raidcraft.quests.api.quest.requirement.Requirement;
+import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.api.quest.action.Action;
+import de.raidcraft.quests.api.quest.trigger.Trigger;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;

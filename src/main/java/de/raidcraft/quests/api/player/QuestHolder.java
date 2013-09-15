@@ -1,5 +1,7 @@
-package de.raidcraft.quests.api;
+package de.raidcraft.quests.api.player;
 
+import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.api.quest.Quest;
 import org.bukkit.entity.Player;
 
 import java.util.List;

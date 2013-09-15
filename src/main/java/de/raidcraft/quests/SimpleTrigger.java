@@ -2,11 +2,11 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
-import de.raidcraft.quests.api.AbstractTrigger;
-import de.raidcraft.quests.api.Action;
-import de.raidcraft.quests.api.QuestTemplate;
-import de.raidcraft.quests.api.Trigger;
-import de.raidcraft.quests.api.TriggerListener;
+import de.raidcraft.quests.api.quest.trigger.AbstractTrigger;
+import de.raidcraft.quests.api.quest.action.Action;
+import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.api.quest.trigger.Trigger;
+import de.raidcraft.quests.api.quest.trigger.TriggerListener;
 import de.raidcraft.quests.util.QuestUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

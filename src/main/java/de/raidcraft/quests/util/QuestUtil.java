@@ -5,10 +5,10 @@ import de.raidcraft.quests.SimpleAction;
 import de.raidcraft.quests.SimpleRequirement;
 import de.raidcraft.quests.SimpleTrigger;
 import de.raidcraft.quests.TriggerManager;
-import de.raidcraft.quests.api.Action;
-import de.raidcraft.quests.api.QuestTemplate;
-import de.raidcraft.quests.api.Requirement;
-import de.raidcraft.quests.api.Trigger;
+import de.raidcraft.quests.api.quest.action.Action;
+import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.api.quest.requirement.Requirement;
+import de.raidcraft.quests.api.quest.trigger.Trigger;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;

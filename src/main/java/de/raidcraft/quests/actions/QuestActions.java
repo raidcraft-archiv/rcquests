@@ -4,7 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestType;
 import de.raidcraft.quests.QuestManager;
-import de.raidcraft.quests.api.QuestTemplate;
+import de.raidcraft.quests.api.quest.QuestTemplate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

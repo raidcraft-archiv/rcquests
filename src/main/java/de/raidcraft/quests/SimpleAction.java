@@ -3,7 +3,7 @@ package de.raidcraft.quests;
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
-import de.raidcraft.quests.api.AbstractAction;
+import de.raidcraft.quests.api.quest.action.AbstractAction;
 import de.raidcraft.quests.tables.TQuestAction;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

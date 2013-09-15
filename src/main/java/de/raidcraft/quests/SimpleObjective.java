@@ -1,8 +1,8 @@
 package de.raidcraft.quests;
 
-import de.raidcraft.quests.api.AbstractObjective;
-import de.raidcraft.quests.api.Objective;
-import de.raidcraft.quests.api.QuestTemplate;
+import de.raidcraft.quests.api.quest.objective.AbstractObjective;
+import de.raidcraft.quests.api.quest.objective.Objective;
+import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.util.QuestUtil;
 import org.bukkit.configuration.ConfigurationSection;
 

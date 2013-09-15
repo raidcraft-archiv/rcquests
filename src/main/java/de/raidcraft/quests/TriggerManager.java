@@ -3,7 +3,7 @@ package de.raidcraft.quests;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.quests.Quests;
-import de.raidcraft.quests.api.Trigger;
+import de.raidcraft.quests.api.quest.trigger.Trigger;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.entity.Player;
 
