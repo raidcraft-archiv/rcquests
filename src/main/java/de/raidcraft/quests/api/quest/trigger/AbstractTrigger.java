@@ -27,7 +27,7 @@ public abstract class AbstractTrigger implements Trigger {
         this.name = data.getString("type");
         this.delay = TimeUtil.secondsToTicks(data.getDouble("delay"));
         this.questTemplate = questTemplate;
-        this.config = data;
+        this.config = data.getConfigurationSection("args");
         loadActions(data.getConfigurationSection("actions"));
     }
 
