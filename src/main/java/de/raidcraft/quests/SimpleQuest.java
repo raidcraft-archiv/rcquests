@@ -124,6 +124,9 @@ public class SimpleQuest extends AbstractQuest {
     public void abort() {
 
         setStartTime(null);
+        EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
+        TPlayerQuest quest = database.find(TPlayerQuest.class, getId());
+        database.delete(quest);
     }
 
     public void save() {

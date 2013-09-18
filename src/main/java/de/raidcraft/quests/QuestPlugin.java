@@ -58,6 +58,7 @@ public class QuestPlugin extends BasePlugin {
     @Override
     public void disable() {
 
+        getQuestManager().unload();
         Quests.disable(questManager);
     }
 

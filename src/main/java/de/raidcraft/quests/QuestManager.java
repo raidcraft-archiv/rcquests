@@ -52,9 +52,18 @@ public final class QuestManager implements QuestProvider, Component {
         loadQuests(baseFolder, "");
     }
 
+    public void unload() {
+
+        for (QuestHolder holder : questPlayers.values()) {
+            holder.save();
+        }
+        loadedQuests.clear();
+        questPlayers.clear();
+    }
+
     public void reload() {
 
-        loadedQuests.clear();
+        unload();
         load();
     }
 

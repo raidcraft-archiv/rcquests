@@ -2,6 +2,7 @@ package de.raidcraft.quests.tables;
 
 import com.avaje.ebean.validation.NotNull;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
@@ -25,7 +26,7 @@ public class TPlayerQuest {
     private String quest;
     private Timestamp startTime;
     private Timestamp completionTime;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.REMOVE)
     private List<TPlayerObjective> objectives;
 
     public int getId() {
