@@ -118,6 +118,8 @@ public class QuestPlugin extends BasePlugin {
 
         @Setting("quests-base-folder")
         public String quests_base_folder = "quests";
+        @Setting("max-quests")
+        public int maxQuests = 27;
 
         public LocalConfiguration(QuestPlugin plugin) {
 

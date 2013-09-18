@@ -49,7 +49,10 @@ public class QuestUI implements Listener {
         this.quests = quests;
         this.type = type;
         this.questBooks = new QuestBook[quests.size()];
-        this.inventory = Bukkit.createInventory(holder.getPlayer(), (quests.size() + 9) / 9, type.getInventoryName());
+        this.inventory = Bukkit.createInventory(
+                holder.getPlayer(),
+                ((RaidCraft.getComponent(QuestPlugin.class).getConfiguration().maxQuests + 9) / 9) * 9,
+                type.getInventoryName());
         // lets now fill the inventory with our quest books
         for (int i = 0; i < quests.size(); i++) {
             QuestBook questBook = new QuestBook(quests.get(i));
