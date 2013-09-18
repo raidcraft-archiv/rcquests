@@ -16,7 +16,7 @@ public class SimpleRequirement extends AbstractRequirement {
     public SimpleRequirement(int id, ConfigurationSection data) {
 
         super(id, data);
-        this.data = data;
+        this.data = data.getConfigurationSection("args");
     }
 
     @Override

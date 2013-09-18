@@ -25,7 +25,7 @@ public class SimpleAction<T> extends AbstractAction<T> {
     public SimpleAction(int id, T provider, ConfigurationSection data) {
 
         super(id, provider, data);
-        this.data = data;
+        this.data = data.getConfigurationSection("args");
         // load existing executed actions
         List<TQuestAction> players = RaidCraft.getDatabase(QuestPlugin.class).find(TQuestAction.class).where()
                 .eq("action_id", getId())
