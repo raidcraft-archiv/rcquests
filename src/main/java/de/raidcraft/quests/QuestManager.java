@@ -3,6 +3,7 @@ package de.raidcraft.quests;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
+import de.raidcraft.api.conversations.ConversationProvider;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.QuestException;
@@ -31,6 +32,7 @@ import java.util.Map;
 public final class QuestManager implements QuestProvider, Component {
 
     private static final String QUEST_FILE_SUFFIX = ".quest.yml";
+    private static final String CONVERSATION_FILE_SUFFIX = ".conv.yml";
 
     private final QuestPlugin plugin;
     private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
@@ -76,8 +78,18 @@ public final class QuestManager implements QuestProvider, Component {
             } else if (file.getName().endsWith(QUEST_FILE_SUFFIX)) {
                 // this will load the quest file
                 loadQuest(file, path);
+            } else if (file.getName().endsWith(CONVERSATION_FILE_SUFFIX)) {
+                loadConversation(file, path);
             }
         }
+    }
+
+    private void loadConversation(File file, String path) {
+
+        String convName = (path + "." + file.getName().toLowerCase()).substring(1).replace(CONVERSATION_FILE_SUFFIX, "");
+        SimpleConfiguration<QuestPlugin> config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+        ConversationProvider provider = RaidCraft.getConversationProvider();
+        provider.registerConversation(config, convName);
     }
 
     private void loadQuest(File file, String path) {
