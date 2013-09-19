@@ -5,8 +5,10 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.conversations.ConversationProvider;
 import de.raidcraft.api.player.UnknownPlayerException;
+import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.QuestException;
+import de.raidcraft.api.quests.QuestHost;
 import de.raidcraft.api.quests.QuestProvider;
 import de.raidcraft.api.quests.QuestType;
 import de.raidcraft.quests.api.player.QuestHolder;
@@ -19,6 +21,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -33,11 +36,14 @@ public final class QuestManager implements QuestProvider, Component {
 
     private static final String QUEST_FILE_SUFFIX = ".quest.yml";
     private static final String CONVERSATION_FILE_SUFFIX = ".conv.yml";
+    private static final String HOST_FILE_SUFFIX = ".host.yml";
 
     private final QuestPlugin plugin;
     private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
+    private final Map<String, QuestHost> loadedQuestHosts = new CaseInsensitiveMap<>();
     private final Map<String, Method> actionMethods = new CaseInsensitiveMap<>();
     private final Map<String, Method> requirementMethods = new CaseInsensitiveMap<>();
+    private final Map<String, Constructor<? extends QuestHost>> questHostTypes = new CaseInsensitiveMap<>();
     private final Map<String, QuestHolder> questPlayers = new CaseInsensitiveMap<>();
 
     protected QuestManager(QuestPlugin plugin) {
@@ -80,6 +86,8 @@ public final class QuestManager implements QuestProvider, Component {
                 loadQuest(file, path);
             } else if (file.getName().endsWith(CONVERSATION_FILE_SUFFIX)) {
                 loadConversation(file, path);
+            } else if (file.getName().endsWith(HOST_FILE_SUFFIX)) {
+                loadQuestHost(file, path);
             }
         }
     }
@@ -98,6 +106,26 @@ public final class QuestManager implements QuestProvider, Component {
         SimpleQuestTemplate quest = new SimpleQuestTemplate(questId, plugin.configure(new SimpleConfiguration<>(plugin, file)));
         loadedQuests.put(questId, quest);
         plugin.getLogger().info("Loaded quest: " + questId + " - " + quest.getFriendlyName());
+    }
+
+    private void loadQuestHost(File file, String path) {
+
+        String hostId = (path + "." + file.getName().toLowerCase()).substring(1).replace(HOST_FILE_SUFFIX, "");
+        ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+        String hostType = config.getString("type");
+        if (questHostTypes.containsKey(hostType)) {
+            try {
+                Constructor<? extends QuestHost> constructor = questHostTypes.get(hostType);
+                constructor.setAccessible(true);
+                QuestHost questHost = constructor.newInstance(hostId, config);
+                loadedQuestHosts.put(questHost.getId(), questHost);
+                plugin.getLogger().info("Loaded quest host: " + questHost.getId() + " - " + questHost.getFriendlyName());
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                plugin.getLogger().warning(e.getMessage());
+            }
+        } else {
+            plugin.getLogger().warning("Failed to load quest host \"" + hostId + "\"! Invalid host type: " + hostType);
+        }
     }
 
     @Override
@@ -188,6 +216,30 @@ public final class QuestManager implements QuestProvider, Component {
                 plugin.getLogger().info(plugin.getName() + " - Requirement - " + name);
                 break;
         }
+    }
+
+    @Override
+    public void registerQuestHost(String type, Class<? extends QuestHost> clazz) throws InvalidQuestHostException {
+
+        if (questHostTypes.containsKey(type)) {
+            throw new InvalidQuestHostException("Tried to register duplicate quest host type: " + type);
+        }
+
+        try {
+            Constructor<? extends QuestHost> constructor = clazz.getDeclaredConstructor(String.class, ConfigurationSection.class);
+            questHostTypes.put(type, constructor);
+            plugin.getLogger().info("Registered quest host type " + type + ": " + clazz.getCanonicalName());
+        } catch (NoSuchMethodException e) {
+            throw new InvalidQuestHostException(e.getMessage());
+        }
+    }
+
+    public QuestHost getQuestHost(String id) throws InvalidQuestHostException {
+
+        if (loadedQuestHosts.containsKey(id)) {
+            return loadedQuestHosts.get(id);
+        }
+        throw new InvalidQuestHostException("Unknown quest host with the id: " + id);
     }
 
     private Object invokeMethod(Method method, Player player, ConfigurationSection data) throws QuestException {
