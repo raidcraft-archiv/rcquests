@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -50,6 +51,10 @@ public class SimpleQuest extends AbstractQuest {
                 uncompletedObjectives.add(objective);
             }
         }
+        // we also need to sort the uncompleted objectives if the quest is ordered
+        if (getTemplate().isOrdered()) {
+            Collections.sort(uncompletedObjectives);
+        }
     }
 
     @Override
@@ -68,7 +73,9 @@ public class SimpleQuest extends AbstractQuest {
     public void completeObjective(PlayerObjective objective) {
 
         uncompletedObjectives.remove(objective);
-        if (uncompletedObjectives.isEmpty()) {
+        if (uncompletedObjectives.isEmpty()
+                || (getTemplate().getRequiredObjectiveAmount() > 0
+                    && getTemplate().getRequiredObjectiveAmount() <= getUncompletedObjectives().size())) {
             // complete the quest and trigger the complete actions
             setCompletionTime(new Timestamp(System.currentTimeMillis()));
             // give rewards and execute completion actions
@@ -108,6 +115,10 @@ public class SimpleQuest extends AbstractQuest {
         if (meetsRequirements) {
             for (PlayerObjective playerObjective : getUncompletedObjectives()) {
                 playerObjective.trigger(player);
+                // abort the loop if we are dealing with ordered required objectives
+                if (!playerObjective.getObjective().isOptional() && getTemplate().isOrdered()) {
+                    break;
+                }
             }
         }
     }

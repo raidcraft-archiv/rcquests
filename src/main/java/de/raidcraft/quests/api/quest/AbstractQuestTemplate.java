@@ -19,6 +19,8 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     private final String basePath;
     private final String friendlyName;
     private final String description;
+    private final int requiredObjectiveAmount;
+    private final boolean ordered;
     private List<Action<QuestTemplate>> actions = new ArrayList<>();
     protected Requirement[] requirements = new Requirement[0];
     protected Objective[] objectives = new Objective[0];
@@ -32,6 +34,8 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.basePath = id.replace("." + name, "");
         this.friendlyName = data.getString("name");
         this.description = data.getString("description");
+        this.requiredObjectiveAmount = data.getInt("required", 0);
+        this.ordered = data.getBoolean("ordered", false);
         loadRequirements(data.getConfigurationSection("requirements"));
         loadObjectives(data.getConfigurationSection("objectives"));
         loadTriggers(data.getConfigurationSection("trigger"));
@@ -74,6 +78,18 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     public String getDescription() {
 
         return description;
+    }
+
+    @Override
+    public int getRequiredObjectiveAmount() {
+
+        return requiredObjectiveAmount;
+    }
+
+    @Override
+    public boolean isOrdered() {
+
+        return ordered;
     }
 
     @Override

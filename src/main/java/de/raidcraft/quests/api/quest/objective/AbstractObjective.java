@@ -1,8 +1,8 @@
 package de.raidcraft.quests.api.quest.objective;
 
-import de.raidcraft.quests.api.quest.requirement.Requirement;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.api.quest.action.Action;
+import de.raidcraft.quests.api.quest.requirement.Requirement;
 import de.raidcraft.quests.api.quest.trigger.Trigger;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -17,6 +17,7 @@ public abstract class AbstractObjective implements Objective {
     private final int id;
     private final String friendlyName;
     private final String description;
+    private final boolean optional;
     private final QuestTemplate questTemplate;
     protected Requirement[] requirements = new Requirement[0];
     protected Trigger[] triggers = new Trigger[0];
@@ -27,6 +28,7 @@ public abstract class AbstractObjective implements Objective {
         this.id = id;
         this.friendlyName = data.getString("name");
         this.description = data.getString("description");
+        this.optional = data.getBoolean("optional", false);
         this.questTemplate = questTemplate;
         loadRequirements(data.getConfigurationSection("requirements"));
         loadTriggers(data.getConfigurationSection("triggers"));
@@ -58,6 +60,12 @@ public abstract class AbstractObjective implements Objective {
     }
 
     @Override
+    public boolean isOptional() {
+
+        return optional;
+    }
+
+    @Override
     public QuestTemplate getQuestTemplate() {
 
         return questTemplate;
@@ -84,6 +92,18 @@ public abstract class AbstractObjective implements Objective {
     protected void setActions(List<Action<Objective>> actions) {
 
         this.actions = actions;
+    }
+
+    @Override
+    public int compareTo(Objective o) {
+
+        if (getId() < o.getId()) {
+            return -1;
+        }
+        if (getId() > o.getId()) {
+            return 1;
+        }
+        return 0;
     }
 
     @Override

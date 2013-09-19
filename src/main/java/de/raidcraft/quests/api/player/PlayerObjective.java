@@ -10,7 +10,7 @@ import java.sql.Timestamp;
 /**
  * @author Silthus
  */
-public interface PlayerObjective extends TriggerListener {
+public interface PlayerObjective extends TriggerListener, Comparable<PlayerObjective> {
 
     public int getId();
 

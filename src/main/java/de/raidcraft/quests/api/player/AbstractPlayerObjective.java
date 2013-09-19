@@ -65,6 +65,12 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     }
 
     @Override
+    public int compareTo(PlayerObjective o) {
+
+        return getObjective().compareTo(o.getObjective());
+    }
+
+    @Override
     public boolean equals(Object o) {
 
         if (this == o) return true;

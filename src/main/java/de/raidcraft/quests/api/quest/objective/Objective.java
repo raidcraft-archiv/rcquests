@@ -10,13 +10,15 @@ import java.util.List;
 /**
  * @author Silthus
  */
-public interface Objective {
+public interface Objective extends Comparable<Objective> {
 
     public int getId();
 
     public String getFriendlyName();
 
     public String getDescription();
+
+    public boolean isOptional();
 
     public QuestTemplate getQuestTemplate();
 

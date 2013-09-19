@@ -22,6 +22,10 @@ public interface QuestTemplate {
 
     public String getDescription();
 
+    public int getRequiredObjectiveAmount();
+
+    public boolean isOrdered();
+
     public Requirement[] getRequirements();
 
     public Objective[] getObjectives();
