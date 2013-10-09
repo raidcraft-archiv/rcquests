@@ -18,6 +18,8 @@ public interface Action<T> {
 
     public long getDelay();
 
+    public long getCooldown();
+
     public void execute(Player player, T holder) throws QuestException;
 
     public void save();

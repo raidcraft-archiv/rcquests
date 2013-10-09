@@ -5,13 +5,16 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.quest.action.AbstractAction;
 import de.raidcraft.quests.tables.TQuestAction;
+import de.raidcraft.util.CaseInsensitiveHashSet;
+import de.raidcraft.util.CaseInsensitiveMap;
+import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -20,7 +23,8 @@ import java.util.Set;
 public class SimpleAction<T> extends AbstractAction<T> {
 
     private final ConfigurationSection data;
-    private final Set<String> executedPlayers = new HashSet<>();
+    private final Set<String> executedPlayers = new CaseInsensitiveHashSet();
+    private final Map<String, Long> lastExecution = new CaseInsensitiveMap<>();
 
     public SimpleAction(int id, T provider, ConfigurationSection data) {
 
@@ -39,7 +43,12 @@ public class SimpleAction<T> extends AbstractAction<T> {
     @Override
     public void execute(final Player player, T holder) throws QuestException {
 
-        if (isExecutedOnce() && executedPlayers.contains(player.getName().toLowerCase())) {
+        String name = player.getName();
+        if (isExecutedOnce() && executedPlayers.contains(name)) {
+            return;
+        }
+        if (getCooldown() > 0 && lastExecution.containsKey(name)
+                && lastExecution.get(name) - TimeUtil.ticksToMillis(getCooldown()) < System.currentTimeMillis()) {
             return;
         }
         if (getDelay() > 0) {
