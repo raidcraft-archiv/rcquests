@@ -14,6 +14,7 @@ import de.raidcraft.quests.api.quest.trigger.Trigger;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -28,39 +29,44 @@ public class QuestUtil {
 
     public static Requirement[] loadRequirements(ConfigurationSection data, String basePath) {
 
-        if (data == null || data.getKeys(false) == null) {
+        if (data == null) {
             return new Requirement[0];
         }
+        List<Requirement> requirements = new ArrayList<>();
         Set <String> keys = data.getKeys(false);
-        List<Requirement> requirements = new ArrayList<>(keys.size());
-        for (String key : keys) {
-            try {
-                if (key.equalsIgnoreCase("ordered")) {
-                    continue;
+        if (keys != null) {
+            for (String key : keys) {
+                try {
+                    if (key.equalsIgnoreCase("ordered")) {
+                        continue;
+                    }
+                    ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), basePath);
+                    SimpleRequirement requirement = new SimpleRequirement(Integer.parseInt(key), section);
+                    requirements.add(requirement);
+                } catch (NumberFormatException e) {
+                    RaidCraft.LOGGER.warning("Wrong objective id in " + basePath + ": " + key);
                 }
-                ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), basePath);
-                SimpleRequirement requirement = new SimpleRequirement(Integer.parseInt(key), section);
-                requirements.add(requirement.getId(), requirement);
-            } catch (NumberFormatException e) {
-                RaidCraft.LOGGER.warning("Wrong objective id in " + basePath + ": " + key);
             }
         }
+        Collections.sort(requirements);
         return requirements.toArray(new Requirement[requirements.size()]);
     }
 
     public static Trigger[] loadTrigger(ConfigurationSection data, QuestTemplate questTemplate) {
 
-        if (data == null || data.getKeys(false) == null) {
+        if (data == null) {
             return new Trigger[0];
         }
+        List<Trigger> triggers = new ArrayList<>();
         Set<String> keys = data.getKeys(false);
-        List<Trigger> triggers = new ArrayList<>(keys.size());
-        for (String key : keys) {
-            try {
-                ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), questTemplate.getBasePath());
-                triggers.add(new SimpleTrigger(Integer.parseInt(key), questTemplate, section));
-            } catch (NumberFormatException e) {
-                RaidCraft.LOGGER.warning("Wrong objective id in " + questTemplate.getId() + ": " + key);
+        if (keys != null) {
+            for (String key : keys) {
+                try {
+                    ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), questTemplate.getBasePath());
+                    triggers.add(new SimpleTrigger(Integer.parseInt(key), questTemplate, section));
+                } catch (NumberFormatException e) {
+                    RaidCraft.LOGGER.warning("Wrong objective id in " + questTemplate.getId() + ": " + key);
+                }
             }
         }
         Trigger[] loadedTriggers = triggers.toArray(new Trigger[triggers.size()]);
@@ -76,7 +82,6 @@ public class QuestUtil {
         }
         Set<String> keys = data.getKeys(false);
         if (keys != null) {
-            actions = new ArrayList<>(keys.size());
             for (String key : keys) {
                 try {
                     if (key.equalsIgnoreCase("execute-once")) {

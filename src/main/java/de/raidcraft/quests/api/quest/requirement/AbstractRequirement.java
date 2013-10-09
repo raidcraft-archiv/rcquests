@@ -29,6 +29,29 @@ public abstract class AbstractRequirement implements Requirement {
     }
 
     @Override
+    public int compareTo(Requirement o) {
+
+        return Integer.compare(getId(), o.getId());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+
+        if (this == o) return true;
+        if (!(o instanceof AbstractRequirement)) return false;
+
+        AbstractRequirement that = (AbstractRequirement) o;
+
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return id;
+    }
+
+    @Override
     public String toString() {
 
         return getType();

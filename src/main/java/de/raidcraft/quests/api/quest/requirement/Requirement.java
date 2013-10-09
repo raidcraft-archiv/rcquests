@@ -6,7 +6,7 @@ import org.bukkit.entity.Player;
 /**
  * @author Silthus
  */
-public interface Requirement {
+public interface Requirement extends Comparable<Requirement> {
 
     public int getId();
 
