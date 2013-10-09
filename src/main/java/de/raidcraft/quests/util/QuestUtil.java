@@ -36,6 +36,9 @@ public class QuestUtil {
         if (keys != null) {
             for (String key : keys) {
                 try {
+                    if (key.equalsIgnoreCase("ordered")) {
+                        continue;
+                    }
                     ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), basePath);
                     SimpleRequirement requirement = new SimpleRequirement(Integer.parseInt(key), section);
                     requirements.add(requirement.getId(), requirement);
@@ -79,6 +82,9 @@ public class QuestUtil {
         if (keys != null) {
             for (String key : keys) {
                 try {
+                    if (key.equalsIgnoreCase("execute-once")) {
+                        continue;
+                    }
                     ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), basePath);
                     actions.add(new SimpleAction<>(Integer.parseInt(key), provider, section));
                 } catch (NumberFormatException e) {
