@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.conversations.ConversationProvider;
+import de.raidcraft.api.mobs.Mobs;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.InvalidTypeException;
@@ -37,6 +38,8 @@ public final class QuestManager implements QuestProvider, Component {
     private static final String QUEST_FILE_SUFFIX = ".quest.yml";
     private static final String CONVERSATION_FILE_SUFFIX = ".conv.yml";
     private static final String HOST_FILE_SUFFIX = ".host.yml";
+    private static final String MOB_FILE_SUFFIX = ".mob.yml";
+    private static final String MOB_GROUP_FILE_SUFFIX = ".mobgroup.yml";
 
     private final QuestPlugin plugin;
     private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
@@ -78,16 +81,21 @@ public final class QuestManager implements QuestProvider, Component {
     private void loadQuests(File baseFolder, String path) {
 
         for (File file : baseFolder.listFiles()) {
+            String fileName = file.getName();
             if (file.isDirectory()) {
-                path += "." + file.getName().toLowerCase();
+                path += "." + fileName.toLowerCase();
                 loadQuests(file, path);
-            } else if (file.getName().endsWith(QUEST_FILE_SUFFIX)) {
+            } else if (fileName.endsWith(QUEST_FILE_SUFFIX)) {
                 // this will load the quest file
                 loadQuest(file, path);
-            } else if (file.getName().endsWith(CONVERSATION_FILE_SUFFIX)) {
+            } else if (fileName.endsWith(CONVERSATION_FILE_SUFFIX)) {
                 loadConversation(file, path);
-            } else if (file.getName().endsWith(HOST_FILE_SUFFIX)) {
+            } else if (fileName.endsWith(HOST_FILE_SUFFIX)) {
                 loadQuestHost(file, path);
+            } else if (fileName.endsWith(MOB_FILE_SUFFIX)) {
+                loadMob(file, path);
+            } else if (fileName.endsWith(MOB_GROUP_FILE_SUFFIX)) {
+                loadMobGroup(file, path);
             }
         }
     }
@@ -98,6 +106,20 @@ public final class QuestManager implements QuestProvider, Component {
         SimpleConfiguration<QuestPlugin> config = plugin.configure(new SimpleConfiguration<>(plugin, file));
         ConversationProvider provider = RaidCraft.getConversationProvider();
         provider.registerConversation(config, convName);
+    }
+
+    private void loadMob(File file, String path) {
+
+        String mobName = (path + "." + file.getName().toLowerCase()).substring(1).replace(MOB_FILE_SUFFIX, "");
+        SimpleConfiguration<QuestPlugin> config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+        Mobs.registerMob(mobName, config);
+    }
+
+    private void loadMobGroup(File file, String path) {
+
+        String groupName = (path + "." + file.getName().toLowerCase()).substring(1).replace(MOB_GROUP_FILE_SUFFIX, "");
+        SimpleConfiguration<QuestPlugin> config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+        Mobs.registerMobGroup(groupName, config);
     }
 
     private void loadQuest(File file, String path) {
