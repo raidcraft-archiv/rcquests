@@ -28,7 +28,7 @@ public abstract class AbstractObjective implements Objective {
 
         this.id = id;
         this.friendlyName = QuestUtil.replaceRefrences(questTemplate.getBasePath(), data.getString("name"));
-        this.description = QuestUtil.replaceRefrences(questTemplate.getBasePath(), data.getString("description"));
+        this.description = QuestUtil.replaceRefrences(questTemplate.getBasePath(), data.getString("desc"));
         this.optional = data.getBoolean("optional", false);
         this.questTemplate = questTemplate;
         loadRequirements(data.getConfigurationSection("requirements"));

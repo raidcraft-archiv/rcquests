@@ -34,7 +34,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.name = split[split.length - 1];
         this.basePath = id.replace("." + name, "");
         this.friendlyName = data.getString("name", name);
-        this.description = data.getString("description");
+        this.description = data.getString("desc");
         this.requiredObjectiveAmount = data.getInt("required", 0);
         this.ordered = data.getBoolean("ordered", false);
         loadRequirements(data.getConfigurationSection("requirements"));
