@@ -27,10 +27,13 @@ public class QuestBook extends ItemStack {
         lore.add(quest.getDescription());
         // add quest objectives
         for (PlayerObjective objective : quest.getPlayerObjectives()) {
+            String friendlyName = objective.getObjective().getFriendlyName();
             if (objective.isCompleted()) {
-                lore.add(ChatColor.STRIKETHROUGH + "" + ChatColor.GRAY + objective.getObjective().getFriendlyName());
+                lore.add(ChatColor.STRIKETHROUGH + "" + ChatColor.GRAY + friendlyName);
+            } else if (objective.getObjective().isOptional()) {
+                lore.add(ChatColor.ITALIC + friendlyName);
             } else {
-                lore.add(objective.getObjective().getFriendlyName());
+                lore.add(friendlyName);
             }
         }
         meta.setLore(lore);

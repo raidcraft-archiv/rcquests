@@ -5,8 +5,8 @@ import de.raidcraft.quests.SimpleAction;
 import de.raidcraft.quests.SimpleRequirement;
 import de.raidcraft.quests.SimpleTrigger;
 import de.raidcraft.quests.TriggerManager;
-import de.raidcraft.quests.api.quest.action.Action;
 import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.api.quest.action.Action;
 import de.raidcraft.quests.api.quest.requirement.Requirement;
 import de.raidcraft.quests.api.quest.trigger.Trigger;
 import org.bukkit.configuration.ConfigurationSection;
@@ -14,11 +14,15 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Silthus
  */
 public class QuestUtil {
+
+    private final static Pattern pattern = Pattern.compile(".*#([\\w\\d\\s]+):([\\w\\d\\s]+)#.*");
 
     public static Requirement[] loadRequirements(ConfigurationSection data, String basePath) {
 
@@ -79,5 +83,20 @@ public class QuestUtil {
             }
         }
         return section;
+    }
+
+    public static String replaceRefrences(String basePath, String value) {
+
+        Matcher matcher = pattern.matcher(value);
+        if (matcher.matches()) {
+            String type = matcher.group(1);
+            String name = matcher.group(2);
+            if (matcher.group(2).contains("this")) {
+                name = name.replace("this", basePath);
+            }
+            // TODO: try to fetch the correct type
+            return name;
+        }
+        return value;
     }
 }

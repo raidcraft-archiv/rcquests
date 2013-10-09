@@ -4,6 +4,7 @@ import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.api.quest.action.Action;
 import de.raidcraft.quests.api.quest.requirement.Requirement;
 import de.raidcraft.quests.api.quest.trigger.Trigger;
+import de.raidcraft.quests.util.QuestUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -26,8 +27,8 @@ public abstract class AbstractObjective implements Objective {
     public AbstractObjective(int id, QuestTemplate questTemplate, ConfigurationSection data) {
 
         this.id = id;
-        this.friendlyName = data.getString("name");
-        this.description = data.getString("description");
+        this.friendlyName = QuestUtil.replaceRefrences(questTemplate.getBasePath(), data.getString("name"));
+        this.description = QuestUtil.replaceRefrences(questTemplate.getBasePath(), data.getString("description"));
         this.optional = data.getBoolean("optional", false);
         this.questTemplate = questTemplate;
         loadRequirements(data.getConfigurationSection("requirements"));
