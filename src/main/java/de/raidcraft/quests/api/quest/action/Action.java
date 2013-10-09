@@ -14,7 +14,7 @@ public interface Action<T> {
 
     public T getProvider();
 
-    public boolean isExecutedOnce();
+    public boolean isExecuteOnce();
 
     public long getDelay();
 

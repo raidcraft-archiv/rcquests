@@ -13,7 +13,7 @@ public abstract class AbstractAction<T> implements Action<T> {
     private final T provider;
     private final long delay;
     private final long cooldown;
-    private final boolean executedOnce;
+    private final boolean executeOnce;
 
     public AbstractAction(int id, T provider, ConfigurationSection data) {
 
@@ -22,7 +22,7 @@ public abstract class AbstractAction<T> implements Action<T> {
         this.provider = provider;
         this.delay = TimeUtil.secondsToTicks(data.getDouble("delay"));
         this.cooldown = TimeUtil.secondsToTicks(data.getDouble("cooldown"));
-        this.executedOnce = data.getBoolean("executed-once", true);
+        this.executeOnce = data.getBoolean("execute-once", true);
     }
 
     @Override
@@ -38,9 +38,9 @@ public abstract class AbstractAction<T> implements Action<T> {
     }
 
     @Override
-    public boolean isExecutedOnce() {
+    public boolean isExecuteOnce() {
 
-        return executedOnce;
+        return executeOnce;
     }
 
     @Override

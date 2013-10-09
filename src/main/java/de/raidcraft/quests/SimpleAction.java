@@ -44,7 +44,7 @@ public class SimpleAction<T> extends AbstractAction<T> {
     public void execute(final Player player, T holder) throws QuestException {
 
         String name = player.getName();
-        if (isExecutedOnce() && executedPlayers.contains(name)) {
+        if (isExecuteOnce() && executedPlayers.contains(name)) {
             return;
         }
         if (getCooldown() > 0 && lastExecution.containsKey(name)
@@ -68,7 +68,7 @@ public class SimpleAction<T> extends AbstractAction<T> {
 
         try {
             RaidCraft.getComponent(QuestManager.class).executeAction(getName(), player, data);
-            if (isExecutedOnce()) {
+            if (isExecuteOnce()) {
                 executedPlayers.add(player.getName().toLowerCase());
                 save();
             }
