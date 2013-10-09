@@ -101,6 +101,9 @@ public class QuestUtil {
 
     public static String replaceRefrences(String basePath, String value) {
 
+        if (value == null || value.equals("")) {
+            return value;
+        }
         Matcher matcher = pattern.matcher(value);
         if (matcher.matches()) {
             String type = matcher.group(1);
