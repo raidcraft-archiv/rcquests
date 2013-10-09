@@ -1,6 +1,8 @@
 package de.raidcraft.quests.util;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.mobs.Mobs;
+import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.SimpleAction;
 import de.raidcraft.quests.SimpleRequirement;
 import de.raidcraft.quests.SimpleTrigger;
@@ -94,7 +96,11 @@ public class QuestUtil {
             if (matcher.group(2).contains("this")) {
                 name = name.replace("this", basePath);
             }
-            // TODO: try to fetch the correct type
+            if (type.equalsIgnoreCase("mob")) {
+                return Mobs.getFriendlyName(name);
+            } else if (type.equalsIgnoreCase("host")) {
+                return Quests.getFriendlyHostName(name);
+            }
             return name;
         }
         return value;
