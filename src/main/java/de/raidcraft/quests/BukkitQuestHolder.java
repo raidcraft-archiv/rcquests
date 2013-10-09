@@ -28,9 +28,11 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         List<TPlayerQuest> quests = database.find(TPlayerQuest.class).where().eq("player_id", getId()).findList();
         for (TPlayerQuest quest : quests) {
-            QuestTemplate questTemplate = component.getQuestTemplate(quest.getQuest());
-            if (questTemplate != null) {
+            try {
+                QuestTemplate questTemplate = component.getQuestTemplate(quest.getQuest());
                 addQuest(new SimpleQuest(quest.getId(), questTemplate, this));
+            } catch (QuestException e) {
+                RaidCraft.LOGGER.warning(e.getMessage());
             }
         }
     }
