@@ -16,6 +16,7 @@ import de.raidcraft.quests.api.player.QuestHolder;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.util.CaseInsensitiveMap;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -326,8 +327,23 @@ public final class QuestManager implements QuestProvider, Component {
         return questPlayers.get(name);
     }
 
-    public QuestTemplate getQuestTemplate(String name) {
+    public QuestTemplate getQuestTemplate(String name) throws QuestException {
 
-        return loadedQuests.get(name);
+        if (loadedQuests.containsKey(name)) {
+            return loadedQuests.get(name);
+        }
+        ArrayList<QuestTemplate> foundQuests = new ArrayList<>();
+        for (QuestTemplate quest : loadedQuests.values()) {
+            if (quest.getFriendlyName().contains(name)) {
+                foundQuests.add(quest);
+            }
+        }
+        if (foundQuests.isEmpty()) {
+            throw new QuestException("Du hast keine Quest mit dem Namen: " + name);
+        }
+        if (foundQuests.size() > 1) {
+            throw new QuestException("Du hast mehrere Quests mit dem Namen " + name + ": " + StringUtils.join(foundQuests, ", "));
+        }
+        return foundQuests.get(0);
     }
 }

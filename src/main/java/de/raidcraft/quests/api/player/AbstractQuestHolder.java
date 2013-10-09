@@ -3,6 +3,7 @@ package de.raidcraft.quests.api.player;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.util.CaseInsensitiveMap;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -44,12 +45,27 @@ public abstract class AbstractQuestHolder implements QuestHolder {
     }
 
     @Override
-    public Quest getQuest(String quest) throws QuestException {
+    public Quest getQuest(String name) throws QuestException {
 
-        if (allQuests.containsKey(quest)) {
-            return allQuests.get(quest);
+        if (allQuests.containsKey(name)) {
+            return allQuests.get(name);
         }
-        throw new QuestException("Du hast keine Quest mit dem Namen: " + quest);
+        ArrayList<Quest> foundQuests = new ArrayList<>();
+        for (Quest quest : allQuests.values()) {
+            if (!quest.isActive() || quest.isCompleted()) {
+                continue;
+            }
+            if (quest.getFriendlyName().contains(name)) {
+                foundQuests.add(quest);
+            }
+        }
+        if (foundQuests.isEmpty()) {
+            throw new QuestException("Du hast keine Quest mit dem Namen: " + name);
+        }
+        if (foundQuests.size() > 1) {
+            throw new QuestException("Du hast mehrere Quests mit dem Namen " + name + ": " + StringUtils.join(foundQuests, ", "));
+        }
+        return foundQuests.get(0);
     }
 
     @Override
