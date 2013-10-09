@@ -37,7 +37,7 @@ public class QuestUtil {
         return requirements.toArray(new Requirement[requirements.size()]);
     }
 
-    public static Trigger[] loadTriggers(ConfigurationSection data, QuestTemplate questTemplate) {
+    public static Trigger[] loadTrigger(ConfigurationSection data, QuestTemplate questTemplate) {
 
         if (data == null) {
             return new Trigger[0];

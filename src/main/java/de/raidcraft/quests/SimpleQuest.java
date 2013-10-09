@@ -79,7 +79,7 @@ public class SimpleQuest extends AbstractQuest {
             // complete the quest and trigger the complete actions
             setCompletionTime(new Timestamp(System.currentTimeMillis()));
             // give rewards and execute completion actions
-            for (Action<QuestTemplate> action : getTemplate().getActions()) {
+            for (Action<QuestTemplate> action : getTemplate().getCompleteActions()) {
                 try {
                     action.execute(getPlayer(), getTemplate());
                 } catch (QuestException e) {
@@ -152,7 +152,7 @@ public class SimpleQuest extends AbstractQuest {
             objective.save();
         }
         // and actions
-        for (Action<QuestTemplate> action : getTemplate().getActions()) {
+        for (Action<QuestTemplate> action : getTemplate().getCompleteActions()) {
             action.save();
         }
     }

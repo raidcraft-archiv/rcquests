@@ -43,9 +43,15 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     }
 
     @Override
-    protected void loadTriggers(ConfigurationSection data) {
+    protected void loadTrigger(ConfigurationSection data) {
 
-        this.triggers = QuestUtil.loadTriggers(data, this);
+        this.trigger = QuestUtil.loadTrigger(data, this);
+    }
+
+    @Override
+    protected void loadCompleteTrigger(ConfigurationSection data) {
+
+        this.completeTrigger = QuestUtil.loadTrigger(data, this);
     }
 
     @Override

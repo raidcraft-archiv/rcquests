@@ -24,7 +24,8 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     private List<Action<QuestTemplate>> actions = new ArrayList<>();
     protected Requirement[] requirements = new Requirement[0];
     protected Objective[] objectives = new Objective[0];
-    protected Trigger[] triggers = new Trigger[0];
+    protected Trigger[] trigger = new Trigger[0];
+    protected Trigger[] completeTrigger = new Trigger[0];
 
     public AbstractQuestTemplate(String id, ConfigurationSection data) {
 
@@ -38,15 +39,18 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.ordered = data.getBoolean("ordered", false);
         loadRequirements(data.getConfigurationSection("requirements"));
         loadObjectives(data.getConfigurationSection("objectives"));
-        loadTriggers(data.getConfigurationSection("trigger"));
-        loadActions(data.getConfigurationSection("complete.actions"));
+        loadTrigger(data.getConfigurationSection("trigger"));
+        loadTrigger(data.getConfigurationSection("complete-trigger"));
+        loadActions(data.getConfigurationSection("complete-actions"));
     }
 
     protected abstract void loadRequirements(ConfigurationSection data);
 
     protected abstract void loadObjectives(ConfigurationSection data);
 
-    protected abstract void loadTriggers(ConfigurationSection data);
+    protected abstract void loadTrigger(ConfigurationSection data);
+
+    protected abstract void loadCompleteTrigger(ConfigurationSection data);
 
     protected abstract void loadActions(ConfigurationSection data);
 
@@ -107,11 +111,17 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     @Override
     public Trigger[] getTrigger() {
 
-        return triggers;
+        return trigger;
     }
 
     @Override
-    public List<Action<QuestTemplate>> getActions() {
+    public Trigger[] getCompleteTrigger() {
+
+        return completeTrigger;
+    }
+
+    @Override
+    public List<Action<QuestTemplate>> getCompleteActions() {
 
         return actions;
     }

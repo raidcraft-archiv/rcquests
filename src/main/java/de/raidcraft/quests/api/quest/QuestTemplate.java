@@ -32,5 +32,7 @@ public interface QuestTemplate {
 
     public Trigger[] getTrigger();
 
-    public List<Action<QuestTemplate>> getActions();
+    public Trigger[] getCompleteTrigger();
+
+    public List<Action<QuestTemplate>> getCompleteActions();
 }

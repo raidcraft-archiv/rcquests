@@ -31,7 +31,7 @@ public abstract class AbstractObjective implements Objective {
         this.optional = data.getBoolean("optional", false);
         this.questTemplate = questTemplate;
         loadRequirements(data.getConfigurationSection("requirements"));
-        loadTriggers(data.getConfigurationSection("triggers"));
+        loadTriggers(data.getConfigurationSection("trigger"));
         loadActions(data.getConfigurationSection("actions"));
     }
 
