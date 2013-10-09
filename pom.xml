@@ -47,5 +47,10 @@
             <artifactId>raidcraft-api</artifactId>
             <version>${rc.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.citizensnpcs</groupId>
+            <artifactId>citizens</artifactId>
+            <version>${rc.version}</version>
+        </dependency>
     </dependencies>
 </project>

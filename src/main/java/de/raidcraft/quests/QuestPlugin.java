@@ -9,6 +9,7 @@ import de.raidcraft.quests.actions.Item;
 import de.raidcraft.quests.actions.QuestActions;
 import de.raidcraft.quests.actions.Text;
 import de.raidcraft.quests.commands.BaseCommands;
+import de.raidcraft.quests.listener.NPCListener;
 import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
@@ -84,6 +85,7 @@ public class QuestPlugin extends BasePlugin {
         try {
             Quests.registerTrigger(this, LocationTrigger.class, true);
             Quests.registerTrigger(this, PlayerTrigger.class, true);
+            Quests.registerTrigger(this, NPCListener.class, true);
         } catch (InvalidTypeException e) {
             getLogger().warning(e.getMessage());
         }
