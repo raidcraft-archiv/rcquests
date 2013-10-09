@@ -1,5 +1,6 @@
 package de.raidcraft.quests;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.quests.api.quest.AbstractQuestTemplate;
 import de.raidcraft.quests.api.quest.objective.Objective;
 import de.raidcraft.quests.api.quest.QuestTemplate;
@@ -36,7 +37,11 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
         Set <String> keys = data.getKeys(false);
         if (keys != null) {
             for (String key : keys) {
-                objectives.add(new SimpleObjective(Integer.parseInt(key), this, data.getConfigurationSection(key)));
+                try {
+                    objectives.add(new SimpleObjective(Integer.parseInt(key), this, data.getConfigurationSection(key)));
+                } catch (NumberFormatException e) {
+                    RaidCraft.LOGGER.warning("Wrong objective id in " + getId() + ": " + key);
+                }
             }
         }
         this.objectives = objectives.toArray(new Objective[objectives.size()]);

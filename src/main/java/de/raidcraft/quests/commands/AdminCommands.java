@@ -8,6 +8,7 @@ import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.player.QuestHolder;
 import de.raidcraft.quests.api.quest.QuestTemplate;
+import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -31,6 +32,7 @@ public class AdminCommands {
     public void reload(CommandContext args, CommandSender sender) {
 
         plugin.reload();
+        sender.sendMessage(ChatColor.GREEN + "Reloaded Quest Plugin sucessfully!");
     }
 
     @Command(

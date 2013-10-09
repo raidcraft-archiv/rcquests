@@ -35,9 +35,13 @@ public class QuestUtil {
         Set <String> keys = data.getKeys(false);
         if (keys != null) {
             for (String key : keys) {
-                ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), basePath);
-                SimpleRequirement requirement = new SimpleRequirement(Integer.parseInt(key), section);
-                requirements.add(requirement.getId(), requirement);
+                try {
+                    ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), basePath);
+                    SimpleRequirement requirement = new SimpleRequirement(Integer.parseInt(key), section);
+                    requirements.add(requirement.getId(), requirement);
+                } catch (NumberFormatException e) {
+                    RaidCraft.LOGGER.warning("Wrong objective id in " + basePath + ": " + key);
+                }
             }
         }
         return requirements.toArray(new Requirement[requirements.size()]);
@@ -52,8 +56,12 @@ public class QuestUtil {
         Set<String> keys = data.getKeys(false);
         if (keys != null) {
             for (String key : keys) {
-                ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), questTemplate.getBasePath());
-                triggers.add(new SimpleTrigger(Integer.parseInt(key), questTemplate, section));
+                try {
+                    ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), questTemplate.getBasePath());
+                    triggers.add(new SimpleTrigger(Integer.parseInt(key), questTemplate, section));
+                } catch (NumberFormatException e) {
+                    RaidCraft.LOGGER.warning("Wrong objective id in " + questTemplate.getId() + ": " + key);
+                }
             }
         }
         Trigger[] loadedTriggers = triggers.toArray(new Trigger[triggers.size()]);
@@ -70,8 +78,12 @@ public class QuestUtil {
         Set<String> keys = data.getKeys(false);
         if (keys != null) {
             for (String key : keys) {
-                ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), basePath);
-                actions.add(new SimpleAction<>(Integer.parseInt(key), provider, section));
+                try {
+                    ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), basePath);
+                    actions.add(new SimpleAction<>(Integer.parseInt(key), provider, section));
+                } catch (NumberFormatException e) {
+                    RaidCraft.LOGGER.warning("Wrong objective id in " + basePath + ": " + key);
+                }
             }
         }
         return actions;
