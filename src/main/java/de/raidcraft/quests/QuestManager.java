@@ -258,16 +258,6 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     @Override
-    public String getFriendlyHostName(String id) {
-
-        try {
-            QuestHost host = getQuestHost(id);
-            return host.getFriendlyName();
-        } catch (InvalidQuestHostException e) {
-            return id;
-        }
-    }
-
     public QuestHost getQuestHost(String id) throws InvalidQuestHostException {
 
         if (loadedQuestHosts.containsKey(id)) {
