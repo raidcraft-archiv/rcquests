@@ -2,6 +2,7 @@ package de.raidcraft.quests.util;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.mobs.Mobs;
+import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.SimpleAction;
 import de.raidcraft.quests.SimpleRequirement;
@@ -122,7 +123,10 @@ public class QuestUtil {
             if (type.equalsIgnoreCase("mob")) {
                 return Mobs.getFriendlyName(name);
             } else if (type.equalsIgnoreCase("host")) {
-                return Quests.getFriendlyHostName(name);
+                try {
+                    return Quests.getQuestHost(name).getFriendlyName();
+                } catch (InvalidQuestHostException ignored) {
+                }
             }
             return name;
         }
