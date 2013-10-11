@@ -100,9 +100,12 @@ public class QuestUtil {
 
     public static ConfigurationSection replaceThisReferences(ConfigurationSection section, String basePath) {
 
+        if (basePath.startsWith(".")) {
+            basePath = basePath.replaceFirst("\\.", "");
+        }
         for (String key : section.getKeys(true)) {
-            if (section.getString(key).startsWith("this.")) {
-                section.set(key, section.getString(key).replace("this.", basePath + "."));
+            if (section.getString(key).startsWith("this")) {
+                section.set(key, section.getString(key).replaceFirst("this", basePath));
             }
         }
         return section;
@@ -118,6 +121,9 @@ public class QuestUtil {
             String type = matcher.group(1);
             String name = matcher.group(2);
             if (matcher.group(2).contains("this")) {
+                if (basePath.startsWith(".")) {
+                    basePath = basePath.replaceFirst("\\.", "");
+                }
                 name = name.replace("this", basePath);
             }
             if (type.equalsIgnoreCase("mob")) {
