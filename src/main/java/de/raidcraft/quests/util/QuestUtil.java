@@ -98,11 +98,11 @@ public class QuestUtil {
         return actions;
     }
 
-    private static ConfigurationSection replaceThisReferences(ConfigurationSection section, String basePath) {
+    public static ConfigurationSection replaceThisReferences(ConfigurationSection section, String basePath) {
 
         for (String key : section.getKeys(true)) {
-            if (section.getString(key).startsWith("this")) {
-                section.set(key, section.getString(key).replace("this", basePath));
+            if (section.getString(key).startsWith("this.")) {
+                section.set(key, section.getString(key).replace("this.", basePath + "."));
             }
         }
         return section;

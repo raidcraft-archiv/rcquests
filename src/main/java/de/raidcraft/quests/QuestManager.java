@@ -15,6 +15,7 @@ import de.raidcraft.api.quests.QuestType;
 import de.raidcraft.quests.api.player.QuestHolder;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.tables.TPlayer;
+import de.raidcraft.quests.util.QuestUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -104,7 +105,8 @@ public final class QuestManager implements QuestProvider, Component {
     private void loadConversation(File file, String path) {
 
         String convName = (path + "." + file.getName().toLowerCase()).substring(1).replace(CONVERSATION_FILE_SUFFIX, "");
-        SimpleConfiguration<QuestPlugin> config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+        ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+        config = QuestUtil.replaceThisReferences(config, path);
         ConversationProvider provider = RaidCraft.getConversationProvider();
         provider.registerConversation(config, convName);
     }
@@ -112,14 +114,16 @@ public final class QuestManager implements QuestProvider, Component {
     private void loadMob(File file, String path) {
 
         String mobName = (path + "." + file.getName().toLowerCase()).substring(1).replace(MOB_FILE_SUFFIX, "");
-        SimpleConfiguration<QuestPlugin> config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+        ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+        config = QuestUtil.replaceThisReferences(config, path);
         Mobs.registerMob(mobName, config);
     }
 
     private void loadMobGroup(File file, String path) {
 
         String groupName = (path + "." + file.getName().toLowerCase()).substring(1).replace(MOB_GROUP_FILE_SUFFIX, "");
-        SimpleConfiguration<QuestPlugin> config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+        ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+        config = QuestUtil.replaceThisReferences(config, path);
         Mobs.registerMobGroup(groupName, config);
     }
 
@@ -135,6 +139,7 @@ public final class QuestManager implements QuestProvider, Component {
 
         String hostId = (path + "." + file.getName().toLowerCase()).substring(1).replace(HOST_FILE_SUFFIX, "");
         ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+        config = QuestUtil.replaceThisReferences(config, path);
         String hostType = config.getString("type");
         if (questHostTypes.containsKey(hostType)) {
             try {
