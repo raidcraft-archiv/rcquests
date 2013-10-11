@@ -1,6 +1,6 @@
 package de.raidcraft.quests.trigger;
 
-import de.raidcraft.api.quests.QuesHostInteractEvent;
+import de.raidcraft.api.quests.QuestHostInteractEvent;
 import de.raidcraft.api.quests.QuestTrigger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
@@ -22,7 +22,7 @@ public class HostTrigger extends QuestTrigger implements Listener {
 
     @Method("interact")
     @EventHandler(ignoreCancelled = true)
-    public void onInteract(QuesHostInteractEvent event) {
+    public void onInteract(QuestHostInteractEvent event) {
 
         if (event.getHost().getId().equalsIgnoreCase(hostId)) {
             inform("interact", event.getPlayer());
