@@ -45,7 +45,7 @@ public class QuestUtil {
                     SimpleRequirement requirement = new SimpleRequirement(Integer.parseInt(key), section);
                     requirements.add(requirement);
                 } catch (NumberFormatException e) {
-                    RaidCraft.LOGGER.warning("Wrong objective id in " + basePath + ": " + key);
+                    RaidCraft.LOGGER.warning("Wrong requirement id in " + basePath + ": " + key);
                 }
             }
         }
@@ -66,7 +66,7 @@ public class QuestUtil {
                     ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), questTemplate.getBasePath());
                     triggers.add(new SimpleTrigger(Integer.parseInt(key), questTemplate, section));
                 } catch (NumberFormatException e) {
-                    RaidCraft.LOGGER.warning("Wrong objective id in " + questTemplate.getId() + ": " + key);
+                    RaidCraft.LOGGER.warning("Wrong trigger id in " + questTemplate.getId() + ": " + key);
                 }
             }
         }
@@ -91,7 +91,7 @@ public class QuestUtil {
                     ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), basePath);
                     actions.add(new SimpleAction<>(Integer.parseInt(key), provider, section));
                 } catch (NumberFormatException e) {
-                    RaidCraft.LOGGER.warning("Wrong objective id in " + basePath + ": " + key);
+                    RaidCraft.LOGGER.warning("Wrong action id in " + basePath + ": " + key);
                 }
             }
         }

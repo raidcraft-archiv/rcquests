@@ -14,6 +14,7 @@ import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import de.raidcraft.quests.tables.TQuestAction;
+import de.raidcraft.quests.trigger.HostTrigger;
 import de.raidcraft.quests.trigger.LocationTrigger;
 import de.raidcraft.quests.trigger.PlayerTrigger;
 import org.bukkit.Bukkit;
@@ -84,6 +85,7 @@ public class QuestPlugin extends BasePlugin {
         try {
             Quests.registerTrigger(this, LocationTrigger.class, true);
             Quests.registerTrigger(this, PlayerTrigger.class, true);
+            Quests.registerTrigger(this, HostTrigger.class, true);
         } catch (InvalidTypeException e) {
             getLogger().warning(e.getMessage());
         }
