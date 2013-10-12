@@ -21,7 +21,7 @@ public abstract class AbstractObjective implements Objective {
     private final boolean optional;
     private final QuestTemplate questTemplate;
     protected Requirement[] requirements = new Requirement[0];
-    protected Trigger[] triggers = new Trigger[0];
+    protected Trigger[] trigger = new Trigger[0];
     protected List<Action<Objective>> actions = new ArrayList<>();
 
     public AbstractObjective(int id, QuestTemplate questTemplate, ConfigurationSection data) {
@@ -32,13 +32,13 @@ public abstract class AbstractObjective implements Objective {
         this.optional = data.getBoolean("optional", false);
         this.questTemplate = questTemplate;
         loadRequirements(data.getConfigurationSection("requirements"));
-        loadTriggers(data.getConfigurationSection("trigger"));
+        loadTrigger(data.getConfigurationSection("trigger"));
         loadActions(data.getConfigurationSection("actions"));
     }
 
     protected abstract void loadRequirements(ConfigurationSection data);
 
-    protected abstract void loadTriggers(ConfigurationSection data);
+    protected abstract void loadTrigger(ConfigurationSection data);
 
     protected abstract void loadActions(ConfigurationSection data);
 
@@ -81,7 +81,7 @@ public abstract class AbstractObjective implements Objective {
     @Override
     public Trigger[] getTrigger() {
 
-        return triggers;
+        return trigger;
     }
 
     @Override
