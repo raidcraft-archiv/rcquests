@@ -18,6 +18,10 @@ public interface QuestHolder {
 
     public Player getPlayer();
 
+    public boolean hasQuest(String quest);
+
+    public boolean hasActiveQuest(String quest);
+
     public Quest getQuest(String quest) throws QuestException;
 
     public List<Quest> getAllQuests();

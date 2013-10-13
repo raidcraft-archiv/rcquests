@@ -45,6 +45,18 @@ public abstract class AbstractQuestHolder implements QuestHolder {
     }
 
     @Override
+    public boolean hasQuest(String quest) {
+
+        return allQuests.containsKey(quest);
+    }
+
+    @Override
+    public boolean hasActiveQuest(String name) {
+
+        return allQuests.containsKey(name) && allQuests.get(name).isActive() && !allQuests.get(name).isCompleted();
+    }
+
+    @Override
     public Quest getQuest(String name) throws QuestException {
 
         if (allQuests.containsKey(name)) {

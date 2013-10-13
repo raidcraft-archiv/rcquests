@@ -2,6 +2,7 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
+import de.raidcraft.quests.api.player.QuestHolder;
 import de.raidcraft.quests.api.quest.trigger.AbstractTrigger;
 import de.raidcraft.quests.api.quest.action.Action;
 import de.raidcraft.quests.api.quest.QuestTemplate;
@@ -32,8 +33,16 @@ public class SimpleTrigger extends AbstractTrigger {
     @Override
     public void trigger(final Player player) {
 
+        QuestPlugin plugin = RaidCraft.getComponent(QuestPlugin.class);
+        QuestHolder questHolder = plugin.getQuestManager().getPlayer(player);
+        if (getType() == Type.QUEST_START && questHolder.hasQuest(getQuestTemplate().getId())) {
+            return;
+        }
+        if (getType() == Type.QUEST_ACCEPTED && !questHolder.hasActiveQuest(getQuestTemplate().getId())) {
+            return;
+        }
         if (getDelay() > 0) {
-            Bukkit.getScheduler().runTaskLater(RaidCraft.getComponent(QuestPlugin.class), new Runnable() {
+            Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                 @Override
                 public void run() {
 
