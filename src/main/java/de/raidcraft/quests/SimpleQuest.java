@@ -129,6 +129,7 @@ public class SimpleQuest extends AbstractQuest {
         if (!isActive()) {
             setStartTime(new Timestamp(System.currentTimeMillis()));
         }
+        getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "Quest angenommen: " + ChatColor.GREEN + getFriendlyName());
     }
 
     @Override

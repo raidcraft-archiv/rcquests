@@ -221,6 +221,9 @@ public final class QuestManager implements QuestProvider, Component {
         }
         baseName = baseName.replace(" ", "-") + "."
                 + questType.getClass().getAnnotation(QuestType.Name.class).value() + ".";
+        if (baseName.startsWith(".")) {
+            baseName = baseName.replaceFirst("\\.", "");
+        }
         // actually register the methods into our system
         for (Method method : validMethods) {
             registerMethod(baseName + method.getAnnotation(QuestType.Method.class).name(),
