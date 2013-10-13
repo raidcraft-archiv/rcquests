@@ -85,7 +85,11 @@ public final class QuestManager implements QuestProvider, Component {
         for (File file : baseFolder.listFiles()) {
             String fileName = file.getName();
             if (file.isDirectory()) {
-                path += "." + fileName.toLowerCase();
+                if (path == null || path.equals("")) {
+                    path = fileName.toLowerCase();
+                } else {
+                    path += "." + fileName.toLowerCase();
+                }
                 loadQuests(file, path);
             } else if (fileName.endsWith(QUEST_FILE_SUFFIX)) {
                 // this will load the quest file
