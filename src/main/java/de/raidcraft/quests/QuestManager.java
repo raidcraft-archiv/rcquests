@@ -108,7 +108,7 @@ public final class QuestManager implements QuestProvider, Component {
 
     private void loadConversation(File file, String path) {
 
-        String convName = (path + "." + file.getName().toLowerCase()).substring(1).replace(CONVERSATION_FILE_SUFFIX, "");
+        String convName = (path + "." + file.getName().toLowerCase()).replace(CONVERSATION_FILE_SUFFIX, "");
         ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
         config = QuestUtil.replaceThisReferences(config, path);
         ConversationProvider provider = RaidCraft.getConversationProvider();
@@ -117,7 +117,7 @@ public final class QuestManager implements QuestProvider, Component {
 
     private void loadMob(File file, String path) {
 
-        String mobName = (path + "." + file.getName().toLowerCase()).substring(1).replace(MOB_FILE_SUFFIX, "");
+        String mobName = (path + "." + file.getName().toLowerCase()).replace(MOB_FILE_SUFFIX, "");
         ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
         config = QuestUtil.replaceThisReferences(config, path);
         Mobs.registerMob(mobName, config);
@@ -125,7 +125,7 @@ public final class QuestManager implements QuestProvider, Component {
 
     private void loadMobGroup(File file, String path) {
 
-        String groupName = (path + "." + file.getName().toLowerCase()).substring(1).replace(MOB_GROUP_FILE_SUFFIX, "");
+        String groupName = (path + "." + file.getName().toLowerCase()).replace(MOB_GROUP_FILE_SUFFIX, "");
         ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
         config = QuestUtil.replaceThisReferences(config, path);
         Mobs.registerMobGroup(groupName, config);
@@ -133,7 +133,7 @@ public final class QuestManager implements QuestProvider, Component {
 
     private void loadQuest(File file, String path) {
 
-        String questId = (path + "." + file.getName().toLowerCase()).substring(1).replace(QUEST_FILE_SUFFIX, "");
+        String questId = (path + "." + file.getName().toLowerCase()).replace(QUEST_FILE_SUFFIX, "");
         SimpleQuestTemplate quest = new SimpleQuestTemplate(questId, plugin.configure(new SimpleConfiguration<>(plugin, file)));
         loadedQuests.put(questId, quest);
         plugin.getLogger().info("Loaded quest: " + questId + " - " + quest.getFriendlyName());
@@ -141,7 +141,7 @@ public final class QuestManager implements QuestProvider, Component {
 
     private void loadQuestHost(File file, String path) {
 
-        String hostId = (path + "." + file.getName().toLowerCase()).substring(1).replace(HOST_FILE_SUFFIX, "");
+        String hostId = (path + "." + file.getName().toLowerCase()).replace(HOST_FILE_SUFFIX, "");
         ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
         config = QuestUtil.replaceThisReferences(config, path);
         String hostType = config.getString("type");
@@ -232,7 +232,6 @@ public final class QuestManager implements QuestProvider, Component {
 
     public void registerMethod(String name, Method method, QuestType.Type type) throws InvalidTypeException {
 
-        name = name.substring(1);
         switch (type) {
 
             case ACTION:

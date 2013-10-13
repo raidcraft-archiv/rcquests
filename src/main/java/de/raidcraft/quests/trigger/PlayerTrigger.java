@@ -34,7 +34,7 @@ public class PlayerTrigger extends QuestTrigger implements Listener {
     public void onItemCraft(CraftItemEvent event) {
 
         if (craftResult == null || event.getRecipe().getResult().isSimilar(craftResult)) {
-            inform("craft", (Player) event.getWhoClicked());
+            inform((Player) event.getWhoClicked());
         }
     }
 }

@@ -25,7 +25,7 @@ public class HostTrigger extends QuestTrigger implements Listener {
     public void onInteract(QuestHostInteractEvent event) {
 
         if (event.getHost().getId().equalsIgnoreCase(hostId)) {
-            inform("interact", event.getPlayer());
+            inform(event.getPlayer());
         }
     }
 }

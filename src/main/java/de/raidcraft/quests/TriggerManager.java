@@ -7,6 +7,8 @@ import de.raidcraft.quests.api.quest.trigger.Trigger;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -15,7 +17,7 @@ import java.util.Map;
 public final class TriggerManager implements Component {
 
     private final QuestPlugin plugin;
-    private final Map<String, Trigger> loadedTriggers = new CaseInsensitiveMap<>();
+    private final Map<String, List<Trigger>> loadedTriggers = new CaseInsensitiveMap<>();
 
     protected TriggerManager(QuestPlugin plugin) {
 
@@ -26,7 +28,10 @@ public final class TriggerManager implements Component {
     public void registerTrigger(Trigger... triggers) {
 
         for (Trigger trigger : triggers) {
-            loadedTriggers.put(trigger.getName(), trigger);
+            if (!loadedTriggers.containsKey(trigger.getName())) {
+                loadedTriggers.put(trigger.getName(), new ArrayList<Trigger>());
+            }
+            loadedTriggers.get(trigger.getName()).add(trigger);
             // also load the counter part that actually trigger this
             Quests.initializeTrigger(trigger.getName(), trigger.getConfig());
         }
@@ -37,6 +42,8 @@ public final class TriggerManager implements Component {
         if (!loadedTriggers.containsKey(name)) {
             return;
         }
-        loadedTriggers.get(name).trigger(player);
+        for (Trigger trigger : loadedTriggers.get(name)) {
+            trigger.trigger(player);
+        }
     }
 }

@@ -22,7 +22,7 @@ public abstract class AbstractAction<T> implements Action<T> {
         this.provider = provider;
         this.delay = TimeUtil.secondsToTicks(data.getDouble("delay"));
         this.cooldown = TimeUtil.secondsToTicks(data.getDouble("cooldown"));
-        this.executeOnce = data.getBoolean("execute-once", true);
+        this.executeOnce = data.getBoolean("execute-once", false);
     }
 
     @Override

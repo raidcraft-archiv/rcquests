@@ -40,7 +40,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         loadRequirements(data.getConfigurationSection("requirements"));
         loadObjectives(data.getConfigurationSection("objectives"));
         loadTrigger(data.getConfigurationSection("trigger"));
-        loadTrigger(data.getConfigurationSection("complete-trigger"));
+        loadCompleteTrigger(data.getConfigurationSection("complete-trigger"));
         loadActions(data.getConfigurationSection("complete-actions"));
     }
 
