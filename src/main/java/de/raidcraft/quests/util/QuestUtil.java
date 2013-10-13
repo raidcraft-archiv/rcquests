@@ -53,7 +53,7 @@ public class QuestUtil {
         return requirements.toArray(new Requirement[requirements.size()]);
     }
 
-    public static Trigger[] loadTrigger(ConfigurationSection data, QuestTemplate questTemplate) {
+    public static Trigger[] loadTrigger(ConfigurationSection data, QuestTemplate questTemplate, Trigger.Type type) {
 
         if (data == null) {
             return new Trigger[0];
@@ -64,7 +64,7 @@ public class QuestUtil {
             for (String key : keys) {
                 try {
                     ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), questTemplate.getBasePath());
-                    triggers.add(new SimpleTrigger(Integer.parseInt(key), questTemplate, section));
+                    triggers.add(new SimpleTrigger(Integer.parseInt(key), questTemplate, section, type));
                 } catch (NumberFormatException e) {
                     RaidCraft.LOGGER.warning("Wrong trigger id in " + questTemplate.getId() + ": " + key);
                 }

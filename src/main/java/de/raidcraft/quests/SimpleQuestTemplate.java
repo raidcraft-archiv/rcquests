@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.quests.api.quest.AbstractQuestTemplate;
 import de.raidcraft.quests.api.quest.objective.Objective;
 import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.api.quest.trigger.Trigger;
 import de.raidcraft.quests.util.QuestUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -50,13 +51,13 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     @Override
     protected void loadTrigger(ConfigurationSection data) {
 
-        this.trigger = QuestUtil.loadTrigger(data, this);
+        this.trigger = QuestUtil.loadTrigger(data, this, Trigger.Type.QUEST_START);
     }
 
     @Override
     protected void loadCompleteTrigger(ConfigurationSection data) {
 
-        this.completeTrigger = QuestUtil.loadTrigger(data, this);
+        this.completeTrigger = QuestUtil.loadTrigger(data, this, Trigger.Type.QUEST_ACCEPTED);
     }
 
     @Override

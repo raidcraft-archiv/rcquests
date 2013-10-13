@@ -12,9 +12,18 @@ import java.util.List;
  */
 public interface Trigger {
 
+    public enum Type {
+
+        QUEST_START,
+        QUEST_OBJECTIVE,
+        QUEST_ACCEPTED
+    }
+
     public int getId();
 
     public String getName();
+
+    public Type getType();
 
     public long getDelay();
 

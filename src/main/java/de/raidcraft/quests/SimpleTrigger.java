@@ -18,9 +18,9 @@ import org.bukkit.entity.Player;
  */
 public class SimpleTrigger extends AbstractTrigger {
 
-    public SimpleTrigger(int id, QuestTemplate questTemplate, ConfigurationSection data) {
+    public SimpleTrigger(int id, QuestTemplate questTemplate, ConfigurationSection data, Type type) {
 
-        super(id, questTemplate, data);
+        super(id, questTemplate, data, type);
     }
 
     @Override

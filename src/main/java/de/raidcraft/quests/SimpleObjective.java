@@ -3,6 +3,7 @@ package de.raidcraft.quests;
 import de.raidcraft.quests.api.quest.objective.AbstractObjective;
 import de.raidcraft.quests.api.quest.objective.Objective;
 import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.api.quest.trigger.Trigger;
 import de.raidcraft.quests.util.QuestUtil;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -25,7 +26,7 @@ public class SimpleObjective extends AbstractObjective {
     @Override
     protected void loadTrigger(ConfigurationSection data) {
 
-        this.trigger = QuestUtil.loadTrigger(data, getQuestTemplate());
+        this.trigger = QuestUtil.loadTrigger(data, getQuestTemplate(), Trigger.Type.QUEST_OBJECTIVE);
     }
 
     @Override

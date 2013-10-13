@@ -15,16 +15,18 @@ public abstract class AbstractTrigger implements Trigger {
 
     private final int id;
     private final String name;
+    private final Type type;
     private final long delay;
     private final QuestTemplate questTemplate;
     private final List<TriggerListener> listeners = new ArrayList<>();
     private final ConfigurationSection config;
     private List<Action<Trigger>> actions = new ArrayList<>();
 
-    public AbstractTrigger(int id, QuestTemplate questTemplate, ConfigurationSection data) {
+    public AbstractTrigger(int id, QuestTemplate questTemplate, ConfigurationSection data, Type type) {
 
         this.id = id;
         this.name = data.getString("type");
+        this.type = type;
         this.delay = TimeUtil.secondsToTicks(data.getDouble("delay"));
         this.questTemplate = questTemplate;
         this.config = data.getConfigurationSection("args");
@@ -43,6 +45,12 @@ public abstract class AbstractTrigger implements Trigger {
     public String getName() {
 
         return name;
+    }
+
+    @Override
+    public Type getType() {
+
+        return type;
     }
 
     @Override
