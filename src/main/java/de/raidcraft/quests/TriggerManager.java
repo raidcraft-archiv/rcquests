@@ -2,6 +2,7 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
+import de.raidcraft.api.quests.QuestTrigger;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.api.quest.trigger.Trigger;
 import de.raidcraft.util.CaseInsensitiveMap;
@@ -37,12 +38,12 @@ public final class TriggerManager implements Component {
         }
     }
 
-    protected void callTrigger(String name, Player player) {
+    protected void callTrigger(QuestTrigger questTrigger, Player player) {
 
-        if (!loadedTriggers.containsKey(name)) {
+        if (!loadedTriggers.containsKey(questTrigger.getName())) {
             return;
         }
-        for (Trigger trigger : loadedTriggers.get(name)) {
+        for (Trigger trigger : loadedTriggers.get(questTrigger.getName())) {
             trigger.trigger(player);
         }
     }

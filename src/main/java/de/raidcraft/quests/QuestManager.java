@@ -11,6 +11,7 @@ import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestHost;
 import de.raidcraft.api.quests.QuestProvider;
+import de.raidcraft.api.quests.QuestTrigger;
 import de.raidcraft.api.quests.QuestType;
 import de.raidcraft.quests.api.player.QuestHolder;
 import de.raidcraft.quests.api.quest.QuestTemplate;
@@ -161,9 +162,9 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     @Override
-    public void callTrigger(String name, Player player) {
+    public void callTrigger(QuestTrigger trigger, Player player) {
 
-        this.plugin.getTriggerManager().callTrigger(name, player);
+        this.plugin.getTriggerManager().callTrigger(trigger, player);
     }
 
     public boolean checkRequirement(String name, Player player, ConfigurationSection data) throws QuestException {
