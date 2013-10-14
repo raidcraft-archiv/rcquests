@@ -32,11 +32,11 @@ public class LocationTrigger extends QuestTrigger implements Listener {
         Location to = event.getTo();
         if (RaidCraft.hasMoved(event.getPlayer(), to)) {
             if (radius > 0 && LocationUtil.isWithinRadius(to, location, radius)) {
-                inform(event.getPlayer());
+                inform("move", event.getPlayer());
             } else if (to.getBlockX() == location.getBlockX()
                     && to.getBlockY() == location.getBlockY()
                     && to.getBlockZ() == location.getBlockZ()) {
-                inform(event.getPlayer());
+                inform("move", event.getPlayer());
             }
         }
     }
