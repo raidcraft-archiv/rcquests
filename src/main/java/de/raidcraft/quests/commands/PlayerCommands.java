@@ -5,8 +5,8 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.QuestPlugin;
-import de.raidcraft.quests.api.player.QuestHolder;
-import de.raidcraft.quests.api.quest.Quest;
+import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.quest.Quest;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

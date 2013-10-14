@@ -13,10 +13,13 @@ import de.raidcraft.api.quests.QuestHost;
 import de.raidcraft.api.quests.QuestProvider;
 import de.raidcraft.api.quests.QuestTrigger;
 import de.raidcraft.api.quests.QuestType;
-import de.raidcraft.quests.api.player.QuestHolder;
-import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.quest.QuestTemplate;
+import de.raidcraft.api.quests.quest.action.Action;
+import de.raidcraft.api.quests.quest.requirement.Requirement;
+import de.raidcraft.api.quests.quest.trigger.Trigger;
 import de.raidcraft.quests.tables.TPlayer;
-import de.raidcraft.quests.util.QuestUtil;
+import de.raidcraft.api.quests.util.QuestUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -30,8 +33,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author Silthus
@@ -56,6 +61,82 @@ public final class QuestManager implements QuestProvider, Component {
 
         this.plugin = plugin;
         RaidCraft.registerComponent(QuestManager.class, this);
+    }
+
+    public static Requirement[] loadRequirements(ConfigurationSection data, String basePath) {
+
+        if (data == null) {
+            return new Requirement[0];
+        }
+        List<Requirement> requirements = new ArrayList<>();
+        Set<String> keys = data.getKeys(false);
+        if (keys != null) {
+            for (String key : keys) {
+                try {
+                    if (key.equalsIgnoreCase("ordered")) {
+                        continue;
+                    }
+                    ConfigurationSection section = QuestUtil.replaceThisReferences(data.getConfigurationSection(key), basePath);
+                    SimpleRequirement requirement = new SimpleRequirement(Integer.parseInt(key), section);
+                    requirements.add(requirement);
+                } catch (NumberFormatException e) {
+                    RaidCraft.LOGGER.warning("Wrong requirement id in " + basePath + ": " + key);
+                }
+            }
+        }
+        Collections.sort(requirements);
+        return requirements.toArray(new Requirement[requirements.size()]);
+    }
+
+    public static Trigger[] loadTrigger(ConfigurationSection data, QuestTemplate questTemplate, Trigger.Type type) {
+
+        if (data == null) {
+            return new Trigger[0];
+        }
+        List<Trigger> triggers = new ArrayList<>();
+        Set<String> keys = data.getKeys(false);
+        if (keys != null) {
+            for (String key : keys) {
+                try {
+                    ConfigurationSection section = QuestUtil.replaceThisReferences(data.getConfigurationSection(key), questTemplate.getBasePath());
+                    Trigger trigger;
+                    if (type == Trigger.Type.QUEST_ACCEPTED) {
+                        trigger = new ActiveQuestTrigger(Integer.parseInt(key), questTemplate, section, type);
+                    } else {
+                        trigger = new SimpleTrigger(Integer.parseInt(key), questTemplate, section, type);
+                    }
+                    triggers.add(trigger);
+                } catch (NumberFormatException e) {
+                    RaidCraft.LOGGER.warning("Wrong trigger id in " + questTemplate.getId() + ": " + key);
+                }
+            }
+        }
+        Trigger[] loadedTriggers = triggers.toArray(new Trigger[triggers.size()]);
+        RaidCraft.getComponent(TriggerManager.class).registerTrigger(questTemplate, loadedTriggers);
+        return loadedTriggers;
+    }
+
+    public static <T> List<Action<T>> loadActions(T provider, ConfigurationSection data, String basePath) {
+
+        ArrayList<Action<T>> actions = new ArrayList<>();
+        if (data == null) {
+            return actions;
+        }
+        Set<String> keys = data.getKeys(false);
+        if (keys != null) {
+            for (String key : keys) {
+                try {
+                    if (key.equalsIgnoreCase("execute-once")) {
+                        continue;
+                    }
+                    ConfigurationSection section = QuestUtil.replaceThisReferences(data.getConfigurationSection(key), basePath);
+                    actions.add(new SimpleAction<>(Integer.parseInt(key), provider, section));
+                } catch (NumberFormatException e) {
+                    RaidCraft.LOGGER.warning("Wrong action id in " + basePath + ": " + key);
+                }
+            }
+        }
+        return actions;
     }
 
     public void load() {

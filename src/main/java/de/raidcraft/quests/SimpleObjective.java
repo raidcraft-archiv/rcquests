@@ -1,10 +1,9 @@
 package de.raidcraft.quests;
 
-import de.raidcraft.quests.api.quest.objective.AbstractObjective;
-import de.raidcraft.quests.api.quest.objective.Objective;
-import de.raidcraft.quests.api.quest.QuestTemplate;
-import de.raidcraft.quests.api.quest.trigger.Trigger;
-import de.raidcraft.quests.util.QuestUtil;
+import de.raidcraft.api.quests.quest.objective.AbstractObjective;
+import de.raidcraft.api.quests.quest.objective.Objective;
+import de.raidcraft.api.quests.quest.QuestTemplate;
+import de.raidcraft.api.quests.quest.trigger.Trigger;
 import org.bukkit.configuration.ConfigurationSection;
 
 /**
@@ -20,18 +19,18 @@ public class SimpleObjective extends AbstractObjective {
     @Override
     protected void loadRequirements(ConfigurationSection data) {
 
-        this.requirements = QuestUtil.loadRequirements(data, getQuestTemplate().getBasePath());
+        this.requirements = QuestManager.loadRequirements(data, getQuestTemplate().getBasePath());
     }
 
     @Override
     protected void loadTrigger(ConfigurationSection data) {
 
-        this.trigger = QuestUtil.loadTrigger(data, getQuestTemplate(), Trigger.Type.QUEST_OBJECTIVE);
+        this.trigger = QuestManager.loadTrigger(data, getQuestTemplate(), Trigger.Type.QUEST_OBJECTIVE);
     }
 
     @Override
     protected void loadActions(ConfigurationSection data) {
 
-        setActions(QuestUtil.loadActions((Objective) this, data, getQuestTemplate().getBasePath()));
+        setActions(QuestManager.loadActions((Objective) this, data, getQuestTemplate().getBasePath()));
     }
 }

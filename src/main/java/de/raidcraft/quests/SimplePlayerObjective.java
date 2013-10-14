@@ -3,12 +3,12 @@ package de.raidcraft.quests;
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
-import de.raidcraft.quests.api.player.AbstractPlayerObjective;
-import de.raidcraft.quests.api.player.QuestHolder;
-import de.raidcraft.quests.api.quest.Quest;
-import de.raidcraft.quests.api.quest.action.Action;
-import de.raidcraft.quests.api.quest.objective.Objective;
-import de.raidcraft.quests.api.quest.requirement.Requirement;
+import de.raidcraft.api.quests.player.AbstractPlayerObjective;
+import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.quest.Quest;
+import de.raidcraft.api.quests.quest.action.Action;
+import de.raidcraft.api.quests.quest.objective.Objective;
+import de.raidcraft.api.quests.quest.requirement.Requirement;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import org.bukkit.ChatColor;
 

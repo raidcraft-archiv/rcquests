@@ -1,11 +1,10 @@
 package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.quests.api.quest.AbstractQuestTemplate;
-import de.raidcraft.quests.api.quest.objective.Objective;
-import de.raidcraft.quests.api.quest.QuestTemplate;
-import de.raidcraft.quests.api.quest.trigger.Trigger;
-import de.raidcraft.quests.util.QuestUtil;
+import de.raidcraft.api.quests.quest.AbstractQuestTemplate;
+import de.raidcraft.api.quests.quest.objective.Objective;
+import de.raidcraft.api.quests.quest.QuestTemplate;
+import de.raidcraft.api.quests.quest.trigger.Trigger;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     @Override
     protected void loadRequirements(ConfigurationSection data) {
 
-        this.requirements = QuestUtil.loadRequirements(data, getBasePath());
+        this.requirements = QuestManager.loadRequirements(data, getBasePath());
     }
 
     @Override
@@ -51,18 +50,18 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     @Override
     protected void loadTrigger(ConfigurationSection data) {
 
-        this.trigger = QuestUtil.loadTrigger(data, this, Trigger.Type.QUEST_START);
+        this.trigger = QuestManager.loadTrigger(data, this, Trigger.Type.QUEST_START);
     }
 
     @Override
     protected void loadCompleteTrigger(ConfigurationSection data) {
 
-        this.completeTrigger = QuestUtil.loadTrigger(data, this, Trigger.Type.QUEST_ACCEPTED);
+        this.completeTrigger = QuestManager.loadTrigger(data, this, Trigger.Type.QUEST_ACCEPTED);
     }
 
     @Override
     protected void loadActions(ConfigurationSection data) {
 
-        setActions(QuestUtil.loadActions((QuestTemplate) this, data, getBasePath()));
+        setActions(QuestManager.loadActions((QuestTemplate) this, data, getBasePath()));
     }
 }

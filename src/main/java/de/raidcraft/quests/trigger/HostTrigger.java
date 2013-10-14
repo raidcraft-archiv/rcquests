@@ -2,6 +2,7 @@ package de.raidcraft.quests.trigger;
 
 import de.raidcraft.api.quests.QuestHostInteractEvent;
 import de.raidcraft.api.quests.QuestTrigger;
+import de.raidcraft.api.quests.quest.QuestTemplate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,6 +15,11 @@ public class HostTrigger extends QuestTrigger implements Listener {
 
     private String hostId;
 
+    protected HostTrigger(QuestTemplate questTemplate, String name) {
+
+        super(questTemplate, name);
+    }
+
     @Override
     protected void load(ConfigurationSection data) {
 
@@ -25,7 +31,7 @@ public class HostTrigger extends QuestTrigger implements Listener {
     public void onInteract(QuestHostInteractEvent event) {
 
         if (event.getHost().getId().equalsIgnoreCase(hostId)) {
-            inform("interact", event.getPlayer());
+            inform(event.getPlayer());
         }
     }
 }

@@ -1,12 +1,11 @@
 package de.raidcraft.quests;
 
 import de.raidcraft.api.quests.QuestException;
-import de.raidcraft.quests.api.player.QuestHolder;
-import de.raidcraft.quests.api.quest.Quest;
-import de.raidcraft.quests.api.quest.QuestTemplate;
-import de.raidcraft.quests.api.quest.action.Action;
-import de.raidcraft.quests.api.quest.trigger.Trigger;
-import de.raidcraft.quests.util.QuestUtil;
+import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.quest.Quest;
+import de.raidcraft.api.quests.quest.QuestTemplate;
+import de.raidcraft.api.quests.quest.action.Action;
+import de.raidcraft.api.quests.quest.trigger.Trigger;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -24,8 +23,8 @@ public class ActiveQuestTrigger extends SimpleTrigger {
     public ActiveQuestTrigger(int id, QuestTemplate questTemplate, ConfigurationSection data, Type type) {
 
         super(id, questTemplate, data, type);
-        successActions.addAll(QuestUtil.loadActions((Trigger) this, data.getConfigurationSection("success-actions"), getQuestTemplate().getBasePath()));
-        failActions.addAll(QuestUtil.loadActions((Trigger) this, data.getConfigurationSection("fail-actions"), getQuestTemplate().getBasePath()));
+        successActions.addAll(QuestManager.loadActions((Trigger) this, data.getConfigurationSection("success-actions"), getQuestTemplate().getBasePath()));
+        failActions.addAll(QuestManager.loadActions((Trigger) this, data.getConfigurationSection("fail-actions"), getQuestTemplate().getBasePath()));
     }
 
     @Override

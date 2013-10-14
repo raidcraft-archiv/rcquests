@@ -2,13 +2,12 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
-import de.raidcraft.quests.api.player.QuestHolder;
-import de.raidcraft.quests.api.quest.QuestTemplate;
-import de.raidcraft.quests.api.quest.action.Action;
-import de.raidcraft.quests.api.quest.trigger.AbstractTrigger;
-import de.raidcraft.quests.api.quest.trigger.Trigger;
-import de.raidcraft.quests.api.quest.trigger.TriggerListener;
-import de.raidcraft.quests.util.QuestUtil;
+import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.quest.QuestTemplate;
+import de.raidcraft.api.quests.quest.action.Action;
+import de.raidcraft.api.quests.quest.trigger.AbstractTrigger;
+import de.raidcraft.api.quests.quest.trigger.Trigger;
+import de.raidcraft.api.quests.quest.trigger.TriggerListener;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
@@ -26,7 +25,7 @@ public class SimpleTrigger extends AbstractTrigger {
     @Override
     protected void loadActions(ConfigurationSection data) {
 
-        setActions(QuestUtil.loadActions((Trigger) this, data, getQuestTemplate().getBasePath()));
+        setActions(QuestManager.loadActions((Trigger) this, data, getQuestTemplate().getBasePath()));
     }
 
     @Override
@@ -48,6 +47,7 @@ public class SimpleTrigger extends AbstractTrigger {
                 }
             }, getDelay());
         } else {
+            RaidCraft.LOGGER.info("Trigger executed " + getName() + " called!");
             // we have a match now lets execute our actions
             execute(holder);
         }
