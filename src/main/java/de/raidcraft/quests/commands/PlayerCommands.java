@@ -30,7 +30,7 @@ public class PlayerCommands {
     public void abort(CommandContext args, CommandSender sender) throws CommandException {
 
         try {
-            QuestHolder player = plugin.getQuestManager().getPlayer((Player) sender);
+            QuestHolder player = plugin.getQuestManager().getQuestHolder((Player) sender);
             Quest quest = player.getQuest(args.getString(0));
             quest.abort();
         } catch (QuestException e) {

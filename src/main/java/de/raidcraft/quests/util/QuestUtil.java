@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.mobs.Mobs;
 import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.Quests;
+import de.raidcraft.quests.ActiveQuestTrigger;
 import de.raidcraft.quests.SimpleAction;
 import de.raidcraft.quests.SimpleRequirement;
 import de.raidcraft.quests.SimpleTrigger;
@@ -64,7 +65,13 @@ public class QuestUtil {
             for (String key : keys) {
                 try {
                     ConfigurationSection section = replaceThisReferences(data.getConfigurationSection(key), questTemplate.getBasePath());
-                    triggers.add(new SimpleTrigger(Integer.parseInt(key), questTemplate, section, type));
+                    Trigger trigger;
+                    if (type == Trigger.Type.QUEST_ACCEPTED) {
+                        trigger = new ActiveQuestTrigger(Integer.parseInt(key), questTemplate, section, type);
+                    } else {
+                        trigger = new SimpleTrigger(Integer.parseInt(key), questTemplate, section, type);
+                    }
+                    triggers.add(trigger);
                 } catch (NumberFormatException e) {
                     RaidCraft.LOGGER.warning("Wrong trigger id in " + questTemplate.getId() + ": " + key);
                 }

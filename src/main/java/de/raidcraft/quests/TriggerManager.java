@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.quests.QuestTrigger;
 import de.raidcraft.api.quests.Quests;
+import de.raidcraft.quests.api.player.QuestHolder;
 import de.raidcraft.quests.api.quest.trigger.Trigger;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.entity.Player;
@@ -43,8 +44,9 @@ public final class TriggerManager implements Component {
         if (!loadedTriggers.containsKey(questTrigger.getName())) {
             return;
         }
+        QuestHolder holder = plugin.getQuestManager().getQuestHolder(player);
         for (Trigger trigger : loadedTriggers.get(questTrigger.getName())) {
-            trigger.trigger(player);
+            trigger.trigger(holder);
         }
     }
 }

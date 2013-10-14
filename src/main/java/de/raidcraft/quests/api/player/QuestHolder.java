@@ -24,6 +24,8 @@ public interface QuestHolder {
 
     public Quest getQuest(String quest) throws QuestException;
 
+    public Quest getQuest(QuestTemplate questTemplate);
+
     public List<Quest> getAllQuests();
 
     public List<Quest> getCompletedQuests();

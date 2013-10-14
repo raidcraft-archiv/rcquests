@@ -3,6 +3,7 @@ package de.raidcraft.quests;
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
+import de.raidcraft.quests.api.player.QuestHolder;
 import de.raidcraft.quests.api.quest.action.AbstractAction;
 import de.raidcraft.quests.tables.TQuestAction;
 import de.raidcraft.util.CaseInsensitiveHashSet;
@@ -11,7 +12,6 @@ import de.raidcraft.util.TimeUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class SimpleAction<T> extends AbstractAction<T> {
     }
 
     @Override
-    public void execute(final Player player, T holder) throws QuestException {
+    public void execute(final QuestHolder player, T holder) throws QuestException {
 
         String name = player.getName();
         if (isExecuteOnce() && executedPlayers.contains(name)) {
@@ -64,16 +64,16 @@ public class SimpleAction<T> extends AbstractAction<T> {
         }
     }
 
-    private void execute(final Player player) {
+    private void execute(final QuestHolder player) {
 
         try {
-            RaidCraft.getComponent(QuestManager.class).executeAction(getName(), player, data);
+            RaidCraft.getComponent(QuestManager.class).executeAction(getName(), player.getPlayer(), data);
             if (isExecuteOnce()) {
                 executedPlayers.add(player.getName().toLowerCase());
                 save();
             }
         } catch (QuestException e) {
-            player.sendMessage(ChatColor.RED + e.getMessage());
+            player.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
         }
     }
 

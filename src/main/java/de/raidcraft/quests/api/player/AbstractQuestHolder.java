@@ -2,6 +2,7 @@ package de.raidcraft.quests.api.player;
 
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.quest.Quest;
+import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -54,6 +55,17 @@ public abstract class AbstractQuestHolder implements QuestHolder {
     public boolean hasActiveQuest(String name) {
 
         return allQuests.containsKey(name) && allQuests.get(name).isActive() && !allQuests.get(name).isCompleted();
+    }
+
+    @Override
+    public Quest getQuest(QuestTemplate questTemplate) {
+
+        try {
+            return getQuest(questTemplate.getId());
+        } catch (QuestException ignored) {
+            // will never occur
+        }
+        return null;
     }
 
     @Override
@@ -113,7 +125,7 @@ public abstract class AbstractQuestHolder implements QuestHolder {
     @Override
     public void addQuest(Quest quest) {
 
-        allQuests.put(quest.getName(), quest);
+        allQuests.put(quest.getFullName(), quest);
     }
 
     @Override

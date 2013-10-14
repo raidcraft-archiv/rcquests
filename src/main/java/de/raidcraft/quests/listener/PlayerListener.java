@@ -22,7 +22,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoint(PlayerJoinEvent event) {
 
-        plugin.getQuestManager().getPlayer(event.getPlayer());
+        plugin.getQuestManager().getQuestHolder(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true)

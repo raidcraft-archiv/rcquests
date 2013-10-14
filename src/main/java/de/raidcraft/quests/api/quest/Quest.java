@@ -35,6 +35,8 @@ public interface Quest extends TriggerListener {
 
     public boolean isCompleted();
 
+    public boolean hasCompletedAllObjectives();
+
     public void completeObjective(PlayerObjective objective);
 
     public boolean isActive();
@@ -44,6 +46,8 @@ public interface Quest extends TriggerListener {
     public Timestamp getCompletionTime();
 
     public void start();
+
+    public void complete();
 
     public void abort();
 

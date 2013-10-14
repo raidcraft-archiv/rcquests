@@ -45,7 +45,7 @@ public class AdminCommands {
 
         try {
             QuestTemplate questTemplate = plugin.getQuestManager().getQuestTemplate(args.getString(0));
-            QuestHolder player = plugin.getQuestManager().getPlayer((Player) sender);
+            QuestHolder player = plugin.getQuestManager().getQuestHolder((Player) sender);
             if (questTemplate == null) {
                 throw new CommandException("Unknown quest: " + args.getString(0));
             }

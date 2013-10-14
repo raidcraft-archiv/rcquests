@@ -1,11 +1,11 @@
 package de.raidcraft.quests.api.quest.trigger;
 
-import org.bukkit.entity.Player;
+import de.raidcraft.quests.api.player.QuestHolder;
 
 /**
  * @author Silthus
  */
 public interface TriggerListener {
 
-    public void trigger(Player player);
+    public void trigger(QuestHolder player);
 }

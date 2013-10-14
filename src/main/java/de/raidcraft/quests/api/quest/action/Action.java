@@ -1,7 +1,7 @@
 package de.raidcraft.quests.api.quest.action;
 
 import de.raidcraft.api.quests.QuestException;
-import org.bukkit.entity.Player;
+import de.raidcraft.quests.api.player.QuestHolder;
 
 /**
  * @author Silthus
@@ -20,7 +20,7 @@ public interface Action<T> {
 
     public long getCooldown();
 
-    public void execute(Player player, T holder) throws QuestException;
+    public void execute(QuestHolder player, T holder) throws QuestException;
 
     public void save();
 }

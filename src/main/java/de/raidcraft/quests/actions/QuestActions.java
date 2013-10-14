@@ -4,6 +4,8 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestType;
 import de.raidcraft.quests.QuestManager;
+import de.raidcraft.quests.api.player.QuestHolder;
+import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -22,6 +24,19 @@ public class QuestActions implements QuestType {
         if (quest == null) {
             throw new QuestException("Wrong config! Unknown quest given: " + data.getString("quest"));
         }
-        component.getPlayer(player).startQuest(quest);
+        component.getQuestHolder(player).startQuest(quest);
+    }
+
+    @Method(name = "complete", type = Type.ACTION)
+    public static void complete(Player player, ConfigurationSection data) throws QuestException {
+
+        try {
+            QuestManager component = RaidCraft.getComponent(QuestManager.class);
+            QuestHolder questHolder = component.getQuestHolder(player);
+            Quest quest = questHolder.getQuest(data.getString("quest"));
+            quest.complete();
+        } catch (Exception e) {
+            throw new QuestException(e.getMessage());
+        }
     }
 }

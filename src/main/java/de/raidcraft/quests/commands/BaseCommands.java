@@ -37,7 +37,7 @@ public class BaseCommands {
     public void quests(CommandContext args, CommandSender sender) throws CommandException {
 
         QuestManager manager = plugin.getQuestManager();
-        QuestHolder player = manager.getPlayer((Player) sender);
+        QuestHolder player = manager.getQuestHolder((Player) sender);
         if (args.hasFlag('p')) {
             try {
                 player = manager.getPlayer(args.getFlag('p'));

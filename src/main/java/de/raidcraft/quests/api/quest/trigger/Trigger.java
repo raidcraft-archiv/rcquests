@@ -1,9 +1,9 @@
 package de.raidcraft.quests.api.quest.trigger;
 
-import de.raidcraft.quests.api.quest.action.Action;
+import de.raidcraft.quests.api.player.QuestHolder;
 import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.api.quest.action.Action;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -39,5 +39,5 @@ public interface Trigger {
 
     public List<Action<Trigger>> getActions();
 
-    public void trigger(Player player);
+    public void trigger(QuestHolder holder);
 }

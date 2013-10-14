@@ -86,23 +86,23 @@ public final class QuestManager implements QuestProvider, Component {
         for (File file : baseFolder.listFiles()) {
             String fileName = file.getName();
             if (file.isDirectory()) {
-                if (path == null || path.equals("")) {
-                    path = fileName.toLowerCase();
-                } else {
-                    path += "." + fileName.toLowerCase();
+                loadQuests(file, path + "." + fileName.toLowerCase());
+            } else {
+                if (path.startsWith(".")) {
+                    path = path.replaceFirst("\\.", "");
                 }
-                loadQuests(file, path);
-            } else if (fileName.endsWith(QUEST_FILE_SUFFIX)) {
-                // this will load the quest file
-                loadQuest(file, path);
-            } else if (fileName.endsWith(CONVERSATION_FILE_SUFFIX)) {
-                loadConversation(file, path);
-            } else if (fileName.endsWith(HOST_FILE_SUFFIX)) {
-                loadQuestHost(file, path);
-            } else if (fileName.endsWith(MOB_FILE_SUFFIX)) {
-                loadMob(file, path);
-            } else if (fileName.endsWith(MOB_GROUP_FILE_SUFFIX)) {
-                loadMobGroup(file, path);
+                if (fileName.endsWith(QUEST_FILE_SUFFIX)) {
+                    // this will load the quest file
+                    loadQuest(file, path);
+                } else if (fileName.endsWith(CONVERSATION_FILE_SUFFIX)) {
+                    loadConversation(file, path);
+                } else if (fileName.endsWith(HOST_FILE_SUFFIX)) {
+                    loadQuestHost(file, path);
+                } else if (fileName.endsWith(MOB_FILE_SUFFIX)) {
+                    loadMob(file, path);
+                } else if (fileName.endsWith(MOB_GROUP_FILE_SUFFIX)) {
+                    loadMobGroup(file, path);
+                }
             }
         }
     }
@@ -294,7 +294,7 @@ public final class QuestManager implements QuestProvider, Component {
         return questPlayers.remove(player);
     }
 
-    public QuestHolder getPlayer(Player player) {
+    public QuestHolder getQuestHolder(Player player) {
 
         try {
             return getPlayer(player.getName());

@@ -30,7 +30,8 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
         for (TPlayerQuest quest : quests) {
             try {
                 QuestTemplate questTemplate = component.getQuestTemplate(quest.getQuest());
-                addQuest(new SimpleQuest(quest.getId(), questTemplate, this));
+                SimpleQuest simpleQuest = new SimpleQuest(quest, questTemplate, this);
+                addQuest(simpleQuest);
             } catch (QuestException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
             }
@@ -51,7 +52,7 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
             database.save(table);
         }
 
-        SimpleQuest quest = new SimpleQuest(table.getId(), template, this);
+        SimpleQuest quest = new SimpleQuest(table, template, this);
         if (quest.isCompleted()) {
             throw new QuestException("Du hast diese Quest bereits abgeschlossen.");
         }
@@ -64,6 +65,7 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
 
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         TPlayer player = database.find(TPlayer.class, getId());
+        if (player == null) return;
         player.setActiveQuests(getActiveQuests().size());
         player.setCompletedQuests(getCompletedQuests().size());
         database.save(player);
