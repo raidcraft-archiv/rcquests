@@ -5,6 +5,7 @@ import com.avaje.ebean.validation.NotNull;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -26,6 +27,7 @@ public class TPlayerQuest {
     private String quest;
     private Timestamp startTime;
     private Timestamp completionTime;
+    @JoinColumn(name = "quest_id")
     @OneToMany(cascade = CascadeType.REMOVE)
     private List<TPlayerObjective> objectives;
 

@@ -2,7 +2,7 @@ package de.raidcraft.quests.trigger;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestTrigger;
-import de.raidcraft.api.quests.quest.QuestTemplate;
+import de.raidcraft.api.quests.quest.trigger.Trigger;
 import de.raidcraft.util.LocationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -20,9 +20,9 @@ public class LocationTrigger extends QuestTrigger implements Listener {
     private Location location;
     private int radius;
 
-    protected LocationTrigger(QuestTemplate questTemplate, String name) {
+    protected LocationTrigger(Trigger trigger) {
 
-        super(questTemplate, name);
+        super(trigger);
     }
 
     @Override
@@ -38,11 +38,11 @@ public class LocationTrigger extends QuestTrigger implements Listener {
         Location to = event.getTo();
         if (RaidCraft.hasMoved(event.getPlayer(), to)) {
             if (radius > 0 && LocationUtil.isWithinRadius(to, location, radius)) {
-                inform(event.getPlayer());
+                inform("location", event.getPlayer());
             } else if (to.getBlockX() == location.getBlockX()
                     && to.getBlockY() == location.getBlockY()
                     && to.getBlockZ() == location.getBlockZ()) {
-                inform(event.getPlayer());
+                inform("location", event.getPlayer());
             }
         }
     }

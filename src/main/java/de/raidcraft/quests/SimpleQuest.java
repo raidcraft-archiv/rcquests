@@ -151,10 +151,13 @@ public class SimpleQuest extends AbstractQuest {
     @Override
     public void abort() {
 
+        getHolder().abortQuest(this);
         setStartTime(null);
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         TPlayerQuest quest = database.find(TPlayerQuest.class, getId());
-        database.delete(quest);
+        if (quest != null) {
+            database.delete(quest);
+        }
     }
 
     public void save() {

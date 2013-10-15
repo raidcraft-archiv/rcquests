@@ -11,15 +11,14 @@ import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestHost;
 import de.raidcraft.api.quests.QuestProvider;
-import de.raidcraft.api.quests.QuestTrigger;
 import de.raidcraft.api.quests.QuestType;
 import de.raidcraft.api.quests.player.QuestHolder;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.api.quests.quest.action.Action;
 import de.raidcraft.api.quests.quest.requirement.Requirement;
 import de.raidcraft.api.quests.quest.trigger.Trigger;
-import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.api.quests.util.QuestUtil;
+import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -48,20 +47,6 @@ public final class QuestManager implements QuestProvider, Component {
     private static final String HOST_FILE_SUFFIX = ".host.yml";
     private static final String MOB_FILE_SUFFIX = ".mob.yml";
     private static final String MOB_GROUP_FILE_SUFFIX = ".mobgroup.yml";
-
-    private final QuestPlugin plugin;
-    private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
-    private final Map<String, QuestHost> loadedQuestHosts = new CaseInsensitiveMap<>();
-    private final Map<String, Method> actionMethods = new CaseInsensitiveMap<>();
-    private final Map<String, Method> requirementMethods = new CaseInsensitiveMap<>();
-    private final Map<String, Constructor<? extends QuestHost>> questHostTypes = new CaseInsensitiveMap<>();
-    private final Map<String, QuestHolder> questPlayers = new CaseInsensitiveMap<>();
-
-    protected QuestManager(QuestPlugin plugin) {
-
-        this.plugin = plugin;
-        RaidCraft.registerComponent(QuestManager.class, this);
-    }
 
     public static Requirement[] loadRequirements(ConfigurationSection data, String basePath) {
 
@@ -112,7 +97,7 @@ public final class QuestManager implements QuestProvider, Component {
             }
         }
         Trigger[] loadedTriggers = triggers.toArray(new Trigger[triggers.size()]);
-        RaidCraft.getComponent(TriggerManager.class).registerTrigger(questTemplate, loadedTriggers);
+        RaidCraft.getComponent(TriggerManager.class).registerTrigger(loadedTriggers);
         return loadedTriggers;
     }
 
@@ -137,6 +122,22 @@ public final class QuestManager implements QuestProvider, Component {
             }
         }
         return actions;
+    }
+
+
+    private final QuestPlugin plugin;
+    private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
+    private final Map<String, QuestHost> loadedQuestHosts = new CaseInsensitiveMap<>();
+    private final Map<String, Method> actionMethods = new CaseInsensitiveMap<>();
+    private final Map<String, Method> requirementMethods = new CaseInsensitiveMap<>();
+    private final Map<String, Constructor<? extends QuestHost>> questHostTypes = new CaseInsensitiveMap<>();
+
+    private final Map<String, QuestHolder> questPlayers = new CaseInsensitiveMap<>();
+
+    protected QuestManager(QuestPlugin plugin) {
+
+        this.plugin = plugin;
+        RaidCraft.registerComponent(QuestManager.class, this);
     }
 
     public void load() {
@@ -240,12 +241,6 @@ public final class QuestManager implements QuestProvider, Component {
         } else {
             plugin.getLogger().warning("Failed to load quest host \"" + hostId + "\"! Invalid host type: " + hostType);
         }
-    }
-
-    @Override
-    public void callTrigger(QuestTrigger trigger, Player player) {
-
-        this.plugin.getTriggerManager().callTrigger(trigger, player);
     }
 
     public boolean checkRequirement(String name, Player player, ConfigurationSection data) throws QuestException {
@@ -417,7 +412,7 @@ public final class QuestManager implements QuestProvider, Component {
         }
         ArrayList<QuestTemplate> foundQuests = new ArrayList<>();
         for (QuestTemplate quest : loadedQuests.values()) {
-            if (quest.getFriendlyName().contains(name)) {
+            if (quest.getFriendlyName().toLowerCase().contains(name.toLowerCase())) {
                 foundQuests.add(quest);
             }
         }

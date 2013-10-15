@@ -47,7 +47,6 @@ public class SimpleTrigger extends AbstractTrigger {
                 }
             }, getDelay());
         } else {
-            RaidCraft.LOGGER.info("Trigger executed " + getName() + " called!");
             // we have a match now lets execute our actions
             execute(holder);
         }

@@ -3,7 +3,7 @@ package de.raidcraft.quests.trigger;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.quests.QuestTrigger;
-import de.raidcraft.api.quests.quest.QuestTemplate;
+import de.raidcraft.api.quests.quest.trigger.Trigger;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -20,9 +20,9 @@ public class PlayerTrigger extends QuestTrigger implements Listener {
     // crafting
     private ItemStack craftResult;
 
-    protected PlayerTrigger(QuestTemplate questTemplate, String name) {
+    protected PlayerTrigger(Trigger trigger) {
 
-        super(questTemplate, name);
+        super(trigger);
     }
 
     @Override
@@ -40,7 +40,7 @@ public class PlayerTrigger extends QuestTrigger implements Listener {
     public void onItemCraft(CraftItemEvent event) {
 
         if (craftResult == null || event.getRecipe().getResult().isSimilar(craftResult)) {
-            inform((Player) event.getWhoClicked());
+            inform("craft", (Player) event.getWhoClicked());
         }
     }
 }

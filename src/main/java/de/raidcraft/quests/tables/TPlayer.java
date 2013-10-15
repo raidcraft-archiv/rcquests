@@ -6,6 +6,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
@@ -22,6 +23,7 @@ public class TPlayer {
     @NotNull
     @Column(unique = true)
     private String player;
+    @JoinColumn(name = "player_id")
     @OneToMany(cascade = CascadeType.REMOVE)
     private List<TPlayerQuest> quests;
     private int activeQuests;
