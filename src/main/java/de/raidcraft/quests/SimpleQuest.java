@@ -10,6 +10,7 @@ import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.api.quests.quest.action.Action;
 import de.raidcraft.api.quests.quest.objective.Objective;
 import de.raidcraft.api.quests.quest.requirement.Requirement;
+import de.raidcraft.api.quests.quest.trigger.Trigger;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import org.bukkit.ChatColor;
@@ -46,7 +47,7 @@ public class SimpleQuest extends AbstractQuest {
                 entry.setQuest(database.find(TPlayerQuest.class, getId()));
                 database.save(entry);
             }
-            playerObjectives.add(new SimplePlayerObjective(entry.getId(), this, objective));
+            playerObjectives.add(new SimplePlayerObjective(entry, this, objective));
         }
         for (PlayerObjective objective : playerObjectives) {
             if (!objective.isCompleted()) {
@@ -62,9 +63,19 @@ public class SimpleQuest extends AbstractQuest {
     @Override
     public boolean hasCompletedAllObjectives() {
 
-        return uncompletedObjectives.isEmpty()
+        boolean completed = uncompletedObjectives.isEmpty()
                 || (getTemplate().getRequiredObjectiveAmount() > 0
                 && getTemplate().getRequiredObjectiveAmount() <= getUncompletedObjectives().size());
+        if (!uncompletedObjectives.isEmpty() && !completed) {
+            int optionalObjectives = 0;
+            for (PlayerObjective objective : getUncompletedObjectives()) {
+                if (objective.getObjective().isOptional()) optionalObjectives++;
+            }
+            if (optionalObjectives == uncompletedObjectives.size()) {
+                completed = true;
+            }
+        }
+        return completed;
     }
 
 
@@ -84,6 +95,9 @@ public class SimpleQuest extends AbstractQuest {
     public void completeObjective(PlayerObjective objective) {
 
         uncompletedObjectives.remove(objective);
+        getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + getTemplate().getFriendlyName() +
+                ChatColor.RESET + ": " + ChatColor.GREEN + ChatColor.STRIKETHROUGH
+                + ChatColor.ITALIC + objective.getObjective().getFriendlyName());
     }
 
     @Override
@@ -136,6 +150,7 @@ public class SimpleQuest extends AbstractQuest {
         if (!isActive() || !hasCompletedAllObjectives()) {
             return;
         }
+        getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "Quest abgeschlossen: " + ChatColor.GREEN + getFriendlyName());
         // complete the quest and trigger the complete actions
         setCompletionTime(new Timestamp(System.currentTimeMillis()));
         // give rewards and execute completion actions
@@ -145,6 +160,10 @@ public class SimpleQuest extends AbstractQuest {
             } catch (QuestException e) {
                 getPlayer().sendMessage(ChatColor.RED + e.getMessage());
             }
+        }
+        // unregister ourselves as trigger listener
+        for (Trigger trigger : getTemplate().getCompleteTrigger()) {
+            trigger.unregisterListener(this);
         }
     }
 
@@ -157,6 +176,10 @@ public class SimpleQuest extends AbstractQuest {
         TPlayerQuest quest = database.find(TPlayerQuest.class, getId());
         if (quest != null) {
             database.delete(quest);
+        }
+        // unregister ourselves as trigger listener
+        for (Trigger trigger : getTemplate().getCompleteTrigger()) {
+            trigger.unregisterListener(this);
         }
     }
 

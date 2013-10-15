@@ -13,6 +13,7 @@ import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
+import de.raidcraft.quests.tables.TPlayerRequirementCount;
 import de.raidcraft.quests.tables.TQuestAction;
 import de.raidcraft.quests.trigger.HostTrigger;
 import de.raidcraft.quests.trigger.LocationTrigger;
@@ -99,6 +100,7 @@ public class QuestPlugin extends BasePlugin {
         tables.add(TPlayerQuest.class);
         tables.add(TPlayerObjective.class);
         tables.add(TQuestAction.class);
+        tables.add(TPlayerRequirementCount.class);
         return tables;
     }
 
