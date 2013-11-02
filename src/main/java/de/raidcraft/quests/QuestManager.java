@@ -3,11 +3,10 @@ package de.raidcraft.quests;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
-import de.raidcraft.api.conversations.ConversationProvider;
-import de.raidcraft.api.mobs.Mobs;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.InvalidTypeException;
+import de.raidcraft.api.quests.QuestConfigLoader;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestHost;
 import de.raidcraft.api.quests.QuestProvider;
@@ -41,12 +40,6 @@ import java.util.Set;
  * @author Silthus
  */
 public final class QuestManager implements QuestProvider, Component {
-
-    private static final String QUEST_FILE_SUFFIX = ".quest.yml";
-    private static final String CONVERSATION_FILE_SUFFIX = ".conv.yml";
-    private static final String HOST_FILE_SUFFIX = ".host.yml";
-    private static final String MOB_FILE_SUFFIX = ".mob.yml";
-    private static final String MOB_GROUP_FILE_SUFFIX = ".mobgroup.yml";
 
     public static Requirement[] loadRequirements(ConfigurationSection data, String basePath) {
 
@@ -126,6 +119,7 @@ public final class QuestManager implements QuestProvider, Component {
 
 
     private final QuestPlugin plugin;
+    private final Map<String, QuestConfigLoader> configLoader = new CaseInsensitiveMap<>();
     private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
     private final Map<String, QuestHost> loadedQuestHosts = new CaseInsensitiveMap<>();
     private final Map<String, Method> actionMethods = new CaseInsensitiveMap<>();
@@ -134,10 +128,47 @@ public final class QuestManager implements QuestProvider, Component {
 
     private final Map<String, QuestHolder> questPlayers = new CaseInsensitiveMap<>();
 
-    protected QuestManager(QuestPlugin plugin) {
+    private boolean loadedQuestFiles = false;
+
+    protected QuestManager(final QuestPlugin plugin) {
 
         this.plugin = plugin;
         RaidCraft.registerComponent(QuestManager.class, this);
+        try {
+            // lets register our own config loader
+            registerQuestConfigLoader(new QuestConfigLoader("quest") {
+                @Override
+                public void loadConfig(String id, ConfigurationSection config) {
+
+                    SimpleQuestTemplate quest = new SimpleQuestTemplate(id, config);
+                    loadedQuests.put(id, quest);
+                    plugin.getLogger().info("Loaded quest: " + id + " - " + quest.getFriendlyName());
+                }
+            });
+            // and the quest host loader
+            registerQuestConfigLoader(new QuestConfigLoader("host") {
+                @Override
+                public void loadConfig(String id, ConfigurationSection config) {
+
+                    String hostType = config.getString("type");
+                    if (questHostTypes.containsKey(hostType)) {
+                        try {
+                            Constructor<? extends QuestHost> constructor = questHostTypes.get(hostType);
+                            constructor.setAccessible(true);
+                            QuestHost questHost = constructor.newInstance(id, config);
+                            loadedQuestHosts.put(questHost.getId(), questHost);
+                            plugin.getLogger().info("Loaded quest host: " + questHost.getId() + " - " + questHost.getFriendlyName());
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                            plugin.getLogger().warning(e.getMessage());
+                        }
+                    } else {
+                        plugin.getLogger().warning("Failed to load quest host \"" + id + "\"! Invalid host type: " + hostType);
+                    }
+                }
+            });
+        } catch (QuestException e) {
+            plugin.getLogger().warning(e.getMessage());
+        }
     }
 
     public void load() {
@@ -145,7 +176,8 @@ public final class QuestManager implements QuestProvider, Component {
         // we need to look recursivly thru all folders under the defined base folder
         File baseFolder = new File(plugin.getDataFolder(), plugin.getConfiguration().quests_base_folder);
         baseFolder.mkdirs();
-        loadQuests(baseFolder, "");
+        loadQuestConfigs(baseFolder, "");
+        loadedQuestFiles = true;
     }
 
     public void unload() {
@@ -155,6 +187,7 @@ public final class QuestManager implements QuestProvider, Component {
         }
         loadedQuests.clear();
         questPlayers.clear();
+        loadedQuestFiles = false;
     }
 
     public void reload() {
@@ -163,83 +196,26 @@ public final class QuestManager implements QuestProvider, Component {
         load();
     }
 
-    private void loadQuests(File baseFolder, String path) {
+    private void loadQuestConfigs(File baseFolder, String path) {
 
         for (File file : baseFolder.listFiles()) {
             String fileName = file.getName();
             if (file.isDirectory()) {
-                loadQuests(file, path + "." + fileName.toLowerCase());
+                loadQuestConfigs(file, path + "." + fileName.toLowerCase());
             } else {
                 if (path.startsWith(".")) {
                     path = path.replaceFirst("\\.", "");
                 }
-                if (fileName.endsWith(QUEST_FILE_SUFFIX)) {
-                    // this will load the quest file
-                    loadQuest(file, path);
-                } else if (fileName.endsWith(CONVERSATION_FILE_SUFFIX)) {
-                    loadConversation(file, path);
-                } else if (fileName.endsWith(HOST_FILE_SUFFIX)) {
-                    loadQuestHost(file, path);
-                } else if (fileName.endsWith(MOB_FILE_SUFFIX)) {
-                    loadMob(file, path);
-                } else if (fileName.endsWith(MOB_GROUP_FILE_SUFFIX)) {
-                    loadMobGroup(file, path);
+                for (QuestConfigLoader loader : configLoader.values()) {
+                    if (file.getName().toLowerCase().endsWith(loader.getSuffix())) {
+
+                        String id = (path + "." + file.getName().toLowerCase()).replace(loader.getSuffix(), "");
+                        ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+                        config = QuestUtil.replaceThisReferences(config, path);
+                        loader.loadConfig(id, config);
+                    }
                 }
             }
-        }
-    }
-
-    private void loadConversation(File file, String path) {
-
-        String convName = (path + "." + file.getName().toLowerCase()).replace(CONVERSATION_FILE_SUFFIX, "");
-        ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
-        config = QuestUtil.replaceThisReferences(config, path);
-        ConversationProvider provider = RaidCraft.getConversationProvider();
-        provider.registerConversation(config, convName);
-    }
-
-    private void loadMob(File file, String path) {
-
-        String mobName = (path + "." + file.getName().toLowerCase()).replace(MOB_FILE_SUFFIX, "");
-        ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
-        config = QuestUtil.replaceThisReferences(config, path);
-        Mobs.registerMob(mobName, config);
-    }
-
-    private void loadMobGroup(File file, String path) {
-
-        String groupName = (path + "." + file.getName().toLowerCase()).replace(MOB_GROUP_FILE_SUFFIX, "");
-        ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
-        config = QuestUtil.replaceThisReferences(config, path);
-        Mobs.registerMobGroup(groupName, config);
-    }
-
-    private void loadQuest(File file, String path) {
-
-        String questId = (path + "." + file.getName().toLowerCase()).replace(QUEST_FILE_SUFFIX, "");
-        SimpleQuestTemplate quest = new SimpleQuestTemplate(questId, plugin.configure(new SimpleConfiguration<>(plugin, file)));
-        loadedQuests.put(questId, quest);
-        plugin.getLogger().info("Loaded quest: " + questId + " - " + quest.getFriendlyName());
-    }
-
-    private void loadQuestHost(File file, String path) {
-
-        String hostId = (path + "." + file.getName().toLowerCase()).replace(HOST_FILE_SUFFIX, "");
-        ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
-        config = QuestUtil.replaceThisReferences(config, path);
-        String hostType = config.getString("type");
-        if (questHostTypes.containsKey(hostType)) {
-            try {
-                Constructor<? extends QuestHost> constructor = questHostTypes.get(hostType);
-                constructor.setAccessible(true);
-                QuestHost questHost = constructor.newInstance(hostId, config);
-                loadedQuestHosts.put(questHost.getId(), questHost);
-                plugin.getLogger().info("Loaded quest host: " + questHost.getId() + " - " + questHost.getFriendlyName());
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                plugin.getLogger().warning(e.getMessage());
-            }
-        } else {
-            plugin.getLogger().warning("Failed to load quest host \"" + hostId + "\"! Invalid host type: " + hostType);
         }
     }
 
@@ -254,6 +230,19 @@ public final class QuestManager implements QuestProvider, Component {
             return;
         }
         invokeMethod(actionMethods.get(name), player, data);
+    }
+
+    @Override
+    public void registerQuestConfigLoader(QuestConfigLoader loader) throws QuestException {
+
+        if (configLoader.containsKey(loader.getSuffix())) {
+            throw new QuestException("Config loader with the suffix " + loader.getSuffix() + " is already registered!");
+        }
+        configLoader.put(loader.getSuffix(), loader);
+        if (loadedQuestFiles) {
+            // load again
+            load();
+        }
     }
 
     @Override
