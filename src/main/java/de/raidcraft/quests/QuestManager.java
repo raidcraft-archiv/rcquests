@@ -413,4 +413,14 @@ public final class QuestManager implements QuestProvider, Component {
         }
         return foundQuests.get(0);
     }
+
+    public List<String> getLoadedRequirements() {
+
+        return new ArrayList<>(requirementMethods.keySet());
+    }
+
+    public List<String> getLoadedActions() {
+
+        return new ArrayList<>(actionMethods.keySet());
+    }
 }
