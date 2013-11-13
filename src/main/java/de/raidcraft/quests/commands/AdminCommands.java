@@ -8,6 +8,7 @@ import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestTrigger;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.quest.Quest;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.util.PaginatedResult;
@@ -87,5 +88,22 @@ public class AdminCommands {
                 return ChatColor.YELLOW + entry;
             }
         }.display(sender, content, args.getFlagInteger('p', 1));
+    }
+
+    @Command(
+            aliases = {"abort", "abbruch", "abrechen", "cancel"},
+            desc = "Cancels the quest",
+            min = 1
+    )
+    @CommandPermissions("rcquests.admin.abort")
+    public void abort(CommandContext args, CommandSender sender) throws CommandException {
+
+        try {
+            QuestHolder player = plugin.getQuestManager().getQuestHolder((Player) sender);
+            Quest quest = player.getQuest(args.getJoinedStrings(0));
+            quest.abort();
+        } catch (QuestException e) {
+            throw new CommandException(e);
+        }
     }
 }
