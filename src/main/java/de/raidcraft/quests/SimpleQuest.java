@@ -82,12 +82,14 @@ public class SimpleQuest extends AbstractQuest {
     @Override
     public List<PlayerObjective> getPlayerObjectives() {
 
+        Collections.sort(playerObjectives);
         return playerObjectives;
     }
 
     @Override
     public List<PlayerObjective> getUncompletedObjectives() {
 
+        Collections.sort(uncompletedObjectives);
         return uncompletedObjectives;
     }
 
@@ -126,9 +128,9 @@ public class SimpleQuest extends AbstractQuest {
         if (meetsRequirements) {
             for (PlayerObjective playerObjective : getUncompletedObjectives()) {
                 playerObjective.trigger(questHolder);
-                // abort the loop if we are dealing with ordered required objectives
+                // abort if we are dealing with ordered required objectives
                 if (!playerObjective.getObjective().isOptional() && getTemplate().isOrdered()) {
-                    break;
+                    return;
                 }
             }
         }
