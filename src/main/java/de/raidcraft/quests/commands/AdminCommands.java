@@ -103,7 +103,7 @@ public class AdminCommands {
             Quest quest = player.getQuest(args.getJoinedStrings(0));
             quest.abort();
         } catch (QuestException e) {
-            throw new CommandException(e);
+            throw new CommandException(e.getMessage());
         }
     }
 }
