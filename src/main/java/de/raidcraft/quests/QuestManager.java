@@ -4,16 +4,11 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.player.UnknownPlayerException;
-import de.raidcraft.api.quests.InvalidQuestHostException;
-import de.raidcraft.api.quests.InvalidTypeException;
-import de.raidcraft.api.quests.QuestConfigLoader;
-import de.raidcraft.api.quests.QuestException;
-import de.raidcraft.api.quests.QuestHost;
-import de.raidcraft.api.quests.QuestProvider;
-import de.raidcraft.api.quests.QuestType;
+import de.raidcraft.api.quests.*;
 import de.raidcraft.api.quests.player.QuestHolder;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.api.quests.quest.action.Action;
+import de.raidcraft.api.quests.quest.objective.Objective;
 import de.raidcraft.api.quests.quest.requirement.Requirement;
 import de.raidcraft.api.quests.quest.trigger.Trigger;
 import de.raidcraft.api.quests.util.QuestUtil;
@@ -30,11 +25,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -66,7 +57,7 @@ public final class QuestManager implements QuestProvider, Component {
         return requirements.toArray(new Requirement[requirements.size()]);
     }
 
-    public static Trigger[] loadTrigger(ConfigurationSection data, QuestTemplate questTemplate, Trigger.Type type) {
+    public static Trigger[] loadTrigger(ConfigurationSection data, QuestTemplate questTemplate, Trigger.Type type, Object... misc) {
 
         if (data == null) {
             return new Trigger[0];
@@ -80,6 +71,8 @@ public final class QuestManager implements QuestProvider, Component {
                     Trigger trigger;
                     if (type == Trigger.Type.QUEST_ACCEPTED) {
                         trigger = new ActiveQuestTrigger(Integer.parseInt(key), questTemplate, section, type);
+                    } else if (type == Trigger.Type.QUEST_OBJECTIVE) {
+                        trigger = new ObjectiveTrigger(Integer.parseInt(key), questTemplate, section, type, (Objective)misc[0]);
                     } else {
                         trigger = new SimpleTrigger(Integer.parseInt(key), questTemplate, section, type);
                     }
