@@ -2,6 +2,7 @@ package de.raidcraft.quests.actions;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestType;
+import de.raidcraft.util.ItemUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,10 +20,9 @@ public class Block implements QuestType {
         Location loc =
                 new Location(player.getWorld(), data.getInt("x"), data.getInt("y"), data.getInt("z"));
         String matName = data.getString("material", "AIR");
-        Material material = null;
-        try {
-            material = Material.valueOf(matName);
-        } catch (Exception e) {
+        Material material;
+        material = ItemUtils.getItem(matName);
+        if(material == null) {
             RaidCraft.LOGGER.warning("Wrong material in Quest action! Material '" + matName + "' does not exist!");
             return;
         }
