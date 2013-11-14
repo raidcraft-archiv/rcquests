@@ -127,11 +127,11 @@ public class SimpleQuest extends AbstractQuest {
         // dont trigger objectives when no requirements are met
         if (meetsRequirements) {
             for (PlayerObjective playerObjective : getUncompletedObjectives()) {
-                playerObjective.trigger(questHolder);
                 // abort if we are dealing with ordered required objectives
                 if (!playerObjective.getObjective().isOptional() && getTemplate().isOrdered()) {
                     return;
                 }
+                playerObjective.trigger(questHolder);
             }
         }
     }
