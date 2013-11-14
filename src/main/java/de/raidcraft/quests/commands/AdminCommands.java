@@ -12,6 +12,7 @@ import de.raidcraft.api.quests.quest.Quest;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.util.PaginatedResult;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -93,15 +94,27 @@ public class AdminCommands {
     @Command(
             aliases = {"abort", "abbruch", "abrechen", "cancel"},
             desc = "Cancels the quest",
-            min = 1
+            min = 1,
+            usage = "[Player] <Quest>"
     )
     @CommandPermissions("rcquests.admin.abort")
     public void abort(CommandContext args, CommandSender sender) throws CommandException {
 
+        Player targetPlayer = (Player)sender;
+        String questName = args.getString(0);
+        if(args.argsLength() > 1) {
+            questName = args.getString(1);
+            targetPlayer = Bukkit.getPlayer(args.getString(0));
+            if(targetPlayer == null) {
+                throw new CommandException("Der angegebene Spieler ist nicht Online!");
+            }
+        }
+
         try {
-            QuestHolder player = plugin.getQuestManager().getQuestHolder((Player) sender);
-            Quest quest = player.getQuest(args.getJoinedStrings(0));
+            QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);
+            Quest quest = questPlayer.getQuest(questName);
             quest.abort();
+            sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.getFriendlyName() + "' wurde abgebrochen!");
         } catch (QuestException e) {
             throw new CommandException(e.getMessage());
         }
