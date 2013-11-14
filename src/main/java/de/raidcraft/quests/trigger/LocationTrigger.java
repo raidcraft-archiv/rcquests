@@ -32,6 +32,7 @@ public class LocationTrigger extends QuestTrigger implements Listener {
         radius = data.getInt("radius", 0);
     }
 
+    @Method("location")
     @EventHandler(ignoreCancelled = true)
     public void onMove(PlayerMoveEvent event) {
 
