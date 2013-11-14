@@ -2,6 +2,7 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
+import de.raidcraft.api.quests.player.PlayerObjective;
 import de.raidcraft.api.quests.player.QuestHolder;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.api.quests.quest.action.Action;
@@ -17,9 +18,17 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public class SimpleTrigger extends AbstractTrigger {
 
+    int objectiveId;
+
     public SimpleTrigger(int id, QuestTemplate questTemplate, ConfigurationSection data, Type type) {
 
         super(id, questTemplate, data, type);
+    }
+
+    public SimpleTrigger(int id, QuestTemplate questTemplate, ConfigurationSection data, Type type, int objectiveId) {
+
+        this(id, questTemplate, data, type);
+        this.objectiveId = objectiveId;
     }
 
     @Override
@@ -38,6 +47,21 @@ public class SimpleTrigger extends AbstractTrigger {
         if (getType() == Type.QUEST_ACCEPTED && !holder.hasActiveQuest(getQuestTemplate().getId())) {
             return;
         }
+        if (getType() == Type.QUEST_OBJECTIVE) {
+            if(!holder.hasActiveQuest(getQuestTemplate().getId())) return;
+
+            boolean found = false;
+            for(PlayerObjective playerObjective : holder.getQuest(getQuestTemplate()).getPlayerObjectives()) {
+                if(playerObjective.getId() == objectiveId) found = true;
+
+                // abort if we are dealing with ordered required objectives
+                if (!playerObjective.getObjective().isOptional() && getQuestTemplate().isOrdered()) {
+                    break;
+                }
+            }
+            if(!found) return;
+        }
+
         if (getDelay() > 0) {
             Bukkit.getScheduler().runTaskLater(plugin, new Runnable() {
                 @Override
