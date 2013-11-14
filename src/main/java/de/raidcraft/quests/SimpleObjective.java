@@ -25,7 +25,10 @@ public class SimpleObjective extends AbstractObjective {
     @Override
     protected void loadTrigger(ConfigurationSection data) {
 
-        this.trigger = QuestManager.loadTrigger(data, getQuestTemplate(), Trigger.Type.QUEST_OBJECTIVE, this);
+        this.trigger = QuestManager.loadTrigger(data, getQuestTemplate(), Trigger.Type.QUEST_OBJECTIVE);
+        for(Trigger tr : trigger) {
+            ((ObjectiveTrigger)tr).setObjective(this);
+        }
     }
 
     @Override

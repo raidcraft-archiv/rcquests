@@ -57,7 +57,7 @@ public final class QuestManager implements QuestProvider, Component {
         return requirements.toArray(new Requirement[requirements.size()]);
     }
 
-    public static Trigger[] loadTrigger(ConfigurationSection data, QuestTemplate questTemplate, Trigger.Type type, Object... misc) {
+    public static Trigger[] loadTrigger(ConfigurationSection data, QuestTemplate questTemplate, Trigger.Type type) {
 
         if (data == null) {
             return new Trigger[0];
@@ -72,7 +72,7 @@ public final class QuestManager implements QuestProvider, Component {
                     if (type == Trigger.Type.QUEST_ACCEPTED) {
                         trigger = new ActiveQuestTrigger(Integer.parseInt(key), questTemplate, section, type);
                     } else if (type == Trigger.Type.QUEST_OBJECTIVE) {
-                        trigger = new ObjectiveTrigger(Integer.parseInt(key), questTemplate, section, type, (Objective)misc[0]);
+                        trigger = new ObjectiveTrigger(Integer.parseInt(key), questTemplate, section, type);
                     } else {
                         trigger = new SimpleTrigger(Integer.parseInt(key), questTemplate, section, type);
                     }

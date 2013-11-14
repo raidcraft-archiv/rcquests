@@ -13,9 +13,13 @@ public class ObjectiveTrigger extends SimpleTrigger {
 
     Objective objective;
 
-    public ObjectiveTrigger(int id, QuestTemplate questTemplate, ConfigurationSection data, Type type, Objective objective) {
+    public ObjectiveTrigger(int id, QuestTemplate questTemplate, ConfigurationSection data, Type type) {
 
         super(id, questTemplate, data, type);
+    }
+
+    public void setObjective(Objective objective) {
+
         this.objective = objective;
     }
 
