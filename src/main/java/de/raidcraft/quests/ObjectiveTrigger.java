@@ -1,5 +1,6 @@
 package de.raidcraft.quests;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.player.PlayerObjective;
 import de.raidcraft.api.quests.player.QuestHolder;
 import de.raidcraft.api.quests.quest.QuestTemplate;
@@ -29,11 +30,16 @@ public class ObjectiveTrigger extends SimpleTrigger {
         if(!holder.hasActiveQuest(getQuestTemplate().getId())) return;
 
         boolean found = false;
+        RaidCraft.LOGGER.info("DEBUG -1: " + objective.getId());
         for(PlayerObjective playerObjective : holder.getQuest(getQuestTemplate()).getUncompletedObjectives()) {
-            if(playerObjective.getId() == objective.getId()) found = true;
-
+            RaidCraft.LOGGER.info("DEBUG 0: " + playerObjective.getObjective().getFriendlyName() + " -> " + playerObjective.getId());
+            if(playerObjective.getId() == objective.getId()) {
+                found = true;
+                RaidCraft.LOGGER.info("DEBUG 1: " + playerObjective.getId());
+            }
             // abort if we are dealing with ordered required objectives
             if (!playerObjective.getObjective().isOptional() && getQuestTemplate().isOrdered()) {
+                RaidCraft.LOGGER.info("DEBUG 2: " + playerObjective.getObjective().getFriendlyName());
                 break;
             }
         }
