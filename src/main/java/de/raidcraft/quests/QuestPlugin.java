@@ -45,7 +45,7 @@ public class QuestPlugin extends BasePlugin {
             @Override
             public void run() {
 
-                questManager.load();
+                reload();
             }
         }, 40L);
     }
