@@ -213,6 +213,7 @@ public final class QuestManager implements QuestProvider, Component {
 
     public boolean checkRequirement(String name, Player player, ConfigurationSection data) throws QuestException {
 
+        RaidCraft.LOGGER.info("DEBUG check requirement: " + name + " | " + player.getName() + " | " + requirementMethods.containsKey(name));
         return requirementMethods.containsKey(name) && (boolean) invokeMethod(requirementMethods.get(name), player, data);
     }
 
