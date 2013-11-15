@@ -8,7 +8,6 @@ import de.raidcraft.api.quests.*;
 import de.raidcraft.api.quests.player.QuestHolder;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.api.quests.quest.action.Action;
-import de.raidcraft.api.quests.quest.objective.Objective;
 import de.raidcraft.api.quests.quest.requirement.Requirement;
 import de.raidcraft.api.quests.quest.trigger.Trigger;
 import de.raidcraft.api.quests.util.QuestUtil;
@@ -164,7 +163,7 @@ public final class QuestManager implements QuestProvider, Component {
         }
     }
 
-    public void load() {
+    public void  load() {
 
         // we need to look recursivly thru all folders under the defined base folder
         File baseFolder = new File(plugin.getDataFolder(), plugin.getConfiguration().quests_base_folder);
