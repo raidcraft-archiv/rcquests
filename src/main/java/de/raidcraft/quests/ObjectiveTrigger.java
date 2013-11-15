@@ -29,7 +29,7 @@ public class ObjectiveTrigger extends SimpleTrigger {
         if(!holder.hasActiveQuest(getQuestTemplate().getId())) return;
 
         boolean found = false;
-        for(PlayerObjective playerObjective : holder.getQuest(getQuestTemplate()).getPlayerObjectives()) {
+        for(PlayerObjective playerObjective : holder.getQuest(getQuestTemplate()).getUncompletedObjectives()) {
             if(playerObjective.getId() == objective.getId()) found = true;
 
             // abort if we are dealing with ordered required objectives
