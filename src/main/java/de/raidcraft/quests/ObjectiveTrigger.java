@@ -32,10 +32,11 @@ public class ObjectiveTrigger extends SimpleTrigger {
         boolean found = false;
         RaidCraft.LOGGER.info("DEBUG -1: " + objective.getId());
         for(PlayerObjective playerObjective : holder.getQuest(getQuestTemplate()).getUncompletedObjectives()) {
-            RaidCraft.LOGGER.info("DEBUG 0: " + playerObjective.getObjective().getFriendlyName() + " -> " + playerObjective.getId());
-            if(playerObjective.getId() == objective.getId()) {
+            int objId = playerObjective.getObjective().getId();
+            RaidCraft.LOGGER.info("DEBUG 0: " + playerObjective.getObjective().getFriendlyName() + " -> " + objId);
+            if(objId == objective.getId()) {
                 found = true;
-                RaidCraft.LOGGER.info("DEBUG 1: " + playerObjective.getId());
+                RaidCraft.LOGGER.info("DEBUG 1: " + objId);
             }
             // abort if we are dealing with ordered required objectives
             if (!playerObjective.getObjective().isOptional() && getQuestTemplate().isOrdered()) {
