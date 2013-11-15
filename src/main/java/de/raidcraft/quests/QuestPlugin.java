@@ -8,11 +8,7 @@ import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.actions.*;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
-import de.raidcraft.quests.tables.TPlayer;
-import de.raidcraft.quests.tables.TPlayerObjective;
-import de.raidcraft.quests.tables.TPlayerQuest;
-import de.raidcraft.quests.tables.TPlayerRequirementCount;
-import de.raidcraft.quests.tables.TQuestAction;
+import de.raidcraft.quests.tables.*;
 import de.raidcraft.quests.trigger.HostTrigger;
 import de.raidcraft.quests.trigger.LocationTrigger;
 import de.raidcraft.quests.trigger.PlayerTrigger;
@@ -37,7 +33,6 @@ public class QuestPlugin extends BasePlugin {
 
         questManager = new QuestManager(this);
         triggerManager = new TriggerManager(this);
-        Quests.enable(questManager);
 
         registerGlobalQuestTypes();
         registerGlobalTrigger();
@@ -66,6 +61,7 @@ public class QuestPlugin extends BasePlugin {
     public void reload() {
 
         getQuestManager().reload();
+        Quests.enable(questManager);
     }
 
     private void registerGlobalQuestTypes() {
