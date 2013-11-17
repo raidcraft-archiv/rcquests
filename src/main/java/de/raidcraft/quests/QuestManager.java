@@ -338,6 +338,7 @@ public final class QuestManager implements QuestProvider, Component {
 
     private Object invokeMethod(Method method, Player player, ConfigurationSection data) throws QuestException {
 
+        RaidCraft.LOGGER.info("DEBUG : Method: " + method.getClass() + " - " + method.getName());
         try {
             method.setAccessible(true);
             return method.invoke(null, player, data);
