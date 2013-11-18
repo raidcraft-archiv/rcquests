@@ -58,9 +58,7 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
                         break;
                     }
                 } else {
-                    RaidCraft.LOGGER.info("DEBUG SimplePlayerobjective 0: " + requirement.getType() + " | p: " + questHolder.getPlayer().getName());
                     if (!requirement.isMet(questHolder.getPlayer())) {
-                        RaidCraft.LOGGER.info("DEBUG SimplePlayerobjective 1: " + requirement.getType() + " | p: " + questHolder.getPlayer().getName());
                         complete = false;
                         break;
                     }

@@ -213,7 +213,6 @@ public final class QuestManager implements QuestProvider, Component {
 
     public boolean checkRequirement(String name, Player player, ConfigurationSection data) throws QuestException {
 
-        RaidCraft.LOGGER.info("DEBUG check requirement: " + name + " | " + player.getName() + " | " + requirementMethods.containsKey(name));
         return requirementMethods.containsKey(name) && (boolean) invokeMethod(requirementMethods.get(name), player, data);
     }
 
@@ -338,12 +337,11 @@ public final class QuestManager implements QuestProvider, Component {
 
     private Object invokeMethod(Method method, Player player, ConfigurationSection data) throws QuestException {
 
-        RaidCraft.LOGGER.info("DEBUG : Method: " + method.getClass() + " - " + method.getName());
         try {
             method.setAccessible(true);
             return method.invoke(null, player, data);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            plugin.getLogger().warning(e.getMessage());
+            plugin.getLogger().warning(e.getCause().getMessage());
         }
         return null;
     }
