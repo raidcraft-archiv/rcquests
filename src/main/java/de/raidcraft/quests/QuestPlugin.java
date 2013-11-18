@@ -45,7 +45,8 @@ public class QuestPlugin extends BasePlugin {
             @Override
             public void run() {
 
-                reload();
+                getQuestManager().load();
+                Quests.enable(questManager);
             }
         }, 40L);
     }
