@@ -67,4 +67,11 @@ public class PlayerTrigger extends QuestTrigger implements Listener {
             inform("click", event.getPlayer());
         }
     }
+
+    @Override
+    public void unregister() {
+
+        CraftItemEvent.getHandlerList().unregister(this);
+        PlayerInteractEvent.getHandlerList().unregister(this);
+    }
 }
