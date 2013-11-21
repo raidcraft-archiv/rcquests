@@ -34,10 +34,4 @@ public class HostTrigger extends QuestTrigger implements Listener {
             inform("interact", event.getPlayer());
         }
     }
-
-    @Override
-    public void unregister() {
-
-        QuestHostInteractEvent.getHandlerList().unregister(this);
-    }
 }

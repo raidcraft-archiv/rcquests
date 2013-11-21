@@ -47,10 +47,4 @@ public class LocationTrigger extends QuestTrigger implements Listener {
             }
         }
     }
-
-    @Override
-    public void unregister() {
-
-        PlayerMoveEvent.getHandlerList().unregister(this);
-    }
 }
