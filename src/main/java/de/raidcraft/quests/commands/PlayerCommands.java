@@ -36,7 +36,12 @@ public class PlayerCommands {
             questList += ChatColor.YELLOW + quest.getFriendlyName();
         }
 
-        sender.sendMessage(ChatColor.GREEN + "Folgende Quests sind aktiv:");
-        sender.sendMessage(questList);
+        if(questList.isEmpty()) {
+            sender.sendMessage(ChatColor.RED + "Du hast keine aktiven Quests!");
+        }
+        else {
+            sender.sendMessage(ChatColor.GREEN + "Folgende Quests sind aktiv:");
+            sender.sendMessage(questList);
+        }
     }
 }
