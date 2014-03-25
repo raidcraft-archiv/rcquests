@@ -20,6 +20,9 @@ public class HostTrigger extends QuestTrigger implements Listener {
         super(trigger);
     }
 
+    /**
+     * host: host id string
+     */
     @Override
     protected void load(ConfigurationSection data) {
 
