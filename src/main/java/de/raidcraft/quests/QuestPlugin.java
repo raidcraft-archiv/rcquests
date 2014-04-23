@@ -63,6 +63,7 @@ public class QuestPlugin extends BasePlugin {
     @Override
     public void reload() {
 
+        Quests.disable(questManager);
         getQuestManager().reload();
         Quests.enable(questManager);
     }
