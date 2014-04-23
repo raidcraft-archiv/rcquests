@@ -332,6 +332,12 @@ public final class QuestManager implements QuestProvider, Component {
         if (loadedQuestHosts.containsKey(id)) {
             return loadedQuestHosts.get(id);
         }
+        // search for string end
+        for(String key : loadedQuestHosts.keySet()) {
+            if(key.endsWith(id)) {
+                return loadedQuestHosts.get(key);
+            }
+        }
         throw new InvalidQuestHostException("Unknown quest host with the id: " + id);
     }
 
