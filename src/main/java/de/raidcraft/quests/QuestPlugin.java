@@ -37,6 +37,7 @@ public class QuestPlugin extends BasePlugin {
         registerGlobalQuestTypes();
 
         questManager = new QuestManager(this);
+        Quests.enable(questManager);
 
         // register our events
         registerEvents(new PlayerListener(this));
@@ -48,7 +49,6 @@ public class QuestPlugin extends BasePlugin {
             public void run() {
 
                 getQuestManager().load();
-                Quests.enable(questManager);
             }
         }, 40L);
     }
