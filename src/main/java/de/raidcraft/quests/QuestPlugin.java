@@ -32,11 +32,10 @@ public class QuestPlugin extends BasePlugin {
         configuration = configure(new LocalConfiguration(this));
 
         triggerManager = new TriggerManager(this);
+        questManager = new QuestManager(this);
 
         registerGlobalTrigger();
         registerGlobalQuestTypes();
-
-        questManager = new QuestManager(this);
 
         // register our events
         registerEvents(new PlayerListener(this));
