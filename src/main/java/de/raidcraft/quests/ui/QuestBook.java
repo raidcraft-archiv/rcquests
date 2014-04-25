@@ -23,7 +23,7 @@ public class QuestBook extends ItemStack {
         // lets set the title description and so on
         BookMeta meta = (BookMeta) getItemMeta();
         meta.setDisplayName(quest.getFriendlyName());
-        meta.setAuthor("Quest");
+        meta.setAuthor(quest.getAuthor());
         meta.setTitle(quest.getFriendlyName());
         ArrayList<String> lore = new ArrayList<>();
         lore.add(ChatColor.WHITE + quest.getDescription());
