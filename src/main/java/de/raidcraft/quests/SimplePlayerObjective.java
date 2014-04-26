@@ -58,7 +58,9 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
                         break;
                     }
                 } else {
+                    RaidCraft.LOGGER.info("[Quest] Check Requirement '" + requirement.getType() + "'");
                     if (!requirement.isMet(questHolder.getPlayer())) {
+                        RaidCraft.LOGGER.info("[Quest] Requirement isn't met!");
                         complete = false;
                         break;
                     }
@@ -68,6 +70,7 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
             questHolder.getPlayer().sendMessage(ChatColor.RED + e.getMessage());
         }
         if (complete) {
+            RaidCraft.LOGGER.info("[Quest] Set objective as completed: '" + getObjective().getFriendlyName() + "'");
             setCompleted(new Timestamp(System.currentTimeMillis()));
             getQuest().completeObjective(this);
         }
