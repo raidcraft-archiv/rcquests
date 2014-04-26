@@ -14,6 +14,7 @@ import de.raidcraft.api.quests.quest.trigger.Trigger;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import java.sql.Timestamp;
@@ -154,7 +155,9 @@ public class SimpleQuest extends AbstractQuest {
         if (!isActive() || !hasCompletedAllObjectives()) {
             return;
         }
-        getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "Quest abgeschlossen: " + ChatColor.GREEN + getFriendlyName());
+        Bukkit.broadcastMessage(ChatColor.DARK_GREEN + getHolder().getPlayer().getName() + " hat die Quest '" +
+                ChatColor.GOLD + getFriendlyName() + ChatColor.DARK_GREEN + "' abgeschlossen!");
+//        getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "Quest abgeschlossen: " + ChatColor.GREEN + getFriendlyName());
         // complete the quest and trigger the complete actions
         setCompletionTime(new Timestamp(System.currentTimeMillis()));
         // give rewards and execute completion actions
