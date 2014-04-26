@@ -67,7 +67,8 @@ public class AdminCommands {
             aliases = {"list"},
             desc = "Lists trigger, actions and stuff",
             min = 1,
-            flags = "p:"
+            flags = "p:",
+            usage = "[actions|requirements|trigger]"
     )
     public void list(CommandContext args, CommandSender sender) throws CommandException {
 
@@ -97,8 +98,8 @@ public class AdminCommands {
             min = 1,
             usage = "[Player] <Quest>"
     )
-    @CommandPermissions("rcquests.admin.abort")
-    public void abort(CommandContext args, CommandSender sender) throws CommandException {
+         @CommandPermissions("rcquests.admin.abort")
+         public void abort(CommandContext args, CommandSender sender) throws CommandException {
 
         Player targetPlayer = (Player)sender;
         String questName = args.getString(0);

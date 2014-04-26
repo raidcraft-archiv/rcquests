@@ -11,6 +11,7 @@ import de.raidcraft.api.quests.quest.action.Action;
 import de.raidcraft.api.quests.quest.objective.Objective;
 import de.raidcraft.api.quests.quest.requirement.Requirement;
 import de.raidcraft.api.quests.quest.trigger.Trigger;
+import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import org.bukkit.ChatColor;
@@ -98,8 +99,8 @@ public class SimpleQuest extends AbstractQuest {
 
         uncompletedObjectives.remove(objective);
         getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + getTemplate().getFriendlyName() +
-                ChatColor.RESET + ": " + ChatColor.GREEN + ChatColor.STRIKETHROUGH
-                + ChatColor.ITALIC + objective.getObjective().getFriendlyName());
+                ChatColor.RESET + ": " + ChatColor.DARK_GREEN + "Aufgabe erledigt!");
+        getHolder().getPlayer().sendMessage(ChatColor.GREEN.toString() + ChatColor.STRIKETHROUGH + ChatColor.ITALIC + objective.getObjective().getFriendlyName());
     }
 
     @Override
@@ -179,6 +180,13 @@ public class SimpleQuest extends AbstractQuest {
         TPlayerQuest quest = database.find(TPlayerQuest.class, getId());
         if (quest != null) {
             database.delete(quest);
+            if(isCompleted()) {
+                TPlayer tPlayer = database.find(TPlayer.class).where().eq("player", getPlayer().getName()).findUnique();
+                if(tPlayer != null) {
+                    tPlayer.setCompletedQuests(tPlayer.getCompletedQuests() - 1);
+                    database.save(tPlayer);
+                }
+            }
         }
         // unregister ourselves as trigger listener
         for (Trigger trigger : getTemplate().getCompleteTrigger()) {
