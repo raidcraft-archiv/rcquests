@@ -169,7 +169,7 @@ public class SimpleQuest extends AbstractQuest {
             }
         }
         // unregister ourselves as trigger listener
-        for (Trigger trigger : getTemplate().getCompleteTrigger()) {
+        for (Trigger trigger : getTemplate().getCompletionTrigger()) {
             trigger.unregisterListener(this);
         }
     }
@@ -192,7 +192,7 @@ public class SimpleQuest extends AbstractQuest {
             }
         }
         // unregister ourselves as trigger listener
-        for (Trigger trigger : getTemplate().getCompleteTrigger()) {
+        for (Trigger trigger : getTemplate().getCompletionTrigger()) {
             trigger.unregisterListener(this);
         }
     }
