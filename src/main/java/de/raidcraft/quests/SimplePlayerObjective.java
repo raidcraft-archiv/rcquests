@@ -72,7 +72,7 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
         if (complete) {
             RaidCraft.LOGGER.info("[Quest] Set objective as completed: '" + getObjective().getFriendlyName() + "'");
             setCompleted(new Timestamp(System.currentTimeMillis()));
-            getQuest().completeObjective(this);
+            getQuest().onObjectCompletion(this);
         }
     }
 

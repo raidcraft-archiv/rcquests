@@ -2,24 +2,17 @@ package de.raidcraft.quests;
 
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.player.PlayerObjective;
 import de.raidcraft.api.quests.player.QuestHolder;
 import de.raidcraft.api.quests.quest.AbstractQuest;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.api.quests.quest.action.Action;
 import de.raidcraft.api.quests.quest.objective.Objective;
-import de.raidcraft.api.quests.quest.requirement.Requirement;
-import de.raidcraft.api.quests.quest.trigger.Trigger;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -27,18 +20,21 @@ import java.util.List;
  */
 public class SimpleQuest extends AbstractQuest {
 
-    private final List<PlayerObjective> playerObjectives = new ArrayList<>();
-    private final List<PlayerObjective> uncompletedObjectives = new ArrayList<>();
-
     protected SimpleQuest(TPlayerQuest quest, QuestTemplate template, QuestHolder holder) {
 
         super(quest.getId(), template, holder);
 
+        setPhase(quest.getPhase());
         setStartTime(quest.getStartTime());
         setCompletionTime(quest.getCompletionTime());
+    }
 
-        for (Objective objective : template.getObjectives()) {
-            EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
+    @Override
+    protected List<PlayerObjective> loadObjectives() {
+
+        List<PlayerObjective> objectives = new ArrayList<>();
+        EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
+        for (Objective objective : getTemplate().getObjectives()) {
             TPlayerObjective entry = database.find(TPlayerObjective.class).where()
                     .eq("quest_id", getId())
                     .eq("objective_id", objective.getId()).findUnique();
@@ -49,136 +45,14 @@ public class SimpleQuest extends AbstractQuest {
                 entry.setQuest(database.find(TPlayerQuest.class, getId()));
                 database.save(entry);
             }
-            playerObjectives.add(new SimplePlayerObjective(entry, this, objective));
+            objectives.add(new SimplePlayerObjective(entry, this, objective));
         }
-        for (PlayerObjective objective : playerObjectives) {
-            if (!objective.isCompleted()) {
-                uncompletedObjectives.add(objective);
-            }
-        }
-        // we also need to sort the uncompleted objectives if the quest is ordered
-        if (getTemplate().isOrdered()) {
-            Collections.sort(uncompletedObjectives);
-        }
+        return objectives;
     }
 
     @Override
-    public boolean hasCompletedAllObjectives() {
+    public void delete() {
 
-        boolean completed = uncompletedObjectives.isEmpty()
-                || (getTemplate().getRequiredObjectiveAmount() > 0
-                && getTemplate().getRequiredObjectiveAmount() <= getUncompletedObjectives().size());
-        if (!uncompletedObjectives.isEmpty() && !completed) {
-            int optionalObjectives = 0;
-            for (PlayerObjective objective : getUncompletedObjectives()) {
-                if (objective.getObjective().isOptional()) optionalObjectives++;
-            }
-            if (optionalObjectives == uncompletedObjectives.size()) {
-                completed = true;
-            }
-        }
-        return completed;
-    }
-
-
-    @Override
-    public List<PlayerObjective> getPlayerObjectives() {
-
-        Collections.sort(playerObjectives);
-        return playerObjectives;
-    }
-
-    @Override
-    public List<PlayerObjective> getUncompletedObjectives() {
-
-        Collections.sort(uncompletedObjectives);
-        return uncompletedObjectives;
-    }
-
-    @Override
-    public void completeObjective(PlayerObjective objective) {
-
-        uncompletedObjectives.remove(objective);
-        getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + getTemplate().getFriendlyName() +
-                ChatColor.RESET + ": " + ChatColor.DARK_GREEN + "Aufgabe erledigt!");
-        getHolder().getPlayer().sendMessage(ChatColor.GREEN.toString() + ChatColor.STRIKETHROUGH + ChatColor.ITALIC + objective.getObjective().getFriendlyName());
-    }
-
-    @Override
-    public void trigger(QuestHolder questHolder) {
-
-        if (!getPlayer().equals(questHolder) || !isActive() || isCompleted()) {
-            return;
-        }
-        boolean meetsRequirements = false;
-        if (getTemplate().getRequirements().length > 0) {
-            try {
-                for (Requirement requirement : getTemplate().getRequirements()) {
-                    if (!requirement.isMet(questHolder.getPlayer())) {
-                        meetsRequirements = false;
-                        break;
-                    }
-                }
-            } catch (QuestException e) {
-                meetsRequirements = false;
-                getPlayer().sendMessage(ChatColor.RED + e.getMessage());
-            }
-        } else {
-            meetsRequirements = true;
-        }
-        // dont trigger objectives when no requirements are met
-        if (meetsRequirements) {
-            for (PlayerObjective playerObjective : getUncompletedObjectives()) {
-                playerObjective.trigger(questHolder);
-
-                // abort if we are dealing with ordered required objectives
-                if (!playerObjective.getObjective().isOptional() && getTemplate().isOrdered()) {
-                    return;
-                }
-            }
-        }
-    }
-
-    @Override
-    public void start() {
-
-        if (!isActive()) {
-            setStartTime(new Timestamp(System.currentTimeMillis()));
-            save();
-        }
-        getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "Quest angenommen: " + ChatColor.GREEN + getFriendlyName());
-    }
-
-    @Override
-    public void complete() {
-
-        if (!isActive() || !hasCompletedAllObjectives()) {
-            return;
-        }
-        Bukkit.broadcastMessage(ChatColor.DARK_GREEN + getHolder().getPlayer().getName() + " hat die Quest '" +
-                ChatColor.GOLD + getFriendlyName() + ChatColor.DARK_GREEN + "' abgeschlossen!");
-//        getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "Quest abgeschlossen: " + ChatColor.GREEN + getFriendlyName());
-        // complete the quest and trigger the complete actions
-        setCompletionTime(new Timestamp(System.currentTimeMillis()));
-        // give rewards and execute completion actions
-        for (Action<QuestTemplate> action : getTemplate().getCompleteActions()) {
-            try {
-                action.execute(getHolder(), getTemplate());
-            } catch (QuestException e) {
-                getPlayer().sendMessage(ChatColor.RED + e.getMessage());
-            }
-        }
-        // unregister ourselves as trigger listener
-        for (Trigger trigger : getTemplate().getCompletionTrigger()) {
-            trigger.unregisterListener(this);
-        }
-    }
-
-    @Override
-    public void abort() {
-
-        getHolder().abortQuest(this);
-        setStartTime(null);
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         TPlayerQuest quest = database.find(TPlayerQuest.class, getId());
         if (quest != null) {
@@ -190,10 +64,6 @@ public class SimpleQuest extends AbstractQuest {
                     database.save(tPlayer);
                 }
             }
-        }
-        // unregister ourselves as trigger listener
-        for (Trigger trigger : getTemplate().getCompletionTrigger()) {
-            trigger.unregisterListener(this);
         }
     }
 
