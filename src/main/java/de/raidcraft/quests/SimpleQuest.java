@@ -2,12 +2,12 @@ package de.raidcraft.quests;
 
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.quests.player.PlayerObjective;
-import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.objective.PlayerObjective;
+import de.raidcraft.api.quests.holder.QuestHolder;
 import de.raidcraft.api.quests.quest.AbstractQuest;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.api.quests.quest.action.Action;
-import de.raidcraft.api.quests.quest.objective.Objective;
+import de.raidcraft.api.quests.objective.ObjectiveTemplate;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
@@ -34,18 +34,18 @@ public class SimpleQuest extends AbstractQuest {
 
         List<PlayerObjective> objectives = new ArrayList<>();
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
-        for (Objective objective : getTemplate().getObjectives()) {
+        for (ObjectiveTemplate objectiveTemplate : getTemplate().getObjectiveTemplates()) {
             TPlayerObjective entry = database.find(TPlayerObjective.class).where()
                     .eq("quest_id", getId())
-                    .eq("objective_id", objective.getId()).findUnique();
+                    .eq("objective_id", objectiveTemplate.getId()).findUnique();
             // create a new db entry if none exists
             if (entry == null) {
                 entry = new TPlayerObjective();
-                entry.setObjectiveId(objective.getId());
+                entry.setObjectiveId(objectiveTemplate.getId());
                 entry.setQuest(database.find(TPlayerQuest.class, getId()));
                 database.save(entry);
             }
-            objectives.add(new SimplePlayerObjective(entry, this, objective));
+            objectives.add(new SimplePlayerObjective(entry, this, objectiveTemplate));
         }
         return objectives;
     }
@@ -80,7 +80,7 @@ public class SimpleQuest extends AbstractQuest {
             objective.save();
         }
         // and actions
-        for (Action<QuestTemplate> action : getTemplate().getCompleteActions()) {
+        for (Action<QuestTemplate> action : getTemplate().getCompletionActions()) {
             action.save();
         }
     }

@@ -5,7 +5,7 @@ import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.*;
-import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.holder.QuestHolder;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.api.quests.quest.action.Action;
 import de.raidcraft.api.quests.quest.requirement.Requirement;

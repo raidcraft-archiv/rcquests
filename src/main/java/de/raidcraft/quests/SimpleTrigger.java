@@ -2,7 +2,7 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
-import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.holder.QuestHolder;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.api.quests.quest.action.Action;
 import de.raidcraft.api.quests.quest.trigger.AbstractTrigger;

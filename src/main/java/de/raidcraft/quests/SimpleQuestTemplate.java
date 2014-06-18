@@ -1,13 +1,18 @@
 package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.action.action.Action;
+import de.raidcraft.api.action.action.ActionFactory;
+import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.action.requirement.RequirementFactory;
+import de.raidcraft.api.action.trigger.*;
 import de.raidcraft.api.quests.quest.AbstractQuestTemplate;
-import de.raidcraft.api.quests.quest.objective.Objective;
-import de.raidcraft.api.quests.quest.QuestTemplate;
-import de.raidcraft.api.quests.quest.trigger.Trigger;
+import de.raidcraft.api.quests.objective.ObjectiveTemplate;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -22,46 +27,46 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     }
 
     @Override
-    protected void loadRequirements(ConfigurationSection data) {
+    protected Collection<ObjectiveTemplate> loadObjectives(ConfigurationSection data) {
 
-        this.requirements = QuestManager.loadRequirements(data, getBasePath());
-    }
-
-    @Override
-    protected void loadObjectives(ConfigurationSection data) {
-
-        if (data == null) {
-            return;
-        }
-        List<Objective> objectives = new ArrayList<>();
+        List<ObjectiveTemplate> objectiveTemplates = new ArrayList<>();
+        if (data == null) return objectiveTemplates;
         Set <String> keys = data.getKeys(false);
         if (keys != null) {
             for (String key : keys) {
                 try {
-                    objectives.add(new SimpleObjective(Integer.parseInt(key), this, data.getConfigurationSection(key)));
+                    objectiveTemplates.add(new SimpleObjectiveTemplate(Integer.parseInt(key), this, data.getConfigurationSection(key)));
                 } catch (NumberFormatException e) {
                     RaidCraft.LOGGER.warning("Wrong objective id in " + getId() + ": " + key);
                 }
             }
         }
-        this.objectives = objectives.toArray(new Objective[objectives.size()]);
+        return objectiveTemplates;
     }
 
     @Override
-    protected void loadTrigger(ConfigurationSection data) {
+    protected Collection<TriggerFactory> loadStartTrigger(ConfigurationSection data) {
 
-        this.trigger = QuestManager.loadTrigger(data, this, Trigger.Type.QUEST_START);
+        return TriggerManager.getInstance().createTriggerFactories(data);
     }
 
     @Override
-    protected void loadCompleteTrigger(ConfigurationSection data) {
+    protected Collection<TriggerFactory> loadCompletionTrigger(ConfigurationSection data) {
 
-        this.completeTrigger = QuestManager.loadTrigger(data, this, Trigger.Type.QUEST_ACCEPTED);
+        return TriggerManager.getInstance().createTriggerFactories(data);
     }
 
     @Override
-    protected void loadActions(ConfigurationSection data) {
+    @SuppressWarnings("unchecked")
+    protected Collection<Requirement<Player>> loadRequirements(ConfigurationSection data) {
 
-        setActions(QuestManager.loadActions((QuestTemplate) this, data, getBasePath()));
+        return RequirementFactory.getInstance().createRequirements(data, Player.class);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected Collection<Action<Player>> loadActions(ConfigurationSection data) {
+
+        return ActionFactory.getInstance().createActions(data, Player.class);
     }
 }

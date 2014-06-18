@@ -1,17 +1,21 @@
 package de.raidcraft.quests;
 
 import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.action.action.ActionFactory;
+import de.raidcraft.api.action.trigger.TriggerManager;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
-import de.raidcraft.api.quests.InvalidTypeException;
 import de.raidcraft.api.quests.Quests;
-import de.raidcraft.quests.actions.*;
+import de.raidcraft.quests.actions.CompleteQuestAction;
+import de.raidcraft.quests.actions.StartQuestAction;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
-import de.raidcraft.quests.tables.*;
+import de.raidcraft.quests.tables.TPlayer;
+import de.raidcraft.quests.tables.TPlayerObjective;
+import de.raidcraft.quests.tables.TPlayerQuest;
+import de.raidcraft.quests.tables.TPlayerRequirementCount;
+import de.raidcraft.quests.tables.TQuestAction;
 import de.raidcraft.quests.trigger.HostTrigger;
-import de.raidcraft.quests.trigger.LocationTrigger;
-import de.raidcraft.quests.trigger.PlayerTrigger;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -31,11 +35,11 @@ public class QuestPlugin extends BasePlugin {
 
         configuration = configure(new LocalConfiguration(this));
 
-        triggerManager = new TriggerManager(this);
         questManager = new QuestManager(this);
 
-        registerGlobalTrigger();
-        registerGlobalQuestTypes();
+        registerTrigger();
+        registerActions();
+        registerRequirements();
 
         // register our events
         registerEvents(new PlayerListener(this));
@@ -67,28 +71,19 @@ public class QuestPlugin extends BasePlugin {
         Quests.enable(questManager);
     }
 
-    private void registerGlobalQuestTypes() {
+    private void registerActions() {
 
-        try {
-            questManager.registerQuestType(new Text());
-            questManager.registerQuestType(new Item());
-            questManager.registerQuestType(new Block());
-            questManager.registerQuestType(new Teleport());
-            questManager.registerQuestType(new QuestActions());
-        } catch (InvalidTypeException e) {
-            getLogger().warning(e.getMessage());
-        }
+        ActionFactory.getInstance().registerAction(this, "quest.start", new StartQuestAction());
+        ActionFactory.getInstance().registerAction(this, "quest.complete", new CompleteQuestAction());
     }
 
-    private void registerGlobalTrigger() {
+    private void registerRequirements() {
 
-        try {
-            Quests.registerTrigger(this, LocationTrigger.class, true);
-            Quests.registerTrigger(this, PlayerTrigger.class, true);
-            Quests.registerTrigger(this, HostTrigger.class, true);
-        } catch (InvalidTypeException e) {
-            getLogger().warning(e.getMessage());
-        }
+    }
+
+    private void registerTrigger() {
+
+        TriggerManager.getInstance().registerTrigger(this, new HostTrigger());
     }
 
     @Override
