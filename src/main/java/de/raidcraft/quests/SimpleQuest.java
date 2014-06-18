@@ -2,12 +2,11 @@ package de.raidcraft.quests;
 
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.quests.objective.PlayerObjective;
 import de.raidcraft.api.quests.holder.QuestHolder;
+import de.raidcraft.api.quests.objective.ObjectiveTemplate;
+import de.raidcraft.api.quests.objective.PlayerObjective;
 import de.raidcraft.api.quests.quest.AbstractQuest;
 import de.raidcraft.api.quests.quest.QuestTemplate;
-import de.raidcraft.api.quests.quest.action.Action;
-import de.raidcraft.api.quests.objective.ObjectiveTemplate;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
@@ -72,16 +71,13 @@ public class SimpleQuest extends AbstractQuest {
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         TPlayerQuest quest = database.find(TPlayerQuest.class, getId());
         if (quest == null) return;
+        quest.setPhase(getPhase());
         quest.setStartTime(getStartTime());
         quest.setCompletionTime(getCompletionTime());
         database.save(quest);
         // also save all quest objectives
         for (PlayerObjective objective : getPlayerObjectives()) {
             objective.save();
-        }
-        // and actions
-        for (Action<QuestTemplate> action : getTemplate().getCompletionActions()) {
-            action.save();
         }
     }
 }

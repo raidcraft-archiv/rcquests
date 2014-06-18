@@ -2,16 +2,10 @@ package de.raidcraft.quests;
 
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.quests.objective.AbstractPlayerObjective;
 import de.raidcraft.api.quests.objective.ObjectiveTemplate;
 import de.raidcraft.api.quests.quest.Quest;
 import de.raidcraft.quests.tables.TPlayerObjective;
-import de.raidcraft.quests.tables.TPlayerRequirementCount;
-import org.bukkit.entity.Player;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Silthus
@@ -31,13 +25,5 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
         TPlayerObjective objective = database.find(TPlayerObjective.class, getId());
         objective.setCompletionTime(getCompletionTime());
         database.save(objective);
-        // save the counted requirements
-        for (Requirement<Player> requirement : getObjectiveTemplate().getRequirements()) {
-            requirement.save();
-        }
-        // save actions
-        for (Action<ObjectiveTemplate> action : getObjectiveTemplate().getActions()) {
-            action.save();
-        }
     }
 }
