@@ -6,8 +6,11 @@ import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.action.trigger.*;
+import de.raidcraft.api.quests.Quests;
+import de.raidcraft.api.quests.holder.QuestHolder;
 import de.raidcraft.api.quests.quest.AbstractQuestTemplate;
 import de.raidcraft.api.quests.objective.ObjectiveTemplate;
+import de.raidcraft.api.quests.quest.Quest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

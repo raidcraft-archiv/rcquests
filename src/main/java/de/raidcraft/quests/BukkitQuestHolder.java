@@ -39,8 +39,11 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
     }
 
     @Override
-    public void startQuest(QuestTemplate template) throws QuestException {
+    public Quest createQuest(QuestTemplate template) {
 
+        if (hasQuest(template)) {
+            return getQuest(template);
+        }
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         TPlayerQuest table = database.find(TPlayerQuest.class).where()
                 .eq("player_id", getId())
@@ -51,13 +54,21 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
             table.setQuest(template.getId());
             database.save(table);
         }
-
         SimpleQuest quest = new SimpleQuest(table, template, this);
+        addQuest(quest);
+        return quest;
+    }
+
+    @Override
+    public Quest startQuest(QuestTemplate template) throws QuestException {
+
+        super.startQuest(template);
+        Quest quest = createQuest(template);
         if (quest.isCompleted()) {
             throw new QuestException("Du hast diese Quest bereits abgeschlossen.");
         }
-        addQuest(quest);
         quest.start();
+        return quest;
     }
 
     @Override

@@ -52,6 +52,8 @@ public final class QuestManager implements QuestProvider, Component {
                 public void loadConfig(String id, ConfigurationSection config) {
 
                     SimpleQuestTemplate quest = new SimpleQuestTemplate(id, config);
+                    // lets register the triggers of the quest
+                    quest.registerListeners();
                     loadedQuests.put(id, quest);
                     plugin.getLogger().info("Loaded quest: " + id + " - " + quest.getFriendlyName());
                 }
