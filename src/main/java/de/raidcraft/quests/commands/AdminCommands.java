@@ -38,8 +38,9 @@ public class AdminCommands {
     }
 
     @Command(
-            aliases = {"accept", "a"},
-            desc = "Accepts a quest",
+            aliases = {"accept", "start", "a"},
+            desc = "Starts a quest",
+            usage = "<Quest>",
             min = 1
     )
     @CommandPermissions("rcquests.admin.accept")
@@ -61,22 +62,17 @@ public class AdminCommands {
             aliases = {"abort", "abbruch", "abrechen", "cancel"},
             desc = "Cancels the quest",
             min = 1,
-            usage = "[Player] <Quest>"
+            flags = "p:",
+            usage = "[-p <Player>] <Quest>"
     )
-         @CommandPermissions("rcquests.admin.abort")
-         public void abort(CommandContext args, CommandSender sender) throws CommandException {
-
-        Player targetPlayer = (Player)sender;
-        String questName = args.getString(0);
-        if(args.argsLength() > 1) {
-            questName = args.getString(1);
-            targetPlayer = Bukkit.getPlayer(args.getString(0));
+    @CommandPermissions("rcquests.admin.abort")
+    public void abort(CommandContext args, CommandSender sender) throws CommandException {
+        try {
+            Player targetPlayer = args.hasFlag('p') ? Bukkit.getPlayer(args.getFlag('p')) : (Player) sender;
+            String questName = args.getString(0);
             if(targetPlayer == null) {
                 throw new CommandException("Der angegebene Spieler ist nicht Online!");
             }
-        }
-
-        try {
             QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);
             Quest quest = questPlayer.getQuest(questName);
             quest.abort();
@@ -84,5 +80,15 @@ public class AdminCommands {
         } catch (QuestException e) {
             throw new CommandException(e.getMessage());
         }
+    }
+
+    @Command(
+            aliases = {"create"},
+            desc = "Starts the Quest Creation Wizard"
+    )
+    @CommandPermissions("rcquests.admin.create")
+    public void create(CommandContext args, CommandSender sender) {
+
+
     }
 }

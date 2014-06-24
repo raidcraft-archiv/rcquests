@@ -3,6 +3,7 @@ package de.raidcraft.quests;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
+import de.raidcraft.api.config.builder.ConfigBuilder;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.QuestConfigLoader;
@@ -12,6 +13,7 @@ import de.raidcraft.api.quests.QuestProvider;
 import de.raidcraft.api.quests.holder.QuestHolder;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.api.quests.util.QuestUtil;
+import de.raidcraft.quests.config.QuestHostConfigLoader;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.apache.commons.lang.StringUtils;
@@ -59,26 +61,7 @@ public final class QuestManager implements QuestProvider, Component {
                 }
             });
             // and the quest host loader
-            registerQuestConfigLoader(new QuestConfigLoader("host") {
-                @Override
-                public void loadConfig(String id, ConfigurationSection config) {
-
-                    String hostType = config.getString("type");
-                    if (questHostTypes.containsKey(hostType)) {
-                        try {
-                            Constructor<? extends QuestHost> constructor = questHostTypes.get(hostType);
-                            constructor.setAccessible(true);
-                            QuestHost questHost = constructor.newInstance(id, config);
-                            loadedQuestHosts.put(questHost.getId(), questHost);
-                            plugin.getLogger().info("Loaded quest host: " + questHost.getId() + " - " + questHost.getFriendlyName());
-                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                            plugin.getLogger().warning(e.getMessage());
-                        }
-                    } else {
-                        plugin.getLogger().warning("Failed to load quest host \"" + id + "\"! Invalid host type: " + hostType);
-                    }
-                }
-            });
+            registerQuestConfigLoader(new QuestHostConfigLoader(plugin));
         } catch (QuestException e) {
             plugin.getLogger().warning(e.getMessage());
         }
@@ -139,6 +122,7 @@ public final class QuestManager implements QuestProvider, Component {
             throw new QuestException("Config loader with the suffix " + loader.getSuffix() + " is already registered!");
         }
         configLoader.put(loader.getSuffix(), loader);
+        ConfigBuilder.registerConfigBuilder(loader);
         if (loadedQuestFiles) {
             load();
         }
@@ -147,7 +131,7 @@ public final class QuestManager implements QuestProvider, Component {
     @Override
     public void registerQuestHost(String type, Class<? extends QuestHost> clazz) throws InvalidQuestHostException {
 
-        if (questHostTypes.containsKey(type)) {
+        if (!isQuestHostType(type)) {
             throw new InvalidQuestHostException("Tried to register duplicate quest host type: " + type);
         }
 
@@ -157,6 +141,24 @@ public final class QuestManager implements QuestProvider, Component {
             plugin.getLogger().info("Registered quest host type " + type + ": " + clazz.getCanonicalName());
         } catch (NoSuchMethodException e) {
             throw new InvalidQuestHostException(e.getMessage());
+        }
+    }
+
+    public boolean isQuestHostType(String type) {
+
+        return questHostTypes.containsKey(type);
+    }
+
+    public void createQuestHost(String type, String id, ConfigurationSection config) {
+
+        try {
+            Constructor<? extends QuestHost> constructor = questHostTypes.get(type);
+            constructor.setAccessible(true);
+            QuestHost questHost = constructor.newInstance(id, config);
+            loadedQuestHosts.put(questHost.getId(), questHost);
+            plugin.getLogger().info("Loaded quest host: " + questHost.getId() + " - " + questHost.getFriendlyName());
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            plugin.getLogger().warning(e.getMessage());
         }
     }
 
