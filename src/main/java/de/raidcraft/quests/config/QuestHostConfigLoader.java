@@ -2,8 +2,10 @@ package de.raidcraft.quests.config;
 
 import com.sk89q.minecraft.util.commands.CommandContext;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.config.builder.SectionBuilder;
+import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.config.builder.ConfigBuilder;
 import de.raidcraft.api.config.builder.ConfigBuilderException;
+import de.raidcraft.api.config.builder.ConfigGenerator;
 import de.raidcraft.api.quests.QuestConfigLoader;
 import de.raidcraft.quests.QuestPlugin;
 import org.bukkit.configuration.ConfigurationSection;
@@ -13,7 +15,7 @@ import org.bukkit.entity.Player;
 /**
  * @author mdoering
  */
-public class QuestHostConfigLoader extends QuestConfigLoader implements SectionBuilder {
+public class QuestHostConfigLoader extends QuestConfigLoader implements ConfigGenerator {
 
     private final QuestPlugin plugin;
 
@@ -43,10 +45,9 @@ public class QuestHostConfigLoader extends QuestConfigLoader implements SectionB
             min = 2,
             help = "Execute at the position you want to create the Quest Host. Equip the items the host should have and use the -e flag."
     )
-    public ConfigurationSection createSection(CommandContext args, Player player) throws ConfigBuilderException {
+    public <T extends BasePlugin> void build(ConfigBuilder<T> builder, CommandContext args, Player player) throws ConfigBuilderException {
 
         ConfigurationSection config = new MemoryConfiguration();
-        String str = config.isSet("") || config.isSet("") ? "" : "";
         String questHostType = args.getFlag('t', "NPC");
         if (!plugin.getQuestManager().isQuestHostType(questHostType)) {
             throw new ConfigBuilderException("Quest Host Type " + args.getFlag('t') + " not found!");
@@ -72,6 +73,7 @@ public class QuestHostConfigLoader extends QuestConfigLoader implements SectionB
             equipment.set("legs", RaidCraft.getItemIdString(player.getEquipment().getLeggings()));
             equipment.set("boots", RaidCraft.getItemIdString(player.getEquipment().getBoots()));
         }
-        return config;
+        builder.createConfig(args.getString(0) + getSuffix(), config);
+        builder.setLocked(true);
     }
 }
