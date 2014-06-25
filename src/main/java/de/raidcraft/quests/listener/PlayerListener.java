@@ -1,7 +1,7 @@
 package de.raidcraft.quests.listener;
 
 import de.raidcraft.quests.QuestPlugin;
-import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.holder.QuestHolder;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -20,7 +20,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
-    public void onPlayerJoint(PlayerJoinEvent event) {
+    public void onPlayerJoin(PlayerJoinEvent event) {
 
         plugin.getQuestManager().getQuestHolder(event.getPlayer());
     }

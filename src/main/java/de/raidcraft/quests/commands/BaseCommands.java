@@ -7,7 +7,7 @@ import com.sk89q.minecraft.util.commands.NestedCommand;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.quests.QuestManager;
 import de.raidcraft.quests.QuestPlugin;
-import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.holder.QuestHolder;
 import de.raidcraft.api.quests.quest.Quest;
 import de.raidcraft.quests.ui.QuestUI;
 import org.bukkit.command.CommandSender;

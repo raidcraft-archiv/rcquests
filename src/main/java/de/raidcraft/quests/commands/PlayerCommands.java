@@ -3,7 +3,7 @@ package de.raidcraft.quests.commands;
 import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
-import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.holder.QuestHolder;
 import de.raidcraft.api.quests.quest.Quest;
 import de.raidcraft.quests.QuestPlugin;
 import org.bukkit.ChatColor;

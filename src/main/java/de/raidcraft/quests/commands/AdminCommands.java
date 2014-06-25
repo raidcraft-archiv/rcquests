@@ -4,21 +4,16 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
+import de.raidcraft.api.config.builder.ConfigBuilder;
 import de.raidcraft.api.quests.QuestException;
-import de.raidcraft.api.quests.QuestTrigger;
-import de.raidcraft.api.quests.Quests;
-import de.raidcraft.api.quests.player.QuestHolder;
+import de.raidcraft.api.quests.holder.QuestHolder;
 import de.raidcraft.api.quests.quest.Quest;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.quests.QuestPlugin;
-import de.raidcraft.util.PaginatedResult;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Silthus
@@ -44,8 +39,9 @@ public class AdminCommands {
     }
 
     @Command(
-            aliases = {"accept", "a"},
-            desc = "Accepts a quest",
+            aliases = {"accept", "start", "a"},
+            desc = "Starts a quest",
+            usage = "<Quest>",
             min = 1
     )
     @CommandPermissions("rcquests.admin.accept")
@@ -64,54 +60,20 @@ public class AdminCommands {
     }
 
     @Command(
-            aliases = {"list"},
-            desc = "Lists trigger, actions and stuff",
-            min = 1,
-            flags = "p:",
-            usage = "[actions|requirements|trigger]"
-    )
-    public void list(CommandContext args, CommandSender sender) throws CommandException {
-
-        String keyword = args.getString(0);
-        List<String> content = new ArrayList<>();
-        if (keyword.equalsIgnoreCase("actions")) {
-            content = plugin.getQuestManager().getLoadedActions();
-        } else if (keyword.equalsIgnoreCase("requirements")) {
-            content = plugin.getQuestManager().getLoadedRequirements();
-        } else if (keyword.equalsIgnoreCase("trigger")) {
-            for (QuestTrigger trigger : Quests.getLoadedTrigger()) {
-                content.add(trigger.getName());
-            }
-        }
-        new PaginatedResult<String>("Type Name") {
-            @Override
-            public String format(String entry) {
-
-                return ChatColor.YELLOW + entry;
-            }
-        }.display(sender, content, args.getFlagInteger('p', 1));
-    }
-
-    @Command(
             aliases = {"abort", "abbruch", "abrechen", "cancel"},
             desc = "Cancels the quest",
             min = 1,
-            usage = "[Player] <Quest>"
+            flags = "p:",
+            usage = "[-p <Player>] <Quest>"
     )
-         @CommandPermissions("rcquests.admin.abort")
-         public void abort(CommandContext args, CommandSender sender) throws CommandException {
-
-        Player targetPlayer = (Player)sender;
-        String questName = args.getString(0);
-        if(args.argsLength() > 1) {
-            questName = args.getString(1);
-            targetPlayer = Bukkit.getPlayer(args.getString(0));
+    @CommandPermissions("rcquests.admin.abort")
+    public void abort(CommandContext args, CommandSender sender) throws CommandException {
+        try {
+            Player targetPlayer = args.hasFlag('p') ? Bukkit.getPlayer(args.getFlag('p')) : (Player) sender;
+            String questName = args.getString(0);
             if(targetPlayer == null) {
                 throw new CommandException("Der angegebene Spieler ist nicht Online!");
             }
-        }
-
-        try {
             QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);
             Quest quest = questPlayer.getQuest(questName);
             quest.abort();
@@ -119,5 +81,18 @@ public class AdminCommands {
         } catch (QuestException e) {
             throw new CommandException(e.getMessage());
         }
+    }
+
+    @Command(
+            aliases = {"create"},
+            desc = "Starts the Quest Creation Wizard",
+            min = 1,
+            usage = "<path.to.the.quest.root.dir>"
+    )
+    @CommandPermissions("rcquests.admin.create")
+    public void create(CommandContext args, CommandSender sender) {
+
+        ConfigBuilder.createBuilder(plugin, (Player) sender, args.getString(0));
+        sender.sendMessage(ChatColor.RED + "Started Quest Builder! Exit with '/rccb save'. See commands with '/rccb' and '/rccb <TabAutoComplete> ?'");
     }
 }
