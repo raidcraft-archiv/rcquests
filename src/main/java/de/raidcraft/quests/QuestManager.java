@@ -122,7 +122,7 @@ public final class QuestManager implements QuestProvider, Component {
             throw new QuestException("Config loader with the suffix " + loader.getSuffix() + " is already registered!");
         }
         configLoader.put(loader.getSuffix(), loader);
-        ConfigBuilder.registerConfigBuilder(loader);
+        ConfigBuilder.registerConfigGenerator(loader);
         if (loadedQuestFiles) {
             load();
         }

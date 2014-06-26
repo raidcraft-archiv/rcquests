@@ -36,7 +36,6 @@ public class QuestHostConfigLoader extends QuestConfigLoader implements ConfigGe
         }
     }
 
-    @Override
     @Information(
             value = "quest.host",
             desc = "Creates a quest host at the current location with the current equipment (-e)",
