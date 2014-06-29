@@ -1,6 +1,6 @@
 package de.raidcraft.quests.ui;
 
-import de.raidcraft.api.quests.player.PlayerObjective;
+import de.raidcraft.api.quests.objective.PlayerObjective;
 import de.raidcraft.api.quests.quest.Quest;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -30,10 +30,10 @@ public class QuestBook extends ItemStack {
         lore.add("");
         // add quest objectives
         for (PlayerObjective objective : quest.getPlayerObjectives()) {
-            String friendlyName = objective.getObjective().getFriendlyName();
+            String friendlyName = objective.getObjectiveTemplate().getFriendlyName();
             if (objective.isCompleted()) {
                 lore.add(ChatColor.STRIKETHROUGH + "" + ChatColor.GRAY + friendlyName);
-            } else if (objective.getObjective().isOptional()) {
+            } else if (objective.getObjectiveTemplate().isOptional()) {
                 lore.add(ChatColor.ITALIC + friendlyName);
             } else {
                 lore.add(ChatColor.WHITE + friendlyName);

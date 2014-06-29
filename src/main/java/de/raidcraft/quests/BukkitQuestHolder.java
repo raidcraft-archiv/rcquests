@@ -3,7 +3,7 @@ package de.raidcraft.quests;
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestException;
-import de.raidcraft.api.quests.player.AbstractQuestHolder;
+import de.raidcraft.api.quests.holder.AbstractQuestHolder;
 import de.raidcraft.api.quests.quest.Quest;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.quests.tables.TPlayer;
@@ -39,8 +39,11 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
     }
 
     @Override
-    public void startQuest(QuestTemplate template) throws QuestException {
+    public Quest createQuest(QuestTemplate template) {
 
+        if (hasQuest(template)) {
+            return getQuest(template);
+        }
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         TPlayerQuest table = database.find(TPlayerQuest.class).where()
                 .eq("player_id", getId())
@@ -51,13 +54,21 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
             table.setQuest(template.getId());
             database.save(table);
         }
-
         SimpleQuest quest = new SimpleQuest(table, template, this);
+        addQuest(quest);
+        return quest;
+    }
+
+    @Override
+    public Quest startQuest(QuestTemplate template) throws QuestException {
+
+        super.startQuest(template);
+        Quest quest = createQuest(template);
         if (quest.isCompleted()) {
             throw new QuestException("Du hast diese Quest bereits abgeschlossen.");
         }
-        addQuest(quest);
         quest.start();
+        return quest;
     }
 
     @Override

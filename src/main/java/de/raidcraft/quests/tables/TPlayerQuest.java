@@ -1,6 +1,9 @@
 package de.raidcraft.quests.tables;
 
 import com.avaje.ebean.validation.NotNull;
+import de.raidcraft.api.quests.quest.Quest;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -17,6 +20,8 @@ import java.util.List;
  */
 @Entity
 @Table(name = "quests_player_quests")
+@Getter
+@Setter
 public class TPlayerQuest {
 
     @Id
@@ -25,69 +30,10 @@ public class TPlayerQuest {
     @ManyToOne
     private TPlayer player;
     private String quest;
+    private Quest.Phase phase;
     private Timestamp startTime;
     private Timestamp completionTime;
     @JoinColumn(name = "quest_id")
     @OneToMany(cascade = CascadeType.REMOVE)
     private List<TPlayerObjective> objectives;
-
-    public int getId() {
-
-        return id;
-    }
-
-    public void setId(int id) {
-
-        this.id = id;
-    }
-
-    public TPlayer getPlayer() {
-
-        return player;
-    }
-
-    public void setPlayer(TPlayer player) {
-
-        this.player = player;
-    }
-
-    public String getQuest() {
-
-        return quest;
-    }
-
-    public void setQuest(String quest) {
-
-        this.quest = quest;
-    }
-
-    public Timestamp getStartTime() {
-
-        return startTime;
-    }
-
-    public void setStartTime(Timestamp startTime) {
-
-        this.startTime = startTime;
-    }
-
-    public Timestamp getCompletionTime() {
-
-        return completionTime;
-    }
-
-    public void setCompletionTime(Timestamp completionTime) {
-
-        this.completionTime = completionTime;
-    }
-
-    public List<TPlayerObjective> getObjectives() {
-
-        return objectives;
-    }
-
-    public void setObjectives(List<TPlayerObjective> objectives) {
-
-        this.objectives = objectives;
-    }
 }

@@ -1,6 +1,8 @@
 package de.raidcraft.quests.tables;
 
 import com.avaje.ebean.validation.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -16,6 +18,8 @@ import java.util.List;
  */
 @Entity
 @Table(name = "quests_players")
+@Getter
+@Setter
 public class TPlayer {
 
     @Id
@@ -28,54 +32,4 @@ public class TPlayer {
     private List<TPlayerQuest> quests;
     private int activeQuests;
     private int completedQuests;
-
-    public int getId() {
-
-        return id;
-    }
-
-    public void setId(int id) {
-
-        this.id = id;
-    }
-
-    public String getPlayer() {
-
-        return player;
-    }
-
-    public void setPlayer(String player) {
-
-        this.player = player;
-    }
-
-    public int getActiveQuests() {
-
-        return activeQuests;
-    }
-
-    public void setActiveQuests(int activeQuests) {
-
-        this.activeQuests = activeQuests;
-    }
-
-    public int getCompletedQuests() {
-
-        return completedQuests;
-    }
-
-    public void setCompletedQuests(int completedQuests) {
-
-        this.completedQuests = completedQuests;
-    }
-
-    public List<TPlayerQuest> getQuests() {
-
-        return quests;
-    }
-
-    public void setQuests(List<TPlayerQuest> quests) {
-
-        this.quests = quests;
-    }
 }
