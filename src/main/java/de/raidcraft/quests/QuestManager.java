@@ -78,11 +78,11 @@ public final class QuestManager implements QuestProvider, Component {
 
     public void unload() {
 
-        for (QuestHolder holder : questPlayers.values()) {
-            holder.save();
-        }
+        questPlayers.values().forEach(QuestHolder::save);
+        loadedQuestHosts.values().forEach(QuestHost::despawn);
         loadedQuests.clear();
         questPlayers.clear();
+        loadedQuestHosts.clear();
         loadedQuestFiles = false;
     }
 
