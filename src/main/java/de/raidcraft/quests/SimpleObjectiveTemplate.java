@@ -1,8 +1,11 @@
 package de.raidcraft.quests;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
+import de.raidcraft.api.action.action.ActionException;
 import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.action.requirement.RequirementException;
 import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.action.trigger.TriggerFactory;
 import de.raidcraft.api.action.trigger.TriggerManager;
@@ -11,6 +14,7 @@ import de.raidcraft.api.quests.quest.QuestTemplate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -26,7 +30,12 @@ public class SimpleObjectiveTemplate extends AbstractObjectiveTemplate {
     @Override
     protected Collection<Requirement<Player>> loadRequirements(ConfigurationSection data) {
 
-        return RequirementFactory.getInstance().createRequirements(data, Player.class);
+        try {
+            return RequirementFactory.getInstance().createRequirements(data, Player.class);
+        } catch (RequirementException e) {
+            RaidCraft.LOGGER.warning(e.getMessage() + " in " + getQuestTemplate().getId());
+        }
+        return new ArrayList<>();
     }
 
     @Override
@@ -38,6 +47,11 @@ public class SimpleObjectiveTemplate extends AbstractObjectiveTemplate {
     @Override
     protected Collection<Action<Player>> loadActions(ConfigurationSection data) {
 
-        return ActionFactory.getInstance().createActions(data, Player.class);
+        try {
+            return ActionFactory.getInstance().createActions(data, Player.class);
+        } catch (ActionException e) {
+            RaidCraft.LOGGER.warning(e.getMessage() + " in " + getQuestTemplate().getId());
+        }
+        return new ArrayList<>();
     }
 }

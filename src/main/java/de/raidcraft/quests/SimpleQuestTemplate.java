@@ -2,15 +2,15 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
+import de.raidcraft.api.action.action.ActionException;
 import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.action.requirement.RequirementException;
 import de.raidcraft.api.action.requirement.RequirementFactory;
-import de.raidcraft.api.action.trigger.*;
-import de.raidcraft.api.quests.Quests;
-import de.raidcraft.api.quests.holder.QuestHolder;
-import de.raidcraft.api.quests.quest.AbstractQuestTemplate;
+import de.raidcraft.api.action.trigger.TriggerFactory;
+import de.raidcraft.api.action.trigger.TriggerManager;
 import de.raidcraft.api.quests.objective.ObjectiveTemplate;
-import de.raidcraft.api.quests.quest.Quest;
+import de.raidcraft.api.quests.quest.AbstractQuestTemplate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -63,13 +63,23 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     @SuppressWarnings("unchecked")
     protected Collection<Requirement<Player>> loadRequirements(ConfigurationSection data) {
 
-        return RequirementFactory.getInstance().createRequirements(data, Player.class);
+        try {
+            return RequirementFactory.getInstance().createRequirements(data, Player.class);
+        } catch (RequirementException e) {
+            RaidCraft.LOGGER.warning(e.getMessage() + " in " + getId());
+        }
+        return new ArrayList<>();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected Collection<Action<Player>> loadActions(ConfigurationSection data) {
 
-        return ActionFactory.getInstance().createActions(data, Player.class);
+        try {
+            return ActionFactory.getInstance().createActions(data, Player.class);
+        } catch (ActionException e) {
+            RaidCraft.LOGGER.warning(e.getMessage() + " in " + getId());
+        }
+        return new ArrayList<>();
     }
 }
