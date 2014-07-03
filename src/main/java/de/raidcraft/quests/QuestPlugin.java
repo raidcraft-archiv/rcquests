@@ -44,10 +44,13 @@ public class QuestPlugin extends BasePlugin {
         // commands
         registerCommands(BaseCommands.class);
         // load all of the quests after 2sec server start delay
-        Bukkit.getScheduler().runTaskLater(this, () -> {
+        Bukkit.getScheduler().runTaskLater(this, new Runnable() {
+            @Override
+            public void run() {
 
-            getQuestManager().load();
-            Quests.enable(questManager);
+                getQuestManager().load();
+                Quests.enable(questManager);
+            }
         }, 40L);
     }
 
