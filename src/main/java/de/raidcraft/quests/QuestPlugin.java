@@ -1,6 +1,7 @@
 package de.raidcraft.quests;
 
 import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.action.action.ActionException;
 import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.trigger.TriggerManager;
 import de.raidcraft.api.config.ConfigurationBase;
@@ -71,8 +72,17 @@ public class QuestPlugin extends BasePlugin {
 
     private void registerActions() {
 
+<<<<<<< HEAD
         ActionFactory.getInstance().registerGlobalAction("quest.start", new StartQuestAction());
         ActionFactory.getInstance().registerGlobalAction("quest.complete", new CompleteQuestAction());
+=======
+        try {
+            ActionFactory.getInstance().registerAction(this, "quest.start", new StartQuestAction());
+            ActionFactory.getInstance().registerAction(this, "quest.complete", new CompleteQuestAction());
+        } catch (ActionException e) {
+            getLogger().warning(e.getMessage());
+        }
+>>>>>>> remotes/origin/develop
     }
 
     private void registerRequirements() {
