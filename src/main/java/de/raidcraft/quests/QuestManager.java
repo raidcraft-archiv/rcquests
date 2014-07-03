@@ -11,6 +11,7 @@ import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestHost;
 import de.raidcraft.api.quests.QuestProvider;
 import de.raidcraft.api.quests.holder.QuestHolder;
+import de.raidcraft.api.quests.objective.PlayerObjective;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.api.quests.util.QuestUtil;
 import de.raidcraft.quests.config.QuestHostConfigLoader;
@@ -78,8 +79,16 @@ public final class QuestManager implements QuestProvider, Component {
 
     public void unload() {
 
-        questPlayers.values().forEach(QuestHolder::save);
+        questPlayers.values().forEach(holder -> {
+            holder.save();
+            holder.getAllQuests()
+                    .forEach(quest -> quest.getPlayerObjectives()
+                            .forEach(PlayerObjective::unregisterListeners));
+        });
         loadedQuestHosts.values().forEach(QuestHost::despawn);
+        loadedQuests.values()
+                .forEach(template -> template.getStartTrigger()
+                        .forEach(trigger -> trigger.unregisterListener(template)));
         loadedQuests.clear();
         questPlayers.clear();
         loadedQuestHosts.clear();
