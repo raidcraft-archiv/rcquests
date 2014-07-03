@@ -131,7 +131,7 @@ public final class QuestManager implements QuestProvider, Component {
     @Override
     public void registerQuestHost(String type, Class<? extends QuestHost> clazz) throws InvalidQuestHostException {
 
-        if (!isQuestHostType(type)) {
+        if (isQuestHostType(type)) {
             throw new InvalidQuestHostException("Tried to register duplicate quest host type: " + type);
         }
 
