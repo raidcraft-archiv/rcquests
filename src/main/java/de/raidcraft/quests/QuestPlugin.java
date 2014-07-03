@@ -81,7 +81,7 @@ public class QuestPlugin extends BasePlugin {
 
     private void registerTrigger() {
 
-        TriggerManager.getInstance().registerTrigger(this, new HostTrigger());
+        TriggerManager.getInstance().registerGlobalTrigger(new HostTrigger());
     }
 
     @Override
