@@ -34,7 +34,7 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
 
         List<ObjectiveTemplate> objectiveTemplates = new ArrayList<>();
         if (data == null) return objectiveTemplates;
-        Set <String> keys = data.getKeys(false);
+        Set<String> keys = data.getKeys(false);
         if (keys != null) {
             for (String key : keys) {
                 try {
@@ -60,26 +60,13 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Collection<Requirement<Player>> loadRequirements(ConfigurationSection data) {
-
-        try {
-            return RequirementFactory.getInstance().createRequirements(data, Player.class);
-        } catch (RequirementException e) {
-            RaidCraft.LOGGER.warning(e.getMessage() + " in " + getId());
-        }
-        return new ArrayList<>();
+        return RequirementFactory.getInstance().createRequirements(data, Player.class);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     protected Collection<Action<Player>> loadActions(ConfigurationSection data) {
+        return ActionFactory.getInstance().createActions(data, Player.class);
 
-        try {
-            return ActionFactory.getInstance().createActions(data, Player.class);
-        } catch (ActionException e) {
-            RaidCraft.LOGGER.warning(e.getMessage() + " in " + getId());
-        }
-        return new ArrayList<>();
     }
 }

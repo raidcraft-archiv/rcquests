@@ -30,12 +30,7 @@ public class SimpleObjectiveTemplate extends AbstractObjectiveTemplate {
     @Override
     protected Collection<Requirement<Player>> loadRequirements(ConfigurationSection data) {
 
-        try {
-            return RequirementFactory.getInstance().createRequirements(data, Player.class);
-        } catch (RequirementException e) {
-            RaidCraft.LOGGER.warning(e.getMessage() + " in " + getQuestTemplate().getId());
-        }
-        return new ArrayList<>();
+        return RequirementFactory.getInstance().createRequirements(data, Player.class);
     }
 
     @Override
@@ -47,11 +42,6 @@ public class SimpleObjectiveTemplate extends AbstractObjectiveTemplate {
     @Override
     protected Collection<Action<Player>> loadActions(ConfigurationSection data) {
 
-        try {
-            return ActionFactory.getInstance().createActions(data, Player.class);
-        } catch (ActionException e) {
-            RaidCraft.LOGGER.warning(e.getMessage() + " in " + getQuestTemplate().getId());
-        }
-        return new ArrayList<>();
+        return ActionFactory.getInstance().createActions(data, Player.class);
     }
 }
