@@ -5,11 +5,14 @@ import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.trigger.TriggerManager;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.api.npc.NPC_Manager;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.actions.CompleteQuestAction;
 import de.raidcraft.quests.actions.StartQuestAction;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
+import de.raidcraft.quests.npc.NPCListener;
+import de.raidcraft.quests.npc.QuestTrait;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
@@ -30,6 +33,10 @@ public class QuestPlugin extends BasePlugin {
 
     @Override
     public void enable() {
+        // load NPC's
+        NPC_Manager.getInstance().registerTrait(QuestTrait.class, "quest");
+        Bukkit.getPluginManager().registerEvents(new NPCListener(this), this);
+        NPC_Manager.getInstance().loadNPCs(getName());
 
         configuration = configure(new LocalConfiguration(this));
 
