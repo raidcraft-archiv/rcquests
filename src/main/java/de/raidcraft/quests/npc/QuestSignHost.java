@@ -85,8 +85,8 @@ public class QuestSignHost extends AbstractQuestHost implements ConversationHost
         }
         return defaultConversationName;
     }
-    // TODO fix compile error
-    @Deprecated
+
+    @Override
     public void despawn() {
 
         sign.getBlock().setType(Material.AIR);

@@ -30,7 +30,8 @@ public class NPCListener implements Listener {
 //        plugin.get().triggerConversation(host, event.getClicker());
     }
 
-    // TODO: checl perfromance
+    // TODO: check perfromance
+    // TODO: how to trigger quest actions?
     private ConversationHost getClickedHost(NPCClickEvent event) {
         if (!event.getNPC().hasTrait(QuestTrait.class)) {
             return null;
