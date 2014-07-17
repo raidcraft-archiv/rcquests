@@ -4,6 +4,8 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.conversations.ConversationHost;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.quests.AbstractQuestHost;
+import de.raidcraft.quests.QuestPlugin;
+import de.raidcraft.rcconversations.npc.NPC_Conservations_Manager;
 import de.raidcraft.util.CaseInsensitiveMap;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
@@ -13,6 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 
 import java.util.Map;
 
@@ -32,8 +35,10 @@ public class QuestNPCHost extends AbstractQuestHost implements ConversationHost 
         Location location = new Location(Bukkit.getWorld(loc.getString("world", "world")),
                 loc.getInt("x", 23), loc.getInt("y", 3), loc.getInt("z", 178));
         this.defaultConversationName = data.getString("default-conv", id + ".default");
-//        npc = ConversationsTrait.create(location, defaultConversationName, getFriendlyName(), false);
-        npc = null;
+        Plugin plugin = RaidCraft.getComponent(QuestPlugin.class);
+        // TODO: where spawn and despawn?n
+        // spawn a NPC
+        npc = NPC_Conservations_Manager.getInstance().spawnPersistNpcConservations(location, getFriendlyName(), plugin.getName(), defaultConversationName);
         npc.addTrait(QuestTrait.class);
         npc.getTrait(QuestTrait.class).setHostId(getId());
 
