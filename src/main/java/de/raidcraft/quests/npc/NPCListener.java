@@ -1,14 +1,10 @@
 package de.raidcraft.quests.npc;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.conversations.ConversationHost;
 import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.QuestHost;
 import de.raidcraft.api.quests.Quests;
-import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.rcconversations.api.conversation.RCConservationFindNPCConversationHost;
-import net.citizensnpcs.api.event.NPCClickEvent;
-import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
