@@ -24,9 +24,9 @@ import java.util.Map;
  */
 public class QuestNPCHost extends AbstractQuestHost implements ConversationHost {
 
-    private final NPC npc;
-    private final String defaultConversationName;
-    private final Map<String, String> playerConversations = new CaseInsensitiveMap<>();
+    private NPC npc;
+    private String defaultConversationName;
+    private Map<String, String> playerConversations = new CaseInsensitiveMap<>();
 
     public QuestNPCHost(String id, ConfigurationSection data) {
 
@@ -36,9 +36,15 @@ public class QuestNPCHost extends AbstractQuestHost implements ConversationHost 
                 loc.getInt("x", 23), loc.getInt("y", 3), loc.getInt("z", 178));
         this.defaultConversationName = data.getString("default-conv", id + ".default");
         Plugin plugin = RaidCraft.getComponent(QuestPlugin.class);
-        // TODO: where spawn and despawn?n
         // spawn a NPC
-        npc = NPC_Conservations_Manager.getInstance().spawnPersistNpcConservations(location, getFriendlyName(), plugin.getName(), defaultConversationName);
+        npc = QuestTrait.getNPC(id);
+        // if NPC not exists, warn admin and create new one
+        if(npc == null) {
+            plugin.getLogger().warning("Quest NPC not exists and spawned automaticly hostid:" + id);
+            npc = NPC_Quest_Manager.getInstance().spawnPersistNpcQuest(
+                    location, getFriendlyName(), plugin.getName(), defaultConversationName, id);
+        }
+
         npc.addTrait(QuestTrait.class);
         npc.getTrait(QuestTrait.class).setHostId(getId());
 
@@ -93,10 +99,8 @@ public class QuestNPCHost extends AbstractQuestHost implements ConversationHost 
         return defaultConversationName;
     }
 
-    // TODO fix compile error
-    @Deprecated
+    @Override
     public void despawn() {
-
-        npc.despawn(DespawnReason.REMOVAL);
+        npc.despawn(DespawnReason.PLUGIN);
     }
 }
