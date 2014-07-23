@@ -5,7 +5,9 @@ import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.QuestHost;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.rcconversations.api.conversation.RCConservationFindNPCConversationHost;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 /**
@@ -26,6 +28,17 @@ public class NPCListener implements Listener {
             event.setHost(questNpcHost);
         } catch (InvalidQuestHostException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onNpcInteract(NPCRightClickEvent event) {
+
+        if (event.getNPC().hasTrait(QuestTrait.class)) {
+            QuestHost questHost = event.getNPC().getTrait(QuestTrait.class).getQuestHost();
+            if (questHost != null) {
+                questHost.interact(event.getClicker());
+            }
         }
     }
 }
