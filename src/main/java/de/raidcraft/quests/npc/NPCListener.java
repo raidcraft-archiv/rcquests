@@ -16,6 +16,7 @@ public class NPCListener implements Listener {
 
     @EventHandler
     private void npcConservations(RCConservationFindNPCConversationHost event) {
+
         if (!event.getNPC().hasTrait(QuestTrait.class)) {
             return;
         }

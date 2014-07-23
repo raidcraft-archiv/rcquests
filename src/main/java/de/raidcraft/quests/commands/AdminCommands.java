@@ -68,10 +68,11 @@ public class AdminCommands {
     )
     @CommandPermissions("rcquests.admin.abort")
     public void abort(CommandContext args, CommandSender sender) throws CommandException {
+
         try {
             Player targetPlayer = args.hasFlag('p') ? Bukkit.getPlayer(args.getFlag('p')) : (Player) sender;
             String questName = args.getString(0);
-            if(targetPlayer == null) {
+            if (targetPlayer == null) {
                 throw new CommandException("Der angegebene Spieler ist nicht Online!");
             }
             QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);

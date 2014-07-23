@@ -61,12 +61,23 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
 
     @Override
     protected Collection<Requirement<Player>> loadRequirements(ConfigurationSection data) {
-        return RequirementFactory.getInstance().createRequirements(data, Player.class);
+
+        try {
+            return RequirementFactory.getInstance().createRequirements(data, Player.class);
+        } catch (RequirementException e) {
+            RaidCraft.LOGGER.warning(data.getRoot().getName() + ": " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     @Override
     protected Collection<Action<Player>> loadActions(ConfigurationSection data) {
-        return ActionFactory.getInstance().createActions(data, Player.class);
 
+        try {
+            return ActionFactory.getInstance().createActions(data, Player.class);
+        } catch (ActionException e) {
+            RaidCraft.LOGGER.warning(data.getRoot().getName() + ": " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 }

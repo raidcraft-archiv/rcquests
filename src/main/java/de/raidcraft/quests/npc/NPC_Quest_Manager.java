@@ -2,10 +2,7 @@ package de.raidcraft.quests.npc;
 
 import de.raidcraft.api.npc.NPC_Manager;
 import de.raidcraft.rcconversations.npc.NPC_Conservations_Manager;
-import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.npc.NPC;
-import net.citizensnpcs.api.trait.trait.Equipment;
-import net.citizensnpcs.api.trait.trait.Spawned;
 import org.bukkit.Location;
 
 /**
@@ -16,6 +13,7 @@ import org.bukkit.Location;
  * To change this template use File | Settings | File Templates.
  */
 public class NPC_Quest_Manager {
+
     private static NPC_Quest_Manager INSTANCE;
 
 
@@ -24,6 +22,7 @@ public class NPC_Quest_Manager {
     }
 
     public static NPC_Quest_Manager getInstance() {
+
         if (INSTANCE == null) {
             INSTANCE = new NPC_Quest_Manager();
         }
@@ -31,6 +30,7 @@ public class NPC_Quest_Manager {
     }
 
     public NPC createPersistNpcQuest(String name, String host, String conversationName, String hostID) {
+
         NPC npc = NPC_Conservations_Manager.getInstance().createPersistNpcConservations(name, host, conversationName);
         npc.addTrait(QuestTrait.class);
         npc.getTrait(QuestTrait.class).setHostId(hostID);
@@ -39,6 +39,7 @@ public class NPC_Quest_Manager {
     }
 
     public NPC spawnPersistNpcQuest(Location loc, String name, String host, String conversationName, String hostID) {
+
         NPC npc = this.createPersistNpcQuest(name, host, conversationName, hostID);
         npc.spawn(loc);
         NPC_Manager.getInstance().store(host);

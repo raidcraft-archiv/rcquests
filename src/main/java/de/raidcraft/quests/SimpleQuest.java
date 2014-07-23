@@ -57,9 +57,9 @@ public class SimpleQuest extends AbstractQuest {
         TPlayerQuest quest = database.find(TPlayerQuest.class, getId());
         if (quest != null) {
             database.delete(quest);
-            if(isCompleted()) {
+            if (isCompleted()) {
                 TPlayer tPlayer = database.find(TPlayer.class).where().eq("player", getPlayer().getName()).findUnique();
-                if(tPlayer != null && tPlayer.getCompletedQuests() > 0) {
+                if (tPlayer != null && tPlayer.getCompletedQuests() > 0) {
                     tPlayer.setCompletedQuests(tPlayer.getCompletedQuests() - 1);
                     database.save(tPlayer);
                 }

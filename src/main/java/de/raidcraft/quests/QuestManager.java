@@ -68,7 +68,7 @@ public final class QuestManager implements QuestProvider, Component {
         }
     }
 
-    public void  load() {
+    public void load() {
 
         // we need to look recursivly thru all folders under the defined base folder
         File baseFolder = new File(plugin.getDataFolder(), plugin.getConfiguration().quests_base_folder);
@@ -86,7 +86,7 @@ public final class QuestManager implements QuestProvider, Component {
                             .forEach(PlayerObjective::unregisterListeners));
         });
         // TODO: not needed, npc manager mange it
-//        loadedQuestHosts.values().forEach(QuestHost::despawn);
+        //        loadedQuestHosts.values().forEach(QuestHost::despawn);
         loadedQuests.values()
                 .forEach(template -> template.getStartTrigger()
                         .forEach(trigger -> trigger.unregisterListener(template)));
@@ -179,8 +179,8 @@ public final class QuestManager implements QuestProvider, Component {
             return loadedQuestHosts.get(id);
         }
         // search for string end
-        for(String key : loadedQuestHosts.keySet()) {
-            if(key.endsWith(id)) {
+        for (String key : loadedQuestHosts.keySet()) {
+            if (key.endsWith(id)) {
                 return loadedQuestHosts.get(key);
             }
         }
