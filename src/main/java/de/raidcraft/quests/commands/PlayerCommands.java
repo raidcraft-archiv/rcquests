@@ -30,22 +30,23 @@ public class PlayerCommands {
 
         QuestHolder player = plugin.getQuestManager().getQuestHolder((Player) sender);
         String questList = "";
-        for(Quest quest : player.getAllQuests()) {
-            if(!questList.isEmpty()) { questList += ChatColor.GREEN + ", "; }
+        for (Quest quest : player.getAllQuests()) {
+            if (!questList.isEmpty()) {
+                questList += ChatColor.GREEN + ", ";
+            }
             questList += ChatColor.RESET;
 
-            if(quest.isActive()) {
+            if (quest.isActive()) {
                 questList += ChatColor.YELLOW + quest.getFriendlyName();
             }
-            if(quest.isCompleted()) {
+            if (quest.isCompleted()) {
                 questList += ChatColor.RED.toString() + ChatColor.STRIKETHROUGH + quest.getFriendlyName();
             }
         }
 
-        if(questList.isEmpty()) {
+        if (questList.isEmpty()) {
             sender.sendMessage(ChatColor.RED + "Du hast keine noch keine Quest angenommen!");
-        }
-        else {
+        } else {
             sender.sendMessage(ChatColor.GREEN + "Du hast folgende Quests:");
             sender.sendMessage(questList);
         }

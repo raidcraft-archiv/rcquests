@@ -5,7 +5,6 @@ import de.raidcraft.api.conversations.ConversationHost;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.quests.AbstractQuestHost;
 import de.raidcraft.quests.QuestPlugin;
-import de.raidcraft.rcconversations.npc.NPC_Conservations_Manager;
 import de.raidcraft.util.CaseInsensitiveMap;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
@@ -15,7 +14,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 
 import java.util.Map;
 
@@ -27,33 +25,28 @@ public class QuestNPCHost extends AbstractQuestHost implements ConversationHost 
     private NPC npc;
     private String defaultConversationName;
     private Map<String, String> playerConversations = new CaseInsensitiveMap<>();
+    private Location defaultLocation;
 
     public QuestNPCHost(String id, ConfigurationSection data) {
 
         super(id, data);
         ConfigurationSection loc = data.getConfigurationSection("location");
-        Location location = new Location(Bukkit.getWorld(loc.getString("world", "world")),
+        defaultLocation = new Location(Bukkit.getWorld(loc.getString("world", "world")),
                 loc.getInt("x", 23), loc.getInt("y", 3), loc.getInt("z", 178));
         this.defaultConversationName = data.getString("default-conv", id + ".default");
-        Plugin plugin = RaidCraft.getComponent(QuestPlugin.class);
+
         // spawn a NPC
-        npc = QuestTrait.getNPC(id);
-        // if NPC not exists, warn admin and create new one
-        if(npc == null) {
-            plugin.getLogger().warning("Quest NPC not exists and spawned automaticly hostid:" + id);
-            npc = NPC_Quest_Manager.getInstance().spawnPersistNpcQuest(
-                    location, getFriendlyName(), plugin.getName(), defaultConversationName, id);
-        }
+        spawn();
 
         npc.addTrait(QuestTrait.class);
         npc.getTrait(QuestTrait.class).setHostId(getId());
 
-//        npc.getBukkitEntity().setCustomName(getFriendlyName());
-//        npc.getBukkitEntity().setCustomNameVisible(true);
+        //        npc.getBukkitEntity().setCustomName(getFriendlyName());
+        //        npc.getBukkitEntity().setCustomNameVisible(true);
         // lets set the equipment
         ConfigurationSection equipment = data.getConfigurationSection("equipment");
         Equipment equipmentTrait = npc.getTrait(Equipment.class);
-        if(equipment != null && equipmentTrait != null) {
+        if (equipment != null && equipmentTrait != null) {
             try {
                 equipmentTrait.set(0, RaidCraft.getItem(equipment.getString("hand", Material.AIR.name())));
                 equipmentTrait.set(1, RaidCraft.getItem(equipment.getString("helmet", Material.AIR.name())));
@@ -100,7 +93,22 @@ public class QuestNPCHost extends AbstractQuestHost implements ConversationHost 
     }
 
     @Override
+    public void spawn() {
+
+        // spawn a NPC
+        npc = QuestTrait.getNPC(getId());
+        // if NPC not exists, warn admin and create new one
+        if (npc == null) {
+            QuestPlugin plugin = RaidCraft.getComponent(QuestPlugin.class);
+            plugin.getLogger().warning("Quest NPC not exists and spawned automaticly hostid:" + getId());
+            npc = NPC_Quest_Manager.getInstance().spawnPersistNpcQuest(
+                    defaultLocation, getFriendlyName(), plugin.getName(), defaultConversationName, getId());
+        }
+    }
+
+    @Override
     public void despawn() {
+
         npc.despawn(DespawnReason.PLUGIN);
     }
 }

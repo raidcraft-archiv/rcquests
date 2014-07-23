@@ -33,6 +33,7 @@ public class QuestPlugin extends BasePlugin {
 
     @Override
     public void enable() {
+
         configuration = configure(new LocalConfiguration(this));
 
         questManager = new QuestManager(this);
@@ -49,6 +50,7 @@ public class QuestPlugin extends BasePlugin {
         Bukkit.getScheduler().runTaskLater(this, new Runnable() {
             @Override
             public void run() {
+
                 Quests.enable(questManager);
                 getQuestManager().load();
             }

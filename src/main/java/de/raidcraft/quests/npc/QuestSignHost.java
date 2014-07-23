@@ -35,18 +35,19 @@ public class QuestSignHost extends AbstractQuestHost implements ConversationHost
         this.defaultConversationName = data.getString("default-conv", id + ".default");
 
         // build sign if not already exists
-        if(location.getBlock().getType() != Material.SIGN_POST && location.getBlock().getType() != Material.WALL_SIGN)
-        {
+        if (location.getBlock().getType() != Material.SIGN_POST && location.getBlock().getType() != Material.WALL_SIGN) {
             location.getBlock().setType(Material.SIGN_POST);
         }
-        sign = (Sign)location.getBlock().getState();
+        sign = (Sign) location.getBlock().getState();
 
         // update sign content
         sign.setLine(0, ChatColor.GOLD + QUEST_SIGN_IDENTIFIER);
         sign.setLine(1, ChatColor.GREEN + getFriendlyName());
 
         String shortId = id;
-        if(id.length() > 13) { shortId = id.substring(id.length() - 13); }
+        if (id.length() > 13) {
+            shortId = id.substring(id.length() - 13);
+        }
 
         sign.setLine(3, ChatColor.GRAY.toString() + shortId);
 
@@ -84,6 +85,12 @@ public class QuestSignHost extends AbstractQuestHost implements ConversationHost
             return playerConversations.get(player.getName());
         }
         return defaultConversationName;
+    }
+
+    @Override
+    public void spawn() {
+
+        getLocation().getBlock().setType(Material.SIGN);
     }
 
     @Override
