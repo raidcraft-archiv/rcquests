@@ -1,7 +1,6 @@
 package de.raidcraft.quests.npc;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.conversations.ConversationHost;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.quests.AbstractQuestHost;
 import de.raidcraft.quests.QuestPlugin;
@@ -21,7 +20,7 @@ import java.util.Map;
 /**
  * @author Silthus
  */
-public class QuestNPCHost extends AbstractQuestHost implements ConversationHost {
+public class QuestNPCHost extends AbstractQuestHost {
 
     private NPC npc;
     private String defaultConversationName;

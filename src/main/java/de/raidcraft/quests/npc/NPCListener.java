@@ -1,6 +1,5 @@
 package de.raidcraft.quests.npc;
 
-import de.raidcraft.api.conversations.ConversationHost;
 import de.raidcraft.api.conversations.RCConversationHostInteractEvent;
 import de.raidcraft.api.quests.QuestHost;
 import de.raidcraft.rcconversations.host.NPCHost;
@@ -33,7 +32,7 @@ public class NPCListener implements Listener {
         if (event.getHost() instanceof NPCHost) {
             NPC npc = ((NPCHost) event.getHost()).getNPC();
             if (npc.hasTrait(QuestTrait.class)) {
-                event.setHost((ConversationHost) npc.getTrait(QuestTrait.class).getQuestHost());
+                event.setCancelled(true);
             }
         }
     }
