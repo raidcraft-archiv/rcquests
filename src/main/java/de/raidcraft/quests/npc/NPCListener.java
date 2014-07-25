@@ -3,6 +3,7 @@ package de.raidcraft.quests.npc;
 import de.raidcraft.api.quests.QuestHost;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 /**
@@ -11,7 +12,7 @@ import org.bukkit.event.Listener;
  */
 public class NPCListener implements Listener {
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onNpcInteract(NPCRightClickEvent event) {
 
         if (event.getNPC().hasTrait(QuestTrait.class)) {
