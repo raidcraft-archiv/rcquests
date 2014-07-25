@@ -18,6 +18,7 @@ public class StartQuestAction implements Action<Player> {
     @SneakyThrows
     public void accept(Player player, ConfigurationSection config) {
 
+        RaidCraft.LOGGER.info("Start Quest Action was triggered for " + player.getName() + " : " + config.getString("quest"));
         if (!player.hasPermission("rcquests.quest.start")) {
             throw new QuestException("Du hast nicht das Recht Quests zu starten!");
         }
