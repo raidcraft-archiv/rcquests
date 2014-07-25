@@ -85,8 +85,6 @@ public final class QuestManager implements QuestProvider, Component {
                     .forEach(quest -> quest.getPlayerObjectives()
                             .forEach(PlayerObjective::unregisterListeners));
         });
-        // TODO: not needed, npc manager mange it
-        //        loadedQuestHosts.values().forEach(QuestHost::despawn);
         loadedQuests.values()
                 .forEach(template -> template.getStartTrigger()
                         .forEach(trigger -> trigger.unregisterListener(template)));
