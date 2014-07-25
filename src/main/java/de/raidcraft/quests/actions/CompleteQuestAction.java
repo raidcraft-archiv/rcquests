@@ -7,6 +7,7 @@ import de.raidcraft.api.quests.holder.QuestHolder;
 import de.raidcraft.api.quests.quest.Quest;
 import de.raidcraft.quests.QuestManager;
 import lombok.SneakyThrows;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 /**
@@ -16,7 +17,7 @@ public class CompleteQuestAction implements Action<Player> {
 
     @Override
     @SneakyThrows
-    public void accept(Player player) {
+    public void accept(Player player, ConfigurationSection config) {
 
         if (!player.hasPermission("rcquests.quest.complete")) {
             throw new QuestException("Du hast nicht das Recht Quests zu beenden!");
@@ -24,7 +25,7 @@ public class CompleteQuestAction implements Action<Player> {
         try {
             QuestManager component = RaidCraft.getComponent(QuestManager.class);
             QuestHolder questHolder = component.getQuestHolder(player);
-            Quest quest = questHolder.getQuest(getConfig().getString("quest"));
+            Quest quest = questHolder.getQuest(config.getString("quest"));
             quest.complete();
         } catch (Exception e) {
             throw new QuestException(e.getMessage());
