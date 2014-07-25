@@ -5,6 +5,7 @@ import de.raidcraft.api.conversations.ConversationHost;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.quests.AbstractQuestHost;
 import de.raidcraft.quests.QuestPlugin;
+import de.raidcraft.rcconversations.npc.ConversationsTrait;
 import de.raidcraft.util.CaseInsensitiveMap;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
@@ -39,7 +40,9 @@ public class QuestNPCHost extends AbstractQuestHost implements ConversationHost 
         spawn();
 
         npc.addTrait(QuestTrait.class);
+        npc.addTrait(ConversationsTrait.class);
         npc.getTrait(QuestTrait.class).setHostId(getId());
+        npc.getTrait(ConversationsTrait.class).setConversationName(getDefaultConversationName());
 
         //        npc.getBukkitEntity().setCustomName(getFriendlyName());
         //        npc.getBukkitEntity().setCustomNameVisible(true);

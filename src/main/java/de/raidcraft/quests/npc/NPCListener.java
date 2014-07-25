@@ -1,11 +1,11 @@
 package de.raidcraft.quests.npc;
 
-import de.raidcraft.RaidCraft;
-import de.raidcraft.api.quests.InvalidQuestHostException;
+import de.raidcraft.api.conversations.ConversationHost;
+import de.raidcraft.api.conversations.RCConversationHostInteractEvent;
 import de.raidcraft.api.quests.QuestHost;
-import de.raidcraft.api.quests.Quests;
-import de.raidcraft.rcconversations.api.conversation.RCConservationFindNPCConversationHost;
+import de.raidcraft.rcconversations.host.NPCHost;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -16,28 +16,24 @@ import org.bukkit.event.Listener;
  */
 public class NPCListener implements Listener {
 
-    @EventHandler
-    private void npcConservations(RCConservationFindNPCConversationHost event) {
-
-        if (!event.getNPC().hasTrait(QuestTrait.class)) {
-            return;
-        }
-        try {
-            QuestHost questHost = Quests.getQuestHost(event.getNPC().getTrait(QuestTrait.class).getHostId());
-            QuestNPCHost questNpcHost = (QuestNPCHost) questHost;
-            event.setHost(questNpcHost);
-        } catch (InvalidQuestHostException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true)
     public void onNpcInteract(NPCRightClickEvent event) {
 
         if (event.getNPC().hasTrait(QuestTrait.class)) {
             QuestHost questHost = event.getNPC().getTrait(QuestTrait.class).getQuestHost();
             if (questHost != null) {
                 questHost.interact(event.getClicker());
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onConversationHostInteractEvent(RCConversationHostInteractEvent event) {
+
+        if (event.getHost() instanceof NPCHost) {
+            NPC npc = ((NPCHost) event.getHost()).getNPC();
+            if (npc.hasTrait(QuestTrait.class)) {
+                event.setHost((ConversationHost) npc.getTrait(QuestTrait.class).getQuestHost());
             }
         }
     }
