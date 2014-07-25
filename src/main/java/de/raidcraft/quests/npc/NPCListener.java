@@ -1,12 +1,10 @@
 package de.raidcraft.quests.npc;
 
-import de.raidcraft.api.conversations.RCConversationHostInteractEvent;
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.quests.QuestHost;
-import de.raidcraft.rcconversations.host.NPCHost;
+import de.raidcraft.rcconversations.conversations.ConversationManager;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
-import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 /**
@@ -22,17 +20,8 @@ public class NPCListener implements Listener {
             QuestHost questHost = event.getNPC().getTrait(QuestTrait.class).getQuestHost();
             if (questHost != null) {
                 questHost.interact(event.getClicker());
-            }
-        }
-    }
-
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
-    public void onConversationHostInteractEvent(RCConversationHostInteractEvent event) {
-
-        if (event.getHost() instanceof NPCHost) {
-            NPC npc = ((NPCHost) event.getHost()).getNPC();
-            if (npc.hasTrait(QuestTrait.class)) {
-                event.setCancelled(true);
+                // also try to trigger the default conversation if it exists
+                RaidCraft.getComponent(ConversationManager.class).triggerConversation(questHost, event.getClicker());
             }
         }
     }
