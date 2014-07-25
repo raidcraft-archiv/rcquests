@@ -67,7 +67,9 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
         if (quest.isCompleted()) {
             throw new QuestException("Du hast diese Quest bereits abgeschlossen.");
         }
-        quest.start();
+        if (!quest.isActive()) {
+            quest.start();
+        }
         return quest;
     }
 
