@@ -41,9 +41,8 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
     @Override
     public Quest createQuest(QuestTemplate template) {
 
-        if (hasQuest(template)) {
-            return getQuest(template);
-        }
+        Quest quest = getQuest(template);
+        if (quest != null) return quest;
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         TPlayerQuest table = database.find(TPlayerQuest.class).where()
                 .eq("player_id", getId())
@@ -54,7 +53,7 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
             table.setQuest(template.getId());
             database.save(table);
         }
-        SimpleQuest quest = new SimpleQuest(table, template, this);
+        quest = new SimpleQuest(table, template, this);
         addQuest(quest);
         return quest;
     }
