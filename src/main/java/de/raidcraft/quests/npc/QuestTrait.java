@@ -62,7 +62,7 @@ public class QuestTrait extends Trait {
     }
 
     @Override
-    public void onSpawn() {
+    public void onAttach() {
 
         questNpcs.put(hostID, getNPC());
     }
