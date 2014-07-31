@@ -6,11 +6,7 @@ import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Sebastian
- * Date: 17.07.14
- * Time: 01:19
- * To change this template use File | Settings | File Templates.
+ * @author Dragonfire
  */
 public class NPC_Quest_Manager {
 
