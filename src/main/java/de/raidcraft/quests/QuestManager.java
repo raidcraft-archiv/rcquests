@@ -17,6 +17,7 @@ import de.raidcraft.api.quests.util.QuestUtil;
 import de.raidcraft.quests.config.QuestHostConfigLoader;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.util.CaseInsensitiveMap;
+import de.raidcraft.util.UUIDUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -219,7 +220,7 @@ public final class QuestManager implements QuestProvider, Component {
                     throw new UnknownPlayerException("Der Spieler " + name + " war noch nie auf RaidCraft eingeloggt.");
                 }
             }
-            questPlayers.put(name, new BukkitQuestHolder(table.getId(), name));
+            questPlayers.put(name, new BukkitQuestHolder(table.getId(), UUIDUtil.convertPlayer(name)));
         }
         return questPlayers.get(name);
     }

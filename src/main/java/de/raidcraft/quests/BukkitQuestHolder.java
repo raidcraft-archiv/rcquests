@@ -10,15 +10,16 @@ import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerQuest;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Silthus
  */
 public class BukkitQuestHolder extends AbstractQuestHolder {
 
-    public BukkitQuestHolder(int id, String player) {
+    public BukkitQuestHolder(int id, UUID playerId) {
 
-        super(id, player);
+        super(id, playerId);
         loadExistingQuests();
     }
 
