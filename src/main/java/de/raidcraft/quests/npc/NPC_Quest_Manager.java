@@ -1,6 +1,5 @@
 package de.raidcraft.quests.npc;
 
-import de.raidcraft.api.npc.NPC_Manager;
 import de.raidcraft.rcconversations.npc.NPC_Conservations_Manager;
 import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.Location;
@@ -30,7 +29,6 @@ public class NPC_Quest_Manager {
         NPC npc = NPC_Conservations_Manager.getInstance().createNonPersistNpcConservations(name, host, conversationName);
         npc.addTrait(QuestTrait.class);
         npc.getTrait(QuestTrait.class).setHostId(hostID);
-        NPC_Manager.getInstance().store(host);
         return npc;
     }
 
@@ -38,7 +36,6 @@ public class NPC_Quest_Manager {
 
         NPC npc = this.createNonPersistNpcQuest(name, host, conversationName, hostID);
         npc.spawn(loc);
-        NPC_Manager.getInstance().store(host);
         return npc;
     }
 }
