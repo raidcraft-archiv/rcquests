@@ -103,7 +103,7 @@ public class QuestNPCHost extends AbstractQuestHost {
         if (npc == null) {
             QuestPlugin plugin = RaidCraft.getComponent(QuestPlugin.class);
             plugin.getLogger().warning("Quest NPC not exists and spawned automaticly hostid:" + getId());
-            npc = NPC_Quest_Manager.getInstance().spawnPersistNpcQuest(
+            npc = NPC_Quest_Manager.getInstance().spawnNonPersistNpcQuest(
                     defaultLocation, getFriendlyName(), plugin.getName(), defaultConversationName, getId());
         }
     }

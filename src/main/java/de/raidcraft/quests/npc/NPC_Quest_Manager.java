@@ -34,7 +34,7 @@ public class NPC_Quest_Manager {
         return npc;
     }
 
-    public NPC spawnPersistNpcQuest(Location loc, String name, String host, String conversationName, String hostID) {
+    public NPC spawnNonPersistNpcQuest(Location loc, String name, String host, String conversationName, String hostID) {
 
         NPC npc = this.createNonPersistNpcQuest(name, host, conversationName, hostID);
         npc.spawn(loc);
