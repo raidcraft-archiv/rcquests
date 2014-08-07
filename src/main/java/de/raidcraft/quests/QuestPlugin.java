@@ -71,7 +71,8 @@ public class QuestPlugin extends BasePlugin {
         // load NPC's
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         NPC_Manager.getInstance().registerTrait(QuestTrait.class, "quest");
-        NPC_Manager.getInstance().loadNPCs(getName());
+        // we have no persist npc's
+        // NPC_Manager.getInstance().loadNPCs(getName());
     }
 
     @Override
