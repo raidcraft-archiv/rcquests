@@ -66,7 +66,7 @@ public class QuestPlugin extends BasePlugin {
                 Quests.enable(questManager);
                 getQuestManager().load();
             }
-        }, 40L);
+        }, 8 * 20L);
 
         // load NPC's
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
