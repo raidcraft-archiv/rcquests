@@ -50,7 +50,6 @@ public class QuestPlugin extends BasePlugin {
             Quests.registerQuestHost(this, "NPC", QuestNPCHost.class);
             Quests.registerQuestHost(this, "SIGN", QuestSignHost.class);
         } catch (InvalidQuestHostException e) {
-            getLogger().warning(e.getMessage());
             e.printStackTrace();
         }
 

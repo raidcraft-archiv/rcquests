@@ -167,7 +167,7 @@ public final class QuestManager implements QuestProvider, Component {
             loadedQuestHosts.put(questHost.getId(), questHost);
             plugin.getLogger().info("Loaded quest host: " + questHost.getId() + " - " + questHost.getFriendlyName());
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            plugin.getLogger().warning(e.getMessage());
+            e.printStackTrace();
         }
     }
 
