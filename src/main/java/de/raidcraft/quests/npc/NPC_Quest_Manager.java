@@ -2,6 +2,7 @@ package de.raidcraft.quests.npc;
 
 import de.raidcraft.rcconversations.npc.NPC_Conservations_Manager;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.trait.CurrentLocation;
 import org.bukkit.Location;
 
 /**
@@ -35,6 +36,8 @@ public class NPC_Quest_Manager {
     public NPC spawnNonPersistNpcQuest(Location loc, String name, String host, String conversationName, String hostID) {
 
         NPC npc = this.createNonPersistNpcQuest(name, host, conversationName, hostID);
+        npc.addTrait(CurrentLocation.class);
+        npc.getTrait(CurrentLocation.class).setLocation(loc);
         npc.spawn(loc);
         return npc;
     }
