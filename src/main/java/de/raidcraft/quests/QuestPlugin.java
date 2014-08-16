@@ -83,7 +83,8 @@ public class QuestPlugin extends BasePlugin {
 
     @Override
     public void reload() {
-
+        // despawn all quests
+        NPC_Manager.getInstance().clear(getName());
         Quests.disable(questManager);
         getQuestManager().reload();
         Quests.enable(questManager);
