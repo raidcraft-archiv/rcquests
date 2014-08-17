@@ -59,7 +59,7 @@ public final class QuestManager implements QuestProvider, Component {
                     // lets register the triggers of the quest
                     quest.registerListeners();
                     loadedQuests.put(id, quest);
-                    plugin.getLogger().info("Loaded quest: " + id + " - " + quest.getFriendlyName());
+                    plugin.info("Loaded quest: " + id + " - " + quest.getFriendlyName());
                 }
             });
             // and the quest host loader
@@ -147,7 +147,7 @@ public final class QuestManager implements QuestProvider, Component {
         try {
             Constructor<? extends QuestHost> constructor = clazz.getDeclaredConstructor(String.class, ConfigurationSection.class);
             questHostTypes.put(type, constructor);
-            plugin.getLogger().info("Registered quest host type " + type + ": " + clazz.getCanonicalName());
+            plugin.info("Registered quest host type " + type + ": " + clazz.getCanonicalName());
         } catch (NoSuchMethodException e) {
             throw new InvalidQuestHostException(e.getMessage());
         }
@@ -165,7 +165,7 @@ public final class QuestManager implements QuestProvider, Component {
             constructor.setAccessible(true);
             QuestHost questHost = constructor.newInstance(id, config);
             loadedQuestHosts.put(questHost.getId(), questHost);
-            plugin.getLogger().info("Loaded quest host: " + questHost.getId() + " - " + questHost.getFriendlyName());
+            plugin.info("Loaded quest host: " + questHost.getId() + " - " + questHost.getFriendlyName(), "host");
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
