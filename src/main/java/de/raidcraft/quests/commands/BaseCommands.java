@@ -10,11 +10,13 @@ import de.raidcraft.api.quests.quest.Quest;
 import de.raidcraft.quests.QuestManager;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.ui.QuestUI;
+import de.raidcraft.util.UUIDUtil;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Silthus
@@ -40,7 +42,11 @@ public class BaseCommands {
         QuestHolder player = manager.getQuestHolder((Player) sender);
         if (args.hasFlag('p')) {
             try {
-                player = manager.getPlayer(args.getFlag('p'));
+                UUID uuid = UUIDUtil.convertPlayer(args.getFlag('p'));
+                if(uuid == null) {
+                    throw new CommandException("Unknown Playername");
+                }
+                player = manager.getPlayer(uuid);
             } catch (UnknownPlayerException e) {
                 throw new CommandException(e.getMessage());
             }
