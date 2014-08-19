@@ -57,6 +57,7 @@ public class QuestNPCHost extends AbstractQuestHost {
                 equipmentTrait.set(4, RaidCraft.getItem(equipment.getString("boots", Material.AIR.name())));
             } catch (CustomItemException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
+                e.printStackTrace();
             }
         }
     }

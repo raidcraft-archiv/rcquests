@@ -35,6 +35,7 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
                 addQuest(simpleQuest);
             } catch (QuestException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
+                e.printStackTrace();
             }
         }
     }

@@ -51,6 +51,8 @@ public class QuestTrait extends Trait {
             return Quests.getQuestHost(getHostId());
         } catch (InvalidQuestHostException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            RaidCraft.LOGGER.warning("Try to remove NPC: " + RaidCraft.getComponent(QuestPlugin.class).getName());
             NPC_Manager.getInstance().removeNPC(getNPC(), RaidCraft.getComponent(QuestPlugin.class).getName());
         }
         return null;
