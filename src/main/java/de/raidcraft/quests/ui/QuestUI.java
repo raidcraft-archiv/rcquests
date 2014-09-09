@@ -67,7 +67,7 @@ public class QuestUI implements Listener {
         if (!event.getWhoClicked().equals(holder.getPlayer()) || !event.getInventory().equals(inventory)) {
             return;
         }
-        if (event.getSlot() < questBooks.length) {
+        if (0 <= event.getSlot() && event.getSlot() < questBooks.length) {
             questBooks[event.getSlot()].open();
         }
         event.setCancelled(true);
