@@ -34,4 +34,7 @@ public class TPlayer {
     private List<TPlayerQuest> quests;
     private int activeQuests;
     private int completedQuests;
+    private int dailyCounter;
+    private int weeklyCounter;
 }
+
