@@ -217,6 +217,7 @@ public final class QuestManager implements QuestProvider, Component {
                 table.setCompletedQuests(0);
                 table.setActiveQuests(0);
                 table.setPlayer(name.toLowerCase());
+                table.setPlayerId(playerId);
                 plugin.getDatabase().save(table);
             }
             questPlayers.put(name, new BukkitQuestHolder(table.getId(), UUIDUtil.convertPlayer(name)));

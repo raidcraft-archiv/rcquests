@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Silthus
@@ -27,6 +28,7 @@ public class TPlayer {
     @NotNull
     @Column(unique = true)
     private String player;
+    private UUID playerId;
     @JoinColumn(name = "player_id")
     @OneToMany(cascade = CascadeType.REMOVE)
     private List<TPlayerQuest> quests;
