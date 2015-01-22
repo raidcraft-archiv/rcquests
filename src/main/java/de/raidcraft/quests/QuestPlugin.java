@@ -6,12 +6,15 @@ import de.raidcraft.api.action.trigger.TriggerManager;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.npc.NPC_Manager;
+import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.actions.CompleteQuestAction;
 import de.raidcraft.quests.actions.StartQuestAction;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.npc.NPCListener;
+import de.raidcraft.quests.npc.QuestNPCHost;
+import de.raidcraft.quests.npc.QuestSignHost;
 import de.raidcraft.quests.npc.QuestTrait;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
@@ -42,6 +45,14 @@ public class QuestPlugin extends BasePlugin {
         registerActions();
         registerRequirements();
 
+        try {
+            // register our quest hosts
+            Quests.registerQuestHost(this, "NPC", QuestNPCHost.class);
+            Quests.registerQuestHost(this, "SIGN", QuestSignHost.class);
+        } catch (InvalidQuestHostException e) {
+            e.printStackTrace();
+        }
+
         // register our events
         registerEvents(new PlayerListener(this));
         // commands
@@ -54,12 +65,13 @@ public class QuestPlugin extends BasePlugin {
                 Quests.enable(questManager);
                 getQuestManager().load();
             }
-        }, 40L);
+        }, 8 * 20L);
 
         // load NPC's
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         NPC_Manager.getInstance().registerTrait(QuestTrait.class, "quest");
-        NPC_Manager.getInstance().loadNPCs(getName());
+        // we have no persist npc's
+        // NPC_Manager.getInstance().loadNPCs(getName());
     }
 
     @Override
@@ -71,7 +83,8 @@ public class QuestPlugin extends BasePlugin {
 
     @Override
     public void reload() {
-
+        // despawn all quests
+        NPC_Manager.getInstance().clear(getName());
         Quests.disable(questManager);
         getQuestManager().reload();
         Quests.enable(questManager);

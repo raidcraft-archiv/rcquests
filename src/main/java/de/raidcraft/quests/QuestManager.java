@@ -17,6 +17,7 @@ import de.raidcraft.api.quests.util.QuestUtil;
 import de.raidcraft.quests.config.QuestHostConfigLoader;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.util.CaseInsensitiveMap;
+import de.raidcraft.util.UUIDUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -27,6 +28,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -58,7 +60,7 @@ public final class QuestManager implements QuestProvider, Component {
                     // lets register the triggers of the quest
                     quest.registerListeners();
                     loadedQuests.put(id, quest);
-                    plugin.getLogger().info("Loaded quest: " + id + " - " + quest.getFriendlyName());
+                    plugin.info("Loaded quest: " + id + " - " + quest.getFriendlyName());
                 }
             });
             // and the quest host loader
@@ -85,8 +87,6 @@ public final class QuestManager implements QuestProvider, Component {
                     .forEach(quest -> quest.getPlayerObjectives()
                             .forEach(PlayerObjective::unregisterListeners));
         });
-        // TODO: not needed, npc manager mange it
-        //        loadedQuestHosts.values().forEach(QuestHost::despawn);
         loadedQuests.values()
                 .forEach(template -> template.getStartTrigger()
                         .forEach(trigger -> trigger.unregisterListener(template)));
@@ -148,7 +148,7 @@ public final class QuestManager implements QuestProvider, Component {
         try {
             Constructor<? extends QuestHost> constructor = clazz.getDeclaredConstructor(String.class, ConfigurationSection.class);
             questHostTypes.put(type, constructor);
-            plugin.getLogger().info("Registered quest host type " + type + ": " + clazz.getCanonicalName());
+            plugin.info("Registered quest host type " + type + ": " + clazz.getCanonicalName());
         } catch (NoSuchMethodException e) {
             throw new InvalidQuestHostException(e.getMessage());
         }
@@ -166,9 +166,9 @@ public final class QuestManager implements QuestProvider, Component {
             constructor.setAccessible(true);
             QuestHost questHost = constructor.newInstance(id, config);
             loadedQuestHosts.put(questHost.getId(), questHost);
-            plugin.getLogger().info("Loaded quest host: " + questHost.getId() + " - " + questHost.getFriendlyName());
+            plugin.info("Loaded quest host: " + questHost.getId() + " - " + questHost.getFriendlyName(), "host");
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            plugin.getLogger().warning(e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -195,33 +195,32 @@ public final class QuestManager implements QuestProvider, Component {
     public QuestHolder getQuestHolder(Player player) {
 
         try {
-            return getPlayer(player.getName());
-        } catch (UnknownPlayerException ignored) {
+            return getPlayer(player.getUniqueId());
+        } catch (UnknownPlayerException e) {
+            e.printStackTrace();
         }
         return null;
     }
 
-    public QuestHolder getPlayer(String name) throws UnknownPlayerException {
+    public QuestHolder getPlayer(UUID playerId) throws UnknownPlayerException {
 
-        Player bukkitPlayer = Bukkit.getPlayer(name);
-        if (bukkitPlayer != null) {
-            name = bukkitPlayer.getName();
+        Player bukkitPlayer = Bukkit.getPlayer(playerId);
+        if (bukkitPlayer == null) {
+            throw new UnknownPlayerException("Player not online?");
         }
+        String name = bukkitPlayer.getName();
         if (!questPlayers.containsKey(name)) {
             TPlayer table = plugin.getDatabase().find(TPlayer.class).where()
                     .eq("player", name.toLowerCase()).findUnique();
             if (table == null) {
-                if (bukkitPlayer != null) {
-                    table = new TPlayer();
-                    table.setCompletedQuests(0);
-                    table.setActiveQuests(0);
-                    table.setPlayer(name.toLowerCase());
-                    plugin.getDatabase().save(table);
-                } else {
-                    throw new UnknownPlayerException("Der Spieler " + name + " war noch nie auf RaidCraft eingeloggt.");
-                }
+                table = new TPlayer();
+                table.setCompletedQuests(0);
+                table.setActiveQuests(0);
+                table.setPlayer(name.toLowerCase());
+                table.setPlayerId(playerId);
+                plugin.getDatabase().save(table);
             }
-            questPlayers.put(name, new BukkitQuestHolder(table.getId(), name));
+            questPlayers.put(name, new BukkitQuestHolder(table.getId(), UUIDUtil.convertPlayer(name)));
         }
         return questPlayers.get(name);
     }

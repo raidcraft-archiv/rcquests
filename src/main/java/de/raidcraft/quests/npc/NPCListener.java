@@ -1,11 +1,11 @@
 package de.raidcraft.quests.npc;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.QuestHost;
-import de.raidcraft.api.quests.Quests;
-import de.raidcraft.rcconversations.api.conversation.RCConservationFindNPCConversationHost;
+import de.raidcraft.rcconversations.conversations.ConversationManager;
+import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 /**
@@ -14,18 +14,17 @@ import org.bukkit.event.Listener;
  */
 public class NPCListener implements Listener {
 
-    @EventHandler
-    private void npcConservations(RCConservationFindNPCConversationHost event) {
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onNpcInteract(NPCRightClickEvent event) {
 
-        if (!event.getNPC().hasTrait(QuestTrait.class)) {
-            return;
-        }
-        try {
-            QuestHost questHost = Quests.getQuestHost(event.getNPC().getTrait(QuestTrait.class).getHostId());
-            QuestNPCHost questNpcHost = (QuestNPCHost) questHost;
-            event.setHost(questNpcHost);
-        } catch (InvalidQuestHostException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
+        if (event.getNPC().hasTrait(QuestTrait.class)) {
+            QuestHost questHost = event.getNPC().getTrait(QuestTrait.class).getQuestHost();
+            if (questHost != null) {
+                questHost.setConversation(event.getClicker(), questHost.getDefaultConversationName());
+                questHost.interact(event.getClicker());
+                // fire the default conversation if set
+                RaidCraft.getComponent(ConversationManager.class).triggerConversation(questHost, event.getClicker());
+            }
         }
     }
 }

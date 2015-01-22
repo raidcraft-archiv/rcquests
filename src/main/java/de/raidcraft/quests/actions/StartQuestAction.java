@@ -6,6 +6,7 @@ import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.quests.QuestManager;
 import lombok.SneakyThrows;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 /**
@@ -15,15 +16,16 @@ public class StartQuestAction implements Action<Player> {
 
     @Override
     @SneakyThrows
-    public void accept(Player player) {
+    public void accept(Player player, ConfigurationSection config) {
 
+        RaidCraft.LOGGER.info("Start Quest Action was triggered for " + player.getName() + " : " + config.getString("quest"));
         if (!player.hasPermission("rcquests.quest.start")) {
             throw new QuestException("Du hast nicht das Recht Quests zu starten!");
         }
         QuestManager component = RaidCraft.getComponent(QuestManager.class);
-        QuestTemplate quest = component.getQuestTemplate(getConfig().getString("quest"));
+        QuestTemplate quest = component.getQuestTemplate(config.getString("quest"));
         if (quest == null) {
-            throw new QuestException("Wrong config! Unknown quest given: " + getConfig().getString("quest"));
+            throw new QuestException("Wrong config! Unknown quest given: " + config.getString("quest"));
         }
         component.getQuestHolder(player).startQuest(quest);
     }

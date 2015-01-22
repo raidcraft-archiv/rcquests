@@ -1,9 +1,16 @@
 package de.raidcraft.quests.npc;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.npc.NPC_Manager;
+import de.raidcraft.api.quests.InvalidQuestHostException;
+import de.raidcraft.api.quests.QuestHost;
+import de.raidcraft.api.quests.Quests;
+import de.raidcraft.quests.QuestPlugin;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,13 +39,32 @@ public class QuestTrait extends Trait {
         this.hostID = hostId;
     }
 
+    public NPC getNpc() {
+
+        return getNPC(getHostId());
+    }
+
+    @Nullable
+    public QuestHost getQuestHost() {
+
+        try {
+            return Quests.getQuestHost(getHostId());
+        } catch (InvalidQuestHostException e) {
+            RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
+            RaidCraft.LOGGER.warning("Try to remove NPC: " + RaidCraft.getComponent(QuestPlugin.class).getName());
+            NPC_Manager.getInstance().removeNPC(getNPC(), RaidCraft.getComponent(QuestPlugin.class).getName());
+        }
+        return null;
+    }
+
     public static NPC getNPC(String hostID) {
 
         return questNpcs.get(hostID);
     }
 
     @Override
-    public void onSpawn() {
+    public void onAttach() {
 
         questNpcs.put(hostID, getNPC());
     }

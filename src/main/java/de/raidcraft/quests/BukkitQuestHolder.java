@@ -10,15 +10,16 @@ import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerQuest;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * @author Silthus
  */
 public class BukkitQuestHolder extends AbstractQuestHolder {
 
-    public BukkitQuestHolder(int id, String player) {
+    public BukkitQuestHolder(int id, UUID playerId) {
 
-        super(id, player);
+        super(id, playerId);
         loadExistingQuests();
     }
 
@@ -34,6 +35,7 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
                 addQuest(simpleQuest);
             } catch (QuestException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -41,9 +43,8 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
     @Override
     public Quest createQuest(QuestTemplate template) {
 
-        if (hasQuest(template)) {
-            return getQuest(template);
-        }
+        Quest quest = getQuest(template);
+        if (quest != null) return quest;
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         TPlayerQuest table = database.find(TPlayerQuest.class).where()
                 .eq("player_id", getId())
@@ -54,7 +55,7 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
             table.setQuest(template.getId());
             database.save(table);
         }
-        SimpleQuest quest = new SimpleQuest(table, template, this);
+        quest = new SimpleQuest(table, template, this);
         addQuest(quest);
         return quest;
     }
@@ -67,7 +68,9 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
         if (quest.isCompleted()) {
             throw new QuestException("Du hast diese Quest bereits abgeschlossen.");
         }
-        quest.start();
+        if (!quest.isActive()) {
+            quest.start();
+        }
         return quest;
     }
 

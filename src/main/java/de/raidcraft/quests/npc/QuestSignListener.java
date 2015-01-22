@@ -42,6 +42,7 @@ public class QuestSignListener implements Listener {
             }
         } catch (InvalidQuestHostException e) {
             RaidCraft.LOGGER.warning(e.getMessage());
+            e.printStackTrace();
         }
     }
 

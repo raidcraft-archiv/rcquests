@@ -1,16 +1,12 @@
 package de.raidcraft.quests.npc;
 
-import de.raidcraft.api.npc.NPC_Manager;
 import de.raidcraft.rcconversations.npc.NPC_Conservations_Manager;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.trait.CurrentLocation;
 import org.bukkit.Location;
 
 /**
- * Created with IntelliJ IDEA.
- * User: Sebastian
- * Date: 17.07.14
- * Time: 01:19
- * To change this template use File | Settings | File Templates.
+ * @author Dragonfire
  */
 public class NPC_Quest_Manager {
 
@@ -29,20 +25,20 @@ public class NPC_Quest_Manager {
         return INSTANCE;
     }
 
-    public NPC createPersistNpcQuest(String name, String host, String conversationName, String hostID) {
+    public NPC createNonPersistNpcQuest(String name, String host, String conversationName, String hostID) {
 
-        NPC npc = NPC_Conservations_Manager.getInstance().createPersistNpcConservations(name, host, conversationName);
+        NPC npc = NPC_Conservations_Manager.getInstance().createNonPersistNpcConservations(name, host, conversationName);
         npc.addTrait(QuestTrait.class);
         npc.getTrait(QuestTrait.class).setHostId(hostID);
-        NPC_Manager.getInstance().store(host);
         return npc;
     }
 
-    public NPC spawnPersistNpcQuest(Location loc, String name, String host, String conversationName, String hostID) {
+    public NPC spawnNonPersistNpcQuest(Location loc, String name, String host, String conversationName, String hostID) {
 
-        NPC npc = this.createPersistNpcQuest(name, host, conversationName, hostID);
+        NPC npc = this.createNonPersistNpcQuest(name, host, conversationName, hostID);
+        npc.addTrait(CurrentLocation.class);
+        npc.getTrait(CurrentLocation.class).setLocation(loc);
         npc.spawn(loc);
-        NPC_Manager.getInstance().store(host);
         return npc;
     }
 }

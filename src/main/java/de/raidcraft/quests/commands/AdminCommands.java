@@ -10,7 +10,7 @@ import de.raidcraft.api.quests.holder.QuestHolder;
 import de.raidcraft.api.quests.quest.Quest;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.quests.QuestPlugin;
-import org.bukkit.Bukkit;
+import de.raidcraft.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -70,7 +70,7 @@ public class AdminCommands {
     public void abort(CommandContext args, CommandSender sender) throws CommandException {
 
         try {
-            Player targetPlayer = args.hasFlag('p') ? Bukkit.getPlayer(args.getFlag('p')) : (Player) sender;
+            Player targetPlayer = args.hasFlag('p') ? CommandUtil.grabPlayer(args.getFlag('p')) : (Player) sender;
             String questName = args.getString(0);
             if (targetPlayer == null) {
                 throw new CommandException("Der angegebene Spieler ist nicht Online!");
