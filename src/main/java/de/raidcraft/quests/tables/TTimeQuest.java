@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import java.util.Date;
 
@@ -20,8 +19,7 @@ public class TTimeQuest {
 
     @Id
     private int id;
-    @JoinColumn(name = "player_id")
-    private TPlayer playerId;
+    private int playerId;
     private String type;
     private int counter;
     private Date lastStarted;
