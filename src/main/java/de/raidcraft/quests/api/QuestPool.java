@@ -14,4 +14,6 @@ public interface QuestPool {
     public Optional<QuestTemplate> getRandomQuest();
 
     public int getPoolSize();
+
+    public void reload();
 }

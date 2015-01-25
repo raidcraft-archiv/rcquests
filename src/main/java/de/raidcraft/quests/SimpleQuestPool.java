@@ -1,8 +1,11 @@
 package de.raidcraft.quests;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.quests.api.QuestPool;
 import de.raidcraft.util.MathUtil;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -15,14 +18,48 @@ public class SimpleQuestPool implements QuestPool {
 
     private File rootFolder;
     private List<String> questKeys = new ArrayList<>();
-    private Map<String, QuestTemplate> cachedQuests = new HashMap<>();
+    private Map<String, QuestTemplate> loadedQuests = new HashMap<>();
+    private QuestPlugin plugin;
     private QuestManager questManager;
+    private String type;
 
-    public SimpleQuestPool(File rootFolder, QuestManager questManager) {
+    public SimpleQuestPool(File rootFolder, String type) {
         this.rootFolder = rootFolder;
-        this.questManager = questManager;
+        this.type = type;
+        reload();
     }
 
+    @Override
+    public void reload() {
+        this.questKeys.clear();
+        loadedQuests.clear();
+        this.plugin = RaidCraft.getComponent(QuestPlugin.class);
+        this.questManager = this.plugin.getQuestManager();
+        rootFolder.mkdirs();
+        loadQuestConfigs(rootFolder, type);
+        plugin.info("QuestPool." + type + ":" + questKeys.size() + " TimeQuests loaded.");
+    }
+
+    // TODO: shared code with QuestManager
+    private void loadQuestConfigs(File baseFolder, String path) {
+
+        for (File file : baseFolder.listFiles()) {
+            String fileName = file.getName();
+            if (file.isDirectory()) {
+                loadQuestConfigs(file, path + "." + fileName.toLowerCase());
+                continue;
+            }
+            String id = path + "." + file.getName().toLowerCase();
+            ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
+
+            SimpleQuestTemplate quest = new SimpleQuestTemplate(id, config);
+            // lets register the triggers of the quest
+            quest.registerListeners();
+            questKeys.add(id);
+            loadedQuests.put(id, quest);
+            plugin.info("Loaded TimeQuest: " + id + " - " + quest.getFriendlyName());
+        }
+    }
 
     @Override
     public Optional<QuestTemplate> getRandomQuest() {
@@ -31,10 +68,7 @@ public class SimpleQuestPool implements QuestPool {
         }
         int id = MathUtil.RANDOM.nextInt(getPoolSize());
         String questKey = questKeys.get(id);
-        if (!cachedQuests.containsKey(questKey)) {
-            // TODO: load Quest
-        }
-        return Optional.of(cachedQuests.get(questKey));
+        return Optional.of(loadedQuests.get(questKey));
     }
     @Override
     public int getPoolSize() {
