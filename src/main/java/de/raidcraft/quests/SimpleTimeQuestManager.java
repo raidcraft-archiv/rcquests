@@ -54,25 +54,20 @@ public class SimpleTimeQuestManager implements TimeQuestManager {
                 .eq("type", type)
                 .eq("player_id", holder.getId()).findUnique();
         if (timeQuestStats == null) {
+            // if new
             timeQuestStats = new TTimeQuest();
             timeQuestStats.setType(type);
             timeQuestStats.setCounter(0);
             timeQuestStats.setPlayerId(holder.getId());
         } else {
-            // TODO: use new JAVA 8 Time API
-            Date now = new Date();
-            if (DateUtils.isSameDay(now, timeQuestStats.getLastStarted())) {
-                // if he was online today -> abort
+            // if not new check if we must reset counter
+            CHECK check = checkPlayerQuest(timeQuestStats.getLastStarted(), timeQuestStats.getLastCompleted());
+            if (check == CHECK.ALLREADY_ONLINE) {
                 return false;
             }
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, -1);
-            if (timeQuestStats.getLastCompleted() == null ||
-                    !DateUtils.isSameDay(timeQuestStats.getLastCompleted(), cal.getTime())) {
-                // if quest not completed yesterday
+            if (check == CHECK.RESET_COUNTER) {
                 timeQuestStats.setCounter(0);
             }
-
         }
         return startQuest(pool, holder, timeQuestStats);
     }

@@ -33,7 +33,7 @@
     <scm>
         <developerConnection>scm:git:ssh://git@raid-craft.de:22109/raid-craft-de/${project.artifactId}.git</developerConnection>
         <tag>HEAD</tag>
-    </scm>
+  </scm>
 
     <repositories>
         <repository>
@@ -62,6 +62,12 @@
             <groupId>de.raidcraft</groupId>
             <artifactId>mobs</artifactId>
             <version>1.1.5-develop-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
