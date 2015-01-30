@@ -2,7 +2,6 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
-import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.config.builder.ConfigBuilder;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.InvalidQuestHostException;
@@ -13,7 +12,6 @@ import de.raidcraft.api.quests.QuestProvider;
 import de.raidcraft.api.quests.holder.QuestHolder;
 import de.raidcraft.api.quests.objective.PlayerObjective;
 import de.raidcraft.api.quests.quest.QuestTemplate;
-import de.raidcraft.api.quests.util.QuestUtil;
 import de.raidcraft.quests.config.QuestHostConfigLoader;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.util.CaseInsensitiveMap;
@@ -21,9 +19,12 @@ import de.raidcraft.util.UUIDUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -114,11 +115,18 @@ public final class QuestManager implements QuestProvider, Component {
                 }
                 for (QuestConfigLoader loader : configLoader.values()) {
                     if (file.getName().toLowerCase().endsWith(loader.getSuffix())) {
-
-                        String id = (path + "." + file.getName().toLowerCase()).replace(loader.getSuffix(), "");
-                        ConfigurationSection config = plugin.configure(new SimpleConfiguration<>(plugin, file));
-                        config = QuestUtil.replaceThisReferences(config, path);
-                        loader.loadConfig(id, config);
+                        try {
+                            String id = (path + "." + file.getName().toLowerCase()).replace(loader.getSuffix(), "");
+                            YamlConfiguration configFile = new YamlConfiguration();
+                            boolean exists = file.exists();
+                            configFile.load(file);
+                            // What does this method do?
+                            // configFile = QuestUtil.replaceThisReferences(configFile, path);
+                            loader.loadConfig(id, configFile);
+                        } catch (InvalidConfigurationException | IOException e) {
+                            plugin.warning("Cannot load: " + file.getPath());
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
