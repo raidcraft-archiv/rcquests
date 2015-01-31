@@ -19,6 +19,7 @@ import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import de.raidcraft.quests.trigger.HostTrigger;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
@@ -27,22 +28,20 @@ import java.util.List;
 /**
  * @author Silthus
  */
+@Getter
 public class QuestPlugin extends BasePlugin {
 
     private LocalConfiguration configuration;
     private QuestManager questManager;
-    private TriggerManager triggerManager;
 
     @Override
     public void enable() {
 
         configuration = configure(new LocalConfiguration(this));
-
         questManager = new QuestManager(this);
 
         registerTrigger();
         registerActions();
-        registerRequirements();
 
         try {
             // register our quest hosts
@@ -56,6 +55,7 @@ public class QuestPlugin extends BasePlugin {
         // commands
         registerCommands(BaseCommands.class);
         // load all of the quests after 2sec server start delay
+        // then all plugins, actions and co are loaded
         Bukkit.getScheduler().runTaskLater(this, new Runnable() {
             @Override
             public void run() {
@@ -65,11 +65,11 @@ public class QuestPlugin extends BasePlugin {
             }
         }, 8 * 20L);
 
-        // load NPC's
+        // register NPC stuff
+        // DO NOT LOAD NPC's we have no persitent npc's
+        // their are automatically spawaned over the host.yml files
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         NPC_Manager.getInstance().registerTrait(QuestTrait.class, "quest");
-        // we have no persist npc's
-        // NPC_Manager.getInstance().loadNPCs(getName());
     }
 
     @Override
@@ -94,10 +94,6 @@ public class QuestPlugin extends BasePlugin {
         ActionFactory.getInstance().registerGlobalAction("quest.complete", new CompleteQuestAction());
     }
 
-    private void registerRequirements() {
-
-    }
-
     private void registerTrigger() {
 
         TriggerManager.getInstance().registerGlobalTrigger(new HostTrigger());
@@ -111,21 +107,6 @@ public class QuestPlugin extends BasePlugin {
         tables.add(TPlayerQuest.class);
         tables.add(TPlayerObjective.class);
         return tables;
-    }
-
-    public LocalConfiguration getConfiguration() {
-
-        return configuration;
-    }
-
-    public QuestManager getQuestManager() {
-
-        return questManager;
-    }
-
-    public TriggerManager getTriggerManager() {
-
-        return triggerManager;
     }
 
     public static class LocalConfiguration extends ConfigurationBase<QuestPlugin> {

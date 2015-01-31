@@ -113,9 +113,8 @@ public final class QuestManager implements QuestProvider, Component {
                         try {
                             String id = (path + "." + file.getName().toLowerCase()).replace(loader.getSuffix(), "");
                             YamlConfiguration configFile = new YamlConfiguration();
-                            boolean exists = file.exists();
                             configFile.load(file);
-                            // What does this method do?
+                            // repace "this." with the absolte path, feature: relative path
                             // configFile = QuestUtil.replaceThisReferences(configFile, path);
                             loader.loadConfig(id, configFile);
                         } catch (InvalidConfigurationException | IOException e) {
