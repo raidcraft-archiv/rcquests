@@ -6,6 +6,8 @@ import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.QuestHost;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.QuestPlugin;
+import lombok.Getter;
+import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.persistence.Persist;
 import net.citizensnpcs.api.trait.Trait;
@@ -22,56 +24,43 @@ public class QuestTrait extends Trait {
     private static Map<String, NPC> questNpcs = new HashMap<>();
 
     @Persist
-    private String hostID;
+    @Getter
+    @Setter
+    private String hostId;
 
     public QuestTrait() {
-
         super("quest");
     }
 
-    public String getHostId() {
-
-        return hostID;
-    }
-
-    public void setHostId(String hostId) {
-
-        this.hostID = hostId;
-    }
-
     public NPC getNpc() {
-
         return getNPC(getHostId());
     }
 
     @Nullable
     public QuestHost getQuestHost() {
-
         try {
             return Quests.getQuestHost(getHostId());
         } catch (InvalidQuestHostException e) {
-            RaidCraft.LOGGER.warning(e.getMessage());
+            RaidCraft.getComponent(QuestPlugin.class).warning(getHostId() + ":" + e.getMessage());
             e.printStackTrace();
-            RaidCraft.LOGGER.warning("Try to remove NPC: " + RaidCraft.getComponent(QuestPlugin.class).getName());
+            // TODO: why remove NPC?
+            RaidCraft.getComponent(QuestPlugin.class).warning("Try to remove NPC: " + getNpc().getName());
             NPC_Manager.getInstance().removeNPC(getNPC(), RaidCraft.getComponent(QuestPlugin.class).getName());
         }
         return null;
     }
 
     public static NPC getNPC(String hostID) {
-
         return questNpcs.get(hostID);
     }
 
     @Override
     public void onAttach() {
-
-        questNpcs.put(hostID, getNPC());
+        questNpcs.put(getHostId(), getNPC());
     }
 
     @Override
     public void onDespawn() {
-
-        questNpcs.remove(hostID);
+        questNpcs.remove(getHostId());
     }
 }
