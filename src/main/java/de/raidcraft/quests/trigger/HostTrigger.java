@@ -18,6 +18,7 @@ public class HostTrigger extends Trigger implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onQuestHostInteract(QuestHostInteractEvent event) {
 
-        informListeners("interact", event.getPlayer(), config -> event.getHost().getId().equalsIgnoreCase(config.getString("host")));
+        informListeners("interact", event.getPlayer(),
+                config -> event.getQuestHost().getId().equalsIgnoreCase(config.getString("host")));
     }
 }

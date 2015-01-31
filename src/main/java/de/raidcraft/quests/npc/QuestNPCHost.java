@@ -6,7 +6,6 @@ import de.raidcraft.api.quests.AbstractQuestHost;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.rcconversations.npc.ConversationsTrait;
 import de.raidcraft.rcconversations.npc.TalkCloseTrait;
-import de.raidcraft.util.CaseInsensitiveMap;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.api.trait.trait.Equipment;
@@ -16,7 +15,8 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.Map;
+import java.util.HashMap;
+import java.util.UUID;
 
 /**
  * @author Silthus
@@ -24,18 +24,14 @@ import java.util.Map;
 public class QuestNPCHost extends AbstractQuestHost {
 
     private NPC npc;
-    private String defaultConversationName;
-    private Map<String, String> playerConversations = new CaseInsensitiveMap<>();
-    private Location defaultLocation;
+    private ConfigurationSection data;
+
+    private HashMap<UUID, String> playerConversations = new HashMap<>();
 
     public QuestNPCHost(String id, ConfigurationSection data) {
 
         super(id, data);
-        ConfigurationSection loc = data.getConfigurationSection("location");
-        defaultLocation = new Location(Bukkit.getWorld(loc.getString("world", "world")),
-                loc.getInt("x", 23), loc.getInt("y", 3), loc.getInt("z", 178));
-        this.defaultConversationName = data.getString("default-conv", id + ".default");
-
+        this.data = data;
         // spawn a NPC
         spawn();
 
@@ -62,62 +58,71 @@ public class QuestNPCHost extends AbstractQuestHost {
                 equipmentTrait.set(3, RaidCraft.getItem(equipment.getString("leggings", Material.AIR.name())));
                 equipmentTrait.set(4, RaidCraft.getItem(equipment.getString("boots", Material.AIR.name())));
             } catch (CustomItemException e) {
-                RaidCraft.LOGGER.warning(e.getMessage());
+                RaidCraft.getComponent(QuestPlugin.class).warning("QuestNPCHost: canot equip " + getName() + " : " + getBasePath());
                 e.printStackTrace();
             }
         }
     }
 
+    private String getConversation(String key, String fileKey) {
+        return data.getString(key, getId() + "." + fileKey);
+    }
+
     @Override
     public String getDefaultConversationName() {
+        return getConversation("defauöt-conv", "default");
+    }
 
-        return defaultConversationName;
+    public String getEndConversationName() {
+        return getConversation("end-conv", "end");
+    }
+    @Override
+    public String getActiveConversationName() {
+        return getConversation("active-conv", "active");
     }
 
     @Override
     public Location getLocation() {
-
         return npc.getStoredLocation();
     }
 
     @Override
     public String getUniqueId() {
-
         return getId() + ":" + npc.getId();
     }
 
     @Override
     public void setConversation(Player player, String conversation) {
-
-        playerConversations.put(player.getName(), conversation);
+        playerConversations.put(player.getUniqueId(), conversation);
     }
 
     @Override
     public String getConversation(Player player) {
-
-        if (playerConversations.containsKey(player.getName())) {
-            return playerConversations.get(player.getName());
+        // TODO: check quest status?
+        if (playerConversations.containsKey(player.getUniqueId())) {
+            return playerConversations.get(player.getUniqueId());
         }
-        return defaultConversationName;
+        return getDefaultConversationName();
     }
 
     @Override
     public void spawn() {
-
         // spawn a NPC
         npc = QuestTrait.getNPC(getId());
         // if NPC not exists, warn admin and create new one
         if (npc == null) {
+            ConfigurationSection loc = data.getConfigurationSection("location");
+            Location defaultLocation = new Location(Bukkit.getWorld(loc.getString("world", "world")),
+                    loc.getInt("x", 23), loc.getInt("y", 3), loc.getInt("z", 178));
             QuestPlugin plugin = RaidCraft.getComponent(QuestPlugin.class);
             plugin.info("Quest NPC not exists and spawned automaticly hostid:" + getId(), "npc");
             npc = NPC_Quest_Manager.getInstance().spawnNonPersistNpcQuest(
-                    defaultLocation, getFriendlyName(), plugin.getName(), defaultConversationName, getId());
+                    defaultLocation, getFriendlyName(), plugin.getName(), getDefaultConversationName(), getId());
         }
     }
 
     @Override
     public void despawn() {
-
         npc.despawn(DespawnReason.PLUGIN);
     }
 }

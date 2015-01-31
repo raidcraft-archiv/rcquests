@@ -14,17 +14,23 @@ import org.bukkit.event.Listener;
  */
 public class NPCListener implements Listener {
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    // TODO: hotfix wg 6.0 that you can rightclick
+    @EventHandler(ignoreCancelled = false, priority = EventPriority.LOWEST)
     public void onNpcInteract(NPCRightClickEvent event) {
 
-        if (event.getNPC().hasTrait(QuestTrait.class)) {
-            QuestHost questHost = event.getNPC().getTrait(QuestTrait.class).getQuestHost();
-            if (questHost != null) {
-                questHost.setConversation(event.getClicker(), questHost.getDefaultConversationName());
-                questHost.interact(event.getClicker());
-                // fire the default conversation if set
-                RaidCraft.getComponent(ConversationManager.class).triggerConversation(questHost, event.getClicker());
-            }
+        if (!event.getNPC().hasTrait(QuestTrait.class)) {
+            return;
         }
+        QuestHost questHost = event.getNPC().getTrait(QuestTrait.class).getQuestHost();
+        if (questHost == null) {
+            return;
+        }
+        questHost.setConversation(event.getClicker(), questHost.getDefaultConversationName());
+        questHost.interact(event.getClicker());
+        // conversation is changed by trigger
+        // fire the default conversation if set
+        RaidCraft.getComponent(ConversationManager.class).triggerConversation(questHost, event.getClicker());
+        // TODO: missing?
+        // event.setCancelled(true);
     }
 }
