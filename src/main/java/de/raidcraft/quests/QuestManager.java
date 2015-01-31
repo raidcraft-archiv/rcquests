@@ -15,7 +15,6 @@ import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.quests.config.QuestHostConfigLoader;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.util.CaseInsensitiveMap;
-import de.raidcraft.util.UUIDUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -27,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -43,12 +43,11 @@ public final class QuestManager implements QuestProvider, Component {
     private final Map<String, QuestHost> loadedQuestHosts = new CaseInsensitiveMap<>();
     private final Map<String, Constructor<? extends QuestHost>> questHostTypes = new CaseInsensitiveMap<>();
 
-    private final Map<String, QuestHolder> questPlayers = new CaseInsensitiveMap<>();
+    private final Map<UUID, QuestHolder> questPlayers = new HashMap<>();
 
     private boolean loadedQuestFiles = false;
 
     protected QuestManager(final QuestPlugin plugin) {
-
         this.plugin = plugin;
         RaidCraft.registerComponent(QuestManager.class, this);
         try {
@@ -72,7 +71,6 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     public void load() {
-
         // we need to look recursivly thru all folders under the defined base folder
         File baseFolder = new File(plugin.getDataFolder(), plugin.getConfiguration().quests_base_folder);
         baseFolder.mkdirs();
@@ -81,7 +79,6 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     public void unload() {
-
         questPlayers.values().forEach(holder -> {
             holder.save();
             holder.getAllQuests()
@@ -98,13 +95,11 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     public void reload() {
-
         unload();
         load();
     }
 
     private void loadQuestConfigs(File baseFolder, String path) {
-
         for (File file : baseFolder.listFiles()) {
             String fileName = file.getName();
             if (file.isDirectory()) {
@@ -135,7 +130,6 @@ public final class QuestManager implements QuestProvider, Component {
 
     @Override
     public void registerQuestConfigLoader(QuestConfigLoader loader) throws QuestException {
-
         if (configLoader.containsKey(loader.getSuffix())) {
             throw new QuestException("Config loader with the suffix " + loader.getSuffix() + " is already registered!");
         }
@@ -148,7 +142,6 @@ public final class QuestManager implements QuestProvider, Component {
 
     @Override
     public void registerQuestHost(String type, Class<? extends QuestHost> clazz) throws InvalidQuestHostException {
-
         if (isQuestHostType(type)) {
             throw new InvalidQuestHostException("Tried to register duplicate quest host type: " + type);
         }
@@ -163,12 +156,10 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     public boolean isQuestHostType(String type) {
-
         return questHostTypes.containsKey(type);
     }
 
     public void createQuestHost(String type, String id, ConfigurationSection config) {
-
         try {
             Constructor<? extends QuestHost> constructor = questHostTypes.get(type);
             constructor.setAccessible(true);
@@ -182,7 +173,6 @@ public final class QuestManager implements QuestProvider, Component {
 
     @Override
     public QuestHost getQuestHost(String id) throws InvalidQuestHostException {
-
         if (loadedQuestHosts.containsKey(id)) {
             return loadedQuestHosts.get(id);
         }
@@ -195,13 +185,11 @@ public final class QuestManager implements QuestProvider, Component {
         throw new InvalidQuestHostException("Unknown quest host with the id: " + id);
     }
 
-    public QuestHolder clearPlayerCache(String player) {
-
-        return questPlayers.remove(player);
+    public QuestHolder clearPlayerCache(UUID playerId) {
+        return questPlayers.remove(playerId);
     }
 
     public QuestHolder getQuestHolder(Player player) {
-
         try {
             return getPlayer(player.getUniqueId());
         } catch (UnknownPlayerException e) {
@@ -211,15 +199,14 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     public QuestHolder getPlayer(UUID playerId) throws UnknownPlayerException {
-
         Player bukkitPlayer = Bukkit.getPlayer(playerId);
         if (bukkitPlayer == null) {
             throw new UnknownPlayerException("Player not online?");
         }
         String name = bukkitPlayer.getName();
-        if (!questPlayers.containsKey(name)) {
+        if (!questPlayers.containsKey(playerId)) {
             TPlayer table = plugin.getDatabase().find(TPlayer.class).where()
-                    .eq("player", name.toLowerCase()).findUnique();
+                    .eq("player_id", playerId).findUnique();
             if (table == null) {
                 table = new TPlayer();
                 table.setCompletedQuests(0);
@@ -228,13 +215,12 @@ public final class QuestManager implements QuestProvider, Component {
                 table.setPlayerId(playerId);
                 plugin.getDatabase().save(table);
             }
-            questPlayers.put(name, new BukkitQuestHolder(table.getId(), UUIDUtil.convertPlayer(name)));
+            questPlayers.put(playerId, new BukkitQuestHolder(table.getId(), playerId));
         }
-        return questPlayers.get(name);
+        return questPlayers.get(playerId);
     }
 
     public QuestTemplate getQuestTemplate(String name) throws QuestException {
-
         if (loadedQuests.containsKey(name)) {
             return loadedQuests.get(name);
         }

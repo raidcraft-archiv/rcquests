@@ -28,7 +28,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        QuestHolder holder = plugin.getQuestManager().clearPlayerCache(event.getPlayer().getName());
+        QuestHolder holder = plugin.getQuestManager().clearPlayerCache(event.getPlayer().getUniqueId());
         if (holder != null) {
             holder.save();
         }
