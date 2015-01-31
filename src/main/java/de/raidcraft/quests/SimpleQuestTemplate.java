@@ -40,7 +40,7 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
                 try {
                     objectiveTemplates.add(new SimpleObjectiveTemplate(Integer.parseInt(key), this, data.getConfigurationSection(key)));
                 } catch (NumberFormatException e) {
-                    RaidCraft.LOGGER.warning("Wrong objective id in " + getId() + ": " + key);
+                    RaidCraft.LOGGER.warning(getId() + ": " + "Wrong objective id in " + getId() + ": " + key);
                 }
             }
         }
@@ -65,7 +65,7 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
         try {
             return RequirementFactory.getInstance().createRequirements(data, Player.class);
         } catch (RequirementException e) {
-            RaidCraft.LOGGER.warning(data.getRoot().getName() + ": " + e.getMessage());
+            RaidCraft.LOGGER.warning(getId() + ": " + data.getRoot().getName() + ": " + e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -76,7 +76,7 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
         try {
             return ActionFactory.getInstance().createActions(data, Player.class);
         } catch (ActionException e) {
-            RaidCraft.LOGGER.warning(data.getRoot().getName() + ": " + e.getMessage());
+            RaidCraft.LOGGER.warning(getId() + ": " + data.getRoot().getName() + ": " + e.getMessage());
             return new ArrayList<>();
         }
     }
