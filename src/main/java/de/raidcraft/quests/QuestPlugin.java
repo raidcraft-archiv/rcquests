@@ -14,7 +14,6 @@ import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.npc.NPCListener;
 import de.raidcraft.quests.npc.QuestNPCHost;
-import de.raidcraft.quests.npc.QuestSignHost;
 import de.raidcraft.quests.npc.QuestTrait;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
@@ -48,7 +47,6 @@ public class QuestPlugin extends BasePlugin {
         try {
             // register our quest hosts
             Quests.registerQuestHost(this, "NPC", QuestNPCHost.class);
-            Quests.registerQuestHost(this, "SIGN", QuestSignHost.class);
         } catch (InvalidQuestHostException e) {
             e.printStackTrace();
         }
