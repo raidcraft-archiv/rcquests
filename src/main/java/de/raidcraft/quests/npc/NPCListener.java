@@ -31,6 +31,6 @@ public class NPCListener implements Listener {
         // fire the default conversation if set
         RaidCraft.getComponent(ConversationManager.class).triggerConversation(questHost, event.getClicker());
         // TODO: missing?
-        // event.setCancelled(true);
+        event.setCancelled(true);
     }
 }
