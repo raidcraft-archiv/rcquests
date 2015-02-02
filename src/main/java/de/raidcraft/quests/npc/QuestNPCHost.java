@@ -86,9 +86,11 @@ public class QuestNPCHost extends AbstractQuestHost {
         return npc.getStoredLocation();
     }
 
+    // this ID is not uniquie for the entity, because we create a new one
+    // on startup and reload
     @Override
     public String getUniqueId() {
-        return getId() + ":" + npc.getId();
+        return getId();
     }
 
     @Override
