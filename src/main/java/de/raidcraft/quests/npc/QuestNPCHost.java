@@ -70,15 +70,7 @@ public class QuestNPCHost extends AbstractQuestHost {
 
     @Override
     public String getDefaultConversationName() {
-        return getConversation("defauöt-conv", "default");
-    }
-
-    public String getEndConversationName() {
-        return getConversation("end-conv", "end");
-    }
-    @Override
-    public String getActiveConversationName() {
-        return getConversation("active-conv", "active");
+        return getConversation("default-conv", "default");
     }
 
     @Override
