@@ -7,7 +7,11 @@ import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.trigger.TriggerManager;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
+import de.raidcraft.api.items.CustomItem;
+import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.npc.NPC_Manager;
+import de.raidcraft.items.ItemsPlugin;
+import de.raidcraft.items.configs.NamedYAMLCustomItem;
 import de.raidcraft.quests.api.InvalidQuestHostException;
 import de.raidcraft.quests.api.QuestConfigLoader;
 import de.raidcraft.quests.api.QuestException;
@@ -100,6 +104,25 @@ public class QuestPlugin extends BasePlugin {
             });
         } catch (QuestException e) {
             getLogger().warning(e.getMessage());
+        }
+        // also register a quest config loader for custom items in quests
+        try {
+            Quests.registerQuestLoader(new QuestConfigLoader("item") {
+                @Override
+                public void loadConfig(String id, ConfigurationSection config) {
+
+                    try {
+                        CustomItem customItem = new NamedYAMLCustomItem(config.getString("name", id), config);
+                        RaidCraft.getComponent(ItemsPlugin.class).getCustomItemManager().registerNamedCustomItem(id, customItem);
+                        getLogger().info("Loaded custom quest item: " + id + " (" + customItem.getName() + ")");
+                    } catch (CustomItemException e) {
+                        getLogger().warning(e.getMessage());
+                    }
+                }
+            });
+        } catch (QuestException e) {
+            warning(e.getMessage());
+            e.printStackTrace();
         }
     }
 
