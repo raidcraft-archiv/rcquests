@@ -1,6 +1,6 @@
 package de.raidcraft.quests.listener;
 
-import de.raidcraft.api.quests.holder.QuestHolder;
+import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.QuestPlugin;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

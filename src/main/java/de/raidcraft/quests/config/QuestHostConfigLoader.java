@@ -6,7 +6,7 @@ import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.config.builder.ConfigBuilder;
 import de.raidcraft.api.config.builder.ConfigBuilderException;
 import de.raidcraft.api.config.builder.ConfigGenerator;
-import de.raidcraft.api.quests.QuestConfigLoader;
+import de.raidcraft.quests.api.QuestConfigLoader;
 import de.raidcraft.quests.QuestPlugin;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;

@@ -2,7 +2,7 @@ package de.raidcraft.quests.npc;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
-import de.raidcraft.api.quests.AbstractQuestHost;
+import de.raidcraft.quests.api.AbstractQuestHost;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.rcconversations.npc.ConversationsTrait;
 import de.raidcraft.rcconversations.npc.TalkCloseTrait;

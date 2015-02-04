@@ -9,8 +9,8 @@ import de.raidcraft.api.action.requirement.RequirementException;
 import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.action.trigger.TriggerFactory;
 import de.raidcraft.api.action.trigger.TriggerManager;
-import de.raidcraft.api.quests.objective.ObjectiveTemplate;
-import de.raidcraft.api.quests.quest.AbstractQuestTemplate;
+import de.raidcraft.quests.api.objective.ObjectiveTemplate;
+import de.raidcraft.quests.api.quest.AbstractQuestTemplate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

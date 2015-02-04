@@ -1,15 +1,20 @@
 package de.raidcraft.quests;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
+import de.raidcraft.api.action.action.ActionException;
 import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.trigger.TriggerManager;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.npc.NPC_Manager;
-import de.raidcraft.api.quests.InvalidQuestHostException;
-import de.raidcraft.api.quests.Quests;
 import de.raidcraft.quests.actions.CompleteQuestAction;
 import de.raidcraft.quests.actions.StartQuestAction;
+import de.raidcraft.quests.api.InvalidQuestHostException;
+import de.raidcraft.quests.api.QuestConfigLoader;
+import de.raidcraft.quests.api.QuestException;
+import de.raidcraft.quests.api.Quests;
+import de.raidcraft.quests.api.script.action.StartConversationAction;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.npc.NPCListener;
@@ -19,8 +24,10 @@ import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import de.raidcraft.quests.trigger.HostTrigger;
+import de.raidcraft.rcconversations.RCConversationsPlugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +77,30 @@ public class QuestPlugin extends BasePlugin {
         // their are automatically spawaned over the host.yml files
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         NPC_Manager.getInstance().registerTrait(QuestTrait.class, "quest");
+
+
+        // TODO: hotfix - fix design of conversations and quests, QuestHost vs ConversationHost
+        // regsiter action for conversation plugin
+        try {
+            ActionFactory.getInstance().registerAction(RaidCraft.getComponent(RCConversationsPlugin.class),
+                    "conversation.start", new StartConversationAction());
+        } catch (ActionException e) {
+            e.printStackTrace();
+        }
+
+        // register conversation quest loader
+        try {
+            Quests.registerQuestLoader(new QuestConfigLoader("conv") {
+                @Override
+                public void loadConfig(String id, ConfigurationSection config) {
+
+                    RaidCraft.getComponent(RCConversationsPlugin.class).getConversationManager()
+                            .registerConversationTemplate(id, config);
+                }
+            });
+        } catch (QuestException e) {
+            getLogger().warning(e.getMessage());
+        }
     }
 
     @Override

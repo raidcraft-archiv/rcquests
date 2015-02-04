@@ -1,8 +1,8 @@
 package de.raidcraft.quests.ui;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.quests.holder.QuestHolder;
-import de.raidcraft.api.quests.quest.Quest;
+import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.QuestPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;

@@ -2,9 +2,9 @@ package de.raidcraft.quests.actions;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
-import de.raidcraft.api.quests.QuestException;
-import de.raidcraft.api.quests.holder.QuestHolder;
-import de.raidcraft.api.quests.quest.Quest;
+import de.raidcraft.quests.api.QuestException;
+import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.QuestManager;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.ConfigurationSection;
