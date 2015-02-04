@@ -1,7 +1,11 @@
-package de.raidcraft.quests.api;
+package de.raidcraft.quests.api.provider;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.quests.api.InvalidQuestHostException;
+import de.raidcraft.quests.api.QuestConfigLoader;
+import de.raidcraft.quests.api.QuestException;
+import de.raidcraft.quests.api.QuestHolder;
+import de.raidcraft.quests.api.QuestHost;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

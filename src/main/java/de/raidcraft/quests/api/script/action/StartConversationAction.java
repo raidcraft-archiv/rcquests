@@ -5,7 +5,7 @@ import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.conversations.ConversationHost;
 import de.raidcraft.quests.api.InvalidQuestHostException;
 import de.raidcraft.quests.api.QuestHost;
-import de.raidcraft.quests.api.Quests;
+import de.raidcraft.quests.api.provider.Quests;
 import de.raidcraft.rcconversations.RCConversationsPlugin;
 import de.raidcraft.rcconversations.host.PlayerHost;
 import org.bukkit.Bukkit;

@@ -1,6 +1,8 @@
-package de.raidcraft.quests.api;
+package de.raidcraft.quests.api.impl;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.quests.api.QuestHost;
+import de.raidcraft.quests.api.raidcraftevents.QuestHostInteractEvent;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 

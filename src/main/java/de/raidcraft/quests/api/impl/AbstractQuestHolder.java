@@ -1,8 +1,9 @@
-package de.raidcraft.quests.api.holder;
+package de.raidcraft.quests.api.impl;
 
+import de.raidcraft.quests.api.Quest;
 import de.raidcraft.quests.api.QuestException;
-import de.raidcraft.quests.api.quest.Quest;
-import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.api.QuestHolder;
+import de.raidcraft.quests.api.QuestTemplate;
 import de.raidcraft.util.CaseInsensitiveMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

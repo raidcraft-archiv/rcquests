@@ -1,11 +1,11 @@
-package de.raidcraft.quests.actions;
+package de.raidcraft.quests.api.script.action;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
-import de.raidcraft.quests.api.QuestException;
-import de.raidcraft.quests.api.holder.QuestHolder;
-import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.QuestManager;
+import de.raidcraft.quests.api.Quest;
+import de.raidcraft.quests.api.QuestException;
+import de.raidcraft.quests.api.QuestHolder;
 import lombok.SneakyThrows;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;

@@ -1,10 +1,9 @@
-package de.raidcraft.quests.api.quest;
+package de.raidcraft.quests.api;
 
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.trigger.TriggerFactory;
 import de.raidcraft.api.action.trigger.TriggerListener;
-import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;

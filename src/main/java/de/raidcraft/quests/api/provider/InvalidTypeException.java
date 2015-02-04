@@ -1,4 +1,4 @@
-package de.raidcraft.quests.api;
+package de.raidcraft.quests.api.provider;
 
 import de.raidcraft.api.RaidCraftException;
 

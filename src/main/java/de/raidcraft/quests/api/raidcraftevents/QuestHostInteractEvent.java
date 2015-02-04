@@ -1,5 +1,6 @@
-package de.raidcraft.quests.api;
+package de.raidcraft.quests.api.raidcraftevents;
 
+import de.raidcraft.quests.api.QuestHost;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;

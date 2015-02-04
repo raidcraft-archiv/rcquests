@@ -1,7 +1,7 @@
 package de.raidcraft.quests.ui;
 
-import de.raidcraft.quests.api.objective.PlayerObjective;
-import de.raidcraft.quests.api.quest.Quest;
+import de.raidcraft.quests.api.PlayerObjective;
+import de.raidcraft.quests.api.Quest;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

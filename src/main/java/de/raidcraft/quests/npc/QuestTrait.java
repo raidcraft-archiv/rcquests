@@ -2,10 +2,10 @@ package de.raidcraft.quests.npc;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.npc.NPC_Manager;
+import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.InvalidQuestHostException;
 import de.raidcraft.quests.api.QuestHost;
-import de.raidcraft.quests.api.Quests;
-import de.raidcraft.quests.QuestPlugin;
+import de.raidcraft.quests.api.provider.Quests;
 import lombok.Getter;
 import lombok.Setter;
 import net.citizensnpcs.api.npc.NPC;
