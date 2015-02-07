@@ -12,6 +12,7 @@ import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.api.npc.NPC_Manager;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.items.configs.NamedYAMLCustomItem;
+import de.raidcraft.mobs.MobsPlugin;
 import de.raidcraft.quests.api.InvalidQuestHostException;
 import de.raidcraft.quests.api.QuestConfigLoader;
 import de.raidcraft.quests.api.QuestException;
@@ -123,6 +124,23 @@ public class QuestPlugin extends BasePlugin {
         } catch (QuestException e) {
             warning(e.getMessage());
             e.printStackTrace();
+        }
+        // register mob config loader
+        try {
+            Quests.registerQuestLoader(new QuestConfigLoader("mob") {
+                @Override
+                public void loadConfig(String id, ConfigurationSection config) {
+                    RaidCraft.getComponent(MobsPlugin.class).getMobManager().registerMob(id, config);
+                }
+            });
+            Quests.registerQuestLoader(new QuestConfigLoader("mobgroup") {
+                @Override
+                public void loadConfig(String id, ConfigurationSection config) {
+                    RaidCraft.getComponent(MobsPlugin.class).getMobManager().registerMobGroup(id, config);
+                }
+            });
+        } catch (QuestException e) {
+            getLogger().warning(e.getMessage());
         }
     }
 
