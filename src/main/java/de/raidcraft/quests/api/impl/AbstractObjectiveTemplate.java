@@ -5,7 +5,6 @@ import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.trigger.TriggerFactory;
 import de.raidcraft.quests.api.ObjectiveTemplate;
 import de.raidcraft.quests.api.QuestTemplate;
-import de.raidcraft.util.ConfigUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -37,8 +36,8 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
     public AbstractObjectiveTemplate(int id, QuestTemplate questTemplate, ConfigurationSection data) {
 
         this.id = id;
-        this.friendlyName = ConfigUtil.replaceRefrences(questTemplate.getBasePath(), data.getString("name"));
-        this.description = ConfigUtil.replaceRefrences(questTemplate.getBasePath(), data.getString("desc"));
+        this.friendlyName = data.getString("name");
+        this.description = data.getString("desc");
         this.optional = data.getBoolean("optional", false);
         this.hidden = data.getBoolean("hidden", false);
         this.autoCompleting = data.getBoolean("auto-complete", true);
