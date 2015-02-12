@@ -27,6 +27,8 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
     private final String friendlyName;
     private final String description;
     private final boolean optional;
+    private final boolean hidden;
+    private final boolean autoCompleting;
     private final QuestTemplate questTemplate;
     private final Collection<Requirement<Player>> requirements;
     private final Collection<TriggerFactory> trigger;
@@ -38,6 +40,8 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
         this.friendlyName = ConfigUtil.replaceRefrences(questTemplate.getBasePath(), data.getString("name"));
         this.description = ConfigUtil.replaceRefrences(questTemplate.getBasePath(), data.getString("desc"));
         this.optional = data.getBoolean("optional", false);
+        this.hidden = data.getBoolean("hidden", false);
+        this.autoCompleting = data.getBoolean("auto-complete", true);
         this.questTemplate = questTemplate;
         this.requirements = loadRequirements(data.getConfigurationSection("requirements"));
         this.trigger = loadTrigger(data.getConfigurationSection("trigger"));

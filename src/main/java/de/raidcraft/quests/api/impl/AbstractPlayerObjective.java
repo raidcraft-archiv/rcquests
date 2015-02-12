@@ -20,6 +20,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     private final int id;
     private final Quest quest;
     private final ObjectiveTemplate objectiveTemplate;
+    private boolean active = false;
     private Timestamp completionTime;
 
     public AbstractPlayerObjective(int id, Quest quest, ObjectiveTemplate objectiveTemplate) {
@@ -36,7 +37,8 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
         if (!player.equals(getQuest().getHolder().getPlayer())) {
             return false;
         }
-        if (getObjectiveTemplate().getRequirements().stream()
+        if (getObjectiveTemplate().isAutoCompleting() &&
+                getObjectiveTemplate().getRequirements().stream()
                 .allMatch(requirement -> requirement.test(player))) {
             complete();
         }
@@ -48,6 +50,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
         if (!isCompleted()) {
             // register our start trigger
             getObjectiveTemplate().getTrigger().forEach(factory -> factory.registerListener(this));
+            setActive(true);
         } else {
             unregisterListeners();
             // pass back the listener registration to the quest
@@ -58,6 +61,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     public void unregisterListeners() {
 
         getObjectiveTemplate().getTrigger().forEach(factory -> factory.unregisterListener(this));
+        setActive(false);
     }
 
     @Override

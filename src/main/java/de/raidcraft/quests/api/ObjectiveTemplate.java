@@ -20,6 +20,10 @@ public interface ObjectiveTemplate extends Comparable<ObjectiveTemplate> {
 
     public boolean isOptional();
 
+    public boolean isHidden();
+
+    public boolean isAutoCompleting();
+
     public QuestTemplate getQuestTemplate();
 
     public Collection<Requirement<Player>> getRequirements();
