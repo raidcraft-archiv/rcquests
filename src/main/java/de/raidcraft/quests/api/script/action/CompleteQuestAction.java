@@ -2,11 +2,13 @@ package de.raidcraft.quests.api.script.action;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
+import de.raidcraft.api.language.Translator;
 import de.raidcraft.quests.QuestManager;
+import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.Quest;
 import de.raidcraft.quests.api.QuestException;
 import de.raidcraft.quests.api.QuestHolder;
-import lombok.SneakyThrows;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -16,19 +18,20 @@ import org.bukkit.entity.Player;
 public class CompleteQuestAction implements Action<Player> {
 
     @Override
-    @SneakyThrows
     public void accept(Player player, ConfigurationSection config) {
 
         if (!player.hasPermission("rcquests.quest.complete")) {
-            throw new QuestException("Du hast nicht das Recht Quests zu beenden!");
+            Translator.msg(QuestPlugin.class, player, "action.quest.complete.no-permission", "Du hast nicht das Recht Quests zu starten!");
+            return;
         }
         try {
             QuestManager component = RaidCraft.getComponent(QuestManager.class);
             QuestHolder questHolder = component.getQuestHolder(player);
             Quest quest = questHolder.getQuest(config.getString("quest"));
             quest.complete();
-        } catch (Exception e) {
-            throw new QuestException(e.getMessage());
+        } catch (QuestException e) {
+            RaidCraft.LOGGER.warning(e.getMessage());
+            player.sendMessage(ChatColor.RED + e.getMessage());
         }
     }
 }

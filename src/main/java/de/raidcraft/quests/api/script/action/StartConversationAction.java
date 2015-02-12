@@ -28,8 +28,8 @@ public class StartConversationAction implements Action<Player> {
         } else {
             try {
                 QuestHost questHost = Quests.getQuestHost(hostId);
-                if (questHost instanceof ConversationHost) {
-                    host = (ConversationHost) questHost;
+                if (questHost != null) {
+                    host = questHost;
                 } else {
                     RaidCraft.LOGGER.warning("Defined host is not a quest host!");
                     return;
