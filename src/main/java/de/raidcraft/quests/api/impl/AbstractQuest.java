@@ -155,9 +155,9 @@ public abstract class AbstractQuest implements Quest {
     public void onObjectCompletion(PlayerObjective objective) {
 
         updateObjectiveListeners();
-        getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + getTemplate().getFriendlyName() +
-                ChatColor.RESET + ": " + ChatColor.DARK_GREEN + "Aufgabe erledigt!");
-        getHolder().getPlayer().sendMessage(ChatColor.GREEN.toString() + ChatColor.STRIKETHROUGH + ChatColor.ITALIC + objective.getObjectiveTemplate().getFriendlyName());
+        getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + getTemplate().getFriendlyName() + ": " + ChatColor.RESET
+                ChatColor.AQUA + "Aufgabe " + ChatColor.GREEN + ChatColor.ITALIC + objective.getObjectiveTemplate().getFriendlyName() 
+                + ChatColor.RESET + ChatColor.AQUA + " abgeschlossen.");
     }
 
     @Override
@@ -173,19 +173,20 @@ public abstract class AbstractQuest implements Quest {
     @Override
     public void complete() {
 
-        if (!isActive() || !hasCompletedAllObjectives()) {
+        if (!isActive() || !hasCompletedAllObjectives() || isCompleted()) {
             return;
         }
         // first unregister all listeners to avoid double completion
         unregisterListeners();
-
-        Bukkit.broadcastMessage(ChatColor.DARK_GREEN + getHolder().getPlayer().getName() + " hat die Quest '" +
-                ChatColor.GOLD + getFriendlyName() + ChatColor.DARK_GREEN + "' abgeschlossen!");
+        
         // complete the quest and trigger the complete actions
         setCompletionTime(new Timestamp(System.currentTimeMillis()));
         // give rewards and execute completion actions
         getTemplate().getCompletionActions()
                 .forEach(action -> action.accept(getPlayer()));
+                
+        Bukkit.broadcastMessage(ChatColor.DARK_GREEN + getHolder().getPlayer().getName() + " hat die Quest '" +
+                ChatColor.GOLD + getFriendlyName() + ChatColor.DARK_GREEN + "' abgeschlossen!");
     }
 
     @Override
