@@ -27,6 +27,7 @@ public class SimpleQuest extends AbstractQuest {
         setPhase(quest.getPhase());
         setStartTime(quest.getStartTime());
         setCompletionTime(quest.getCompletionTime());
+        registerListeners();
     }
 
     @Override

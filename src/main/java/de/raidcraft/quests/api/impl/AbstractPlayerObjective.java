@@ -28,7 +28,6 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
         this.id = id;
         this.quest = quest;
         this.objectiveTemplate = objectiveTemplate;
-        registerListeners();
     }
 
     @Override

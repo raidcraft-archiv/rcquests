@@ -2,7 +2,6 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
-import de.raidcraft.api.action.action.ActionException;
 import de.raidcraft.api.action.action.ActionFactory;
 import de.raidcraft.api.action.trigger.TriggerManager;
 import de.raidcraft.api.config.ConfigurationBase;
@@ -86,12 +85,8 @@ public class QuestPlugin extends BasePlugin {
 
         // TODO: hotfix - fix design of conversations and quests, QuestHost vs ConversationHost
         // regsiter action for conversation plugin
-        try {
-            ActionFactory.getInstance().registerAction(RaidCraft.getComponent(RCConversationsPlugin.class),
-                    "conversation.start", new StartConversationAction());
-        } catch (ActionException e) {
-            e.printStackTrace();
-        }
+        ActionFactory.getInstance().registerAction(RaidCraft.getComponent(RCConversationsPlugin.class),
+                "conversation.start", new StartConversationAction());
 
         // register conversation quest loader
         try {

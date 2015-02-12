@@ -45,7 +45,6 @@ public abstract class AbstractQuest implements Quest {
         this.playerObjectives = loadObjectives();
         this.startTrigger = template.getStartTrigger();
         this.completionTrigger = template.getCompletionTrigger();
-        registerListeners();
     }
 
     protected abstract List<PlayerObjective> loadObjectives();
