@@ -56,7 +56,7 @@ public class SimpleQuestPool implements QuestPool {
             // lets register the triggers of the quest
             quest.registerListeners();
             questKeys.add(id);
-            loadedQuests.put(id, quest);
+            loadedQuests.put(id, (QuestTemplate) quest);
             plugin.info("Loaded TimeQuest: " + id + " - " + quest.getFriendlyName());
         }
     }
