@@ -2,6 +2,7 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
+import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.config.builder.ConfigBuilder;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.quests.api.InvalidQuestHostException;
@@ -14,16 +15,14 @@ import de.raidcraft.quests.api.QuestTemplate;
 import de.raidcraft.quests.api.provider.QuestProvider;
 import de.raidcraft.quests.config.QuestHostConfigLoader;
 import de.raidcraft.quests.tables.TPlayer;
+import de.raidcraft.quests.util.QuestUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -100,6 +99,7 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     private void loadQuestConfigs(File baseFolder, String path) {
+
         for (File file : baseFolder.listFiles()) {
             String fileName = file.getName();
             if (file.isDirectory()) {
@@ -110,17 +110,11 @@ public final class QuestManager implements QuestProvider, Component {
                 }
                 for (QuestConfigLoader loader : configLoader.values()) {
                     if (file.getName().toLowerCase().endsWith(loader.getSuffix())) {
-                        try {
-                            String id = (path + "." + file.getName().toLowerCase()).replace(loader.getSuffix(), "");
-                            YamlConfiguration configFile = new YamlConfiguration();
-                            configFile.load(file);
-                            // repace "this." with the absolte path, feature: relative path
-                            // configFile = QuestUtil.replaceThisReferences(configFile, path);
-                            loader.loadConfig(id, configFile);
-                        } catch (InvalidConfigurationException | IOException e) {
-                            plugin.warning("Cannot load: " + file.getPath());
-                            e.printStackTrace();
-                        }
+                        String id = (path + "." + file.getName().toLowerCase()).replace(loader.getSuffix(), "");
+                        ConfigurationSection configFile = plugin.configure(new SimpleConfiguration<>(plugin, file));
+                        // repace "this." with the absolte path, feature: relative path
+                        configFile = QuestUtil.replacePathReferences(configFile, path);
+                        loader.loadConfig(id, configFile);
                     }
                 }
             }
