@@ -75,6 +75,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     @Override
     public void complete() {
 
+        if (isCompleted()) return;
         this.completionTime = new Timestamp(System.currentTimeMillis());
         unregisterListeners();
         getQuest().onObjectCompletion(this);
