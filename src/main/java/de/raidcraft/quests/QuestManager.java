@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -131,6 +132,18 @@ public final class QuestManager implements QuestProvider, Component {
         if (loadedQuestFiles) {
             load();
         }
+    }
+
+    @Nullable
+    public QuestConfigLoader getQuestConfigLoader(String suffix) {
+
+        QuestConfigLoader loader = null;
+        if (configLoader.containsKey(suffix)) {
+            loader = configLoader.get(suffix);
+        } else if (configLoader.containsKey("." + suffix + ".yml")) {
+            loader = configLoader.get("." + suffix + ".yml");
+        }
+        return loader;
     }
 
     @Override

@@ -23,6 +23,11 @@ public abstract class QuestConfigLoader {
 
     public abstract void loadConfig(String id, ConfigurationSection config);
 
+    public String replaceReference(String key) {
+
+        throw new UnsupportedOperationException();
+    }
+
     @Override
     public boolean equals(Object o) {
 

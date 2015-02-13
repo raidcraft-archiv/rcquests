@@ -1,10 +1,8 @@
 package de.raidcraft.quests.util;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.mobs.Mobs;
-import de.raidcraft.quests.QuestPlugin;
-import de.raidcraft.quests.api.InvalidQuestHostException;
-import de.raidcraft.quests.api.QuestException;
+import de.raidcraft.quests.QuestManager;
+import de.raidcraft.quests.api.QuestConfigLoader;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.regex.Matcher;
@@ -21,17 +19,31 @@ public class QuestUtil {
         }
         for (String key : section.getKeys(true)) {
             if (section.isString(key)) {
-                String value = section.getString(key);
-                if (value.startsWith("this.")) {
-                    value = value.replaceFirst("this", basePath);
-                } else if (value.startsWith("..")) {
-                    value = value.replaceFirst("\\.", basePath);
-                }
+                String value = replacePathReference(section.getString(key), basePath);
                 value = replaceRefrences(basePath, value);
                 section.set(key, value);
             }
         }
         return section;
+    }
+
+    public static String replacePathReference(String value, String basePath) {
+
+        if (value.startsWith("this.")) {
+            value = value.replaceFirst("this", basePath);
+        } else if (value.startsWith("../")) {
+            String[] sections = basePath.split("\\.");
+            basePath = "";
+            for (int i = sections.length; i >= 0; --i) {
+                if (value.startsWith("../")) {
+                    value = value.replace("\\.\\./", "");
+                } else {
+                    basePath = sections[i] + "." + basePath;
+                }
+            }
+            value = basePath + value;
+        }
+        return value;
     }
 
     public static String replaceRefrences(String basePath, String value) {
@@ -45,28 +57,15 @@ public class QuestUtil {
         Matcher matcher = pattern.matcher(value);
         if (matcher.matches()) {
             String type = matcher.group(1);
-            String name = matcher.group(2);
-            if (matcher.group(2).startsWith("this.")) {
-                name = name.replaceFirst("this", basePath);
-            } else if (matcher.group(2).startsWith("..")) {
-                name = name.replaceFirst("\\.", basePath);
-            }
-            if (type.equalsIgnoreCase("mob")) {
-                return Mobs.getFriendlyName(name);
-            } else if (type.equalsIgnoreCase("host")) {
+            String name = replacePathReference(matcher.group(2), basePath);
+            QuestConfigLoader loader = RaidCraft.getComponent(QuestManager.class).getQuestConfigLoader(type);
+            if (loader != null) {
                 try {
-                    return RaidCraft.getComponent(QuestPlugin.class).getQuestManager().getQuestHost(name).getFriendlyName();
-                } catch (InvalidQuestHostException e) {
-                    RaidCraft.LOGGER.warning(e.getMessage());
-                }
-            } else if (type.equalsIgnoreCase("quest")) {
-                try {
-                    return RaidCraft.getComponent(QuestPlugin.class).getQuestManager().getQuestTemplate(name).getFriendlyName();
-                } catch (QuestException e) {
-                    RaidCraft.LOGGER.warning(e.getMessage());
+                    return loader.replaceReference(name);
+                } catch (UnsupportedOperationException e) {
+                    RaidCraft.LOGGER.warning("The Quest Config loader " + loader.getSuffix() + " does not support reference replacements!");
                 }
             }
-            return name;
         }
         return value;
     }

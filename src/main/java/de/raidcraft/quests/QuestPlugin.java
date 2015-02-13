@@ -8,6 +8,8 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.items.CustomItem;
 import de.raidcraft.api.items.CustomItemException;
+import de.raidcraft.api.items.CustomItemStack;
+import de.raidcraft.api.mobs.Mobs;
 import de.raidcraft.api.npc.NPC_Manager;
 import de.raidcraft.items.ItemsPlugin;
 import de.raidcraft.items.configs.NamedYAMLCustomItem;
@@ -32,6 +34,7 @@ import de.raidcraft.rcconversations.RCConversationsPlugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,13 +70,10 @@ public class QuestPlugin extends BasePlugin {
         registerCommands(BaseCommands.class);
         // load all of the quests after 2sec server start delay
         // then all plugins, actions and co are loaded
-        Bukkit.getScheduler().runTaskLater(this, new Runnable() {
-            @Override
-            public void run() {
+        Bukkit.getScheduler().runTaskLater(this, () -> {
 
-                Quests.enable(questManager);
-                getQuestManager().load();
-            }
+            Quests.enable(questManager);
+            getQuestManager().load();
         }, 8 * 20L);
 
         // register NPC stuff
@@ -115,6 +115,19 @@ public class QuestPlugin extends BasePlugin {
                         getLogger().warning(e.getMessage());
                     }
                 }
+
+                @Override
+                public String replaceReference(String key) {
+
+                    ItemStack unsafeItem = RaidCraft.getUnsafeItem(key);
+                    if (unsafeItem != null) {
+                        if (unsafeItem instanceof CustomItemStack) {
+                            return ((CustomItemStack) unsafeItem).getItem().getName();
+                        }
+                        return unsafeItem.getType().name();
+                    }
+                    return key;
+                }
             });
         } catch (QuestException e) {
             warning(e.getMessage());
@@ -126,6 +139,12 @@ public class QuestPlugin extends BasePlugin {
                 @Override
                 public void loadConfig(String id, ConfigurationSection config) {
                     RaidCraft.getComponent(MobsPlugin.class).getMobManager().registerMob(id, config);
+                }
+
+                @Override
+                public String replaceReference(String key) {
+
+                    return Mobs.getFriendlyName(key);
                 }
             });
             Quests.registerQuestLoader(new QuestConfigLoader("mobgroup") {
