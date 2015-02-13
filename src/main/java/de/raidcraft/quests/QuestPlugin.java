@@ -2,8 +2,7 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
-import de.raidcraft.api.action.action.ActionFactory;
-import de.raidcraft.api.action.trigger.TriggerManager;
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.items.CustomItem;
@@ -18,8 +17,8 @@ import de.raidcraft.quests.api.InvalidQuestHostException;
 import de.raidcraft.quests.api.QuestConfigLoader;
 import de.raidcraft.quests.api.QuestException;
 import de.raidcraft.quests.api.provider.Quests;
+import de.raidcraft.quests.api.script.action.CompleteObjectiveAction;
 import de.raidcraft.quests.api.script.action.CompleteQuestAction;
-import de.raidcraft.quests.api.script.action.StartConversationAction;
 import de.raidcraft.quests.api.script.action.StartQuestAction;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
@@ -54,8 +53,7 @@ public class QuestPlugin extends BasePlugin {
         configuration = configure(new LocalConfiguration(this));
         questManager = new QuestManager(this);
 
-        registerTrigger();
-        registerActions();
+        registerActionAPI();
 
         try {
             // register our quest hosts
@@ -81,12 +79,6 @@ public class QuestPlugin extends BasePlugin {
         // their are automatically spawaned over the host.yml files
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         NPC_Manager.getInstance().registerTrait(QuestTrait.class, "quest");
-
-
-        // TODO: hotfix - fix design of conversations and quests, QuestHost vs ConversationHost
-        // regsiter action for conversation plugin
-        ActionFactory.getInstance().registerAction(RaidCraft.getComponent(RCConversationsPlugin.class),
-                "conversation.start", new StartConversationAction());
 
         // register conversation quest loader
         try {
@@ -174,15 +166,14 @@ public class QuestPlugin extends BasePlugin {
         Quests.enable(questManager);
     }
 
-    private void registerActions() {
+    private void registerActionAPI() {
 
-        ActionFactory.getInstance().registerGlobalAction("quest.start", new StartQuestAction());
-        ActionFactory.getInstance().registerGlobalAction("quest.complete", new CompleteQuestAction());
-    }
-
-    private void registerTrigger() {
-
-        TriggerManager.getInstance().registerGlobalTrigger(new HostTrigger());
+        ActionAPI.register(this)
+                .trigger(new HostTrigger())
+                .global()
+                    .action("quest.start", new StartQuestAction())
+                    .action("quest.complete", new CompleteQuestAction())
+                    .action("quest.objective.complete", new CompleteObjectiveAction());
     }
 
     @Override
