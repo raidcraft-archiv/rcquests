@@ -1,7 +1,5 @@
 package de.raidcraft.quests.api;
 
-import de.raidcraft.api.quests.quest.QuestTemplate;
-
 import java.util.Optional;
 
 /**
