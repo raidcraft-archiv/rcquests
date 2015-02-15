@@ -3,11 +3,11 @@ package de.raidcraft.quests;
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.quests.holder.QuestHolder;
-import de.raidcraft.api.quests.objective.ObjectiveTemplate;
-import de.raidcraft.api.quests.objective.PlayerObjective;
-import de.raidcraft.api.quests.quest.AbstractQuest;
-import de.raidcraft.api.quests.quest.QuestTemplate;
+import de.raidcraft.quests.api.ObjectiveTemplate;
+import de.raidcraft.quests.api.PlayerObjective;
+import de.raidcraft.quests.api.QuestHolder;
+import de.raidcraft.quests.api.QuestTemplate;
+import de.raidcraft.quests.api.impl.AbstractQuest;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
@@ -27,6 +27,7 @@ public class SimpleQuest extends AbstractQuest {
         setPhase(quest.getPhase());
         setStartTime(quest.getStartTime());
         setCompletionTime(quest.getCompletionTime());
+        registerListeners();
     }
 
     @Override

@@ -4,5 +4,6 @@ version: ${project.version}#${build.number}
 description: API for creating and using custom quests.
 author: Silthus
 website: http://www.raid-craft.de
-depend: [RaidCraft-API]
+depend: [RaidCraft-API, RCConversations, RCItems]
+softdepend: [RCMobs]
 database: true

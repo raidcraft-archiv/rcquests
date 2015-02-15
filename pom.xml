@@ -53,5 +53,21 @@
             <artifactId>rcconversations</artifactId>
             <version>1.2.0</version>
         </dependency>
+        <dependency>
+            <groupId>de.raidcraft</groupId>
+            <artifactId>items</artifactId>
+            <version>1.1.5-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>de.raidcraft</groupId>
+            <artifactId>mobs</artifactId>
+            <version>1.1.5-develop-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.11</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>

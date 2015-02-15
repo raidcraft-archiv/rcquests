@@ -3,9 +3,9 @@ package de.raidcraft.quests;
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.quests.objective.AbstractPlayerObjective;
-import de.raidcraft.api.quests.objective.ObjectiveTemplate;
-import de.raidcraft.api.quests.quest.Quest;
+import de.raidcraft.quests.api.ObjectiveTemplate;
+import de.raidcraft.quests.api.Quest;
+import de.raidcraft.quests.api.impl.AbstractPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerObjective;
 
 /**
@@ -17,6 +17,7 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
 
         super(tableEntry.getId(), quest, objectiveTemplate);
         setCompletionTime(tableEntry.getCompletionTime());
+        registerListeners();
     }
 
     @Override
