@@ -19,6 +19,7 @@ import de.raidcraft.quests.api.QuestException;
 import de.raidcraft.quests.api.provider.Quests;
 import de.raidcraft.quests.api.script.action.CompleteObjectiveAction;
 import de.raidcraft.quests.api.script.action.CompleteQuestAction;
+import de.raidcraft.quests.api.script.action.StartConversationAction;
 import de.raidcraft.quests.api.script.action.StartQuestAction;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
@@ -174,6 +175,8 @@ public class QuestPlugin extends BasePlugin {
                     .action("quest.start", new StartQuestAction())
                     .action("quest.complete", new CompleteQuestAction())
                     .action("quest.objective.complete", new CompleteObjectiveAction());
+        ActionAPI.register(RaidCraft.getComponent(RCConversationsPlugin.class))
+                .action("conversation.start", new StartConversationAction());
     }
 
     @Override
