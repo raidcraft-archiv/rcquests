@@ -6,6 +6,7 @@ import de.raidcraft.quests.api.Quest;
 import de.raidcraft.quests.api.QuestHolder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NonNull;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
@@ -85,7 +86,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     }
 
     @Override
-    public int compareTo(PlayerObjective o) {
+    public int compareTo(@NonNull PlayerObjective o) {
 
         return this.getObjectiveTemplate().compareTo(o.getObjectiveTemplate());
     }

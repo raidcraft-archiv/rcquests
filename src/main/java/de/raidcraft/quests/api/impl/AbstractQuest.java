@@ -146,7 +146,9 @@ public abstract class AbstractQuest implements Quest {
     @Override
     public List<PlayerObjective> getPlayerObjectives() {
 
-        Collections.sort(playerObjectives);
+        if (playerObjectives.size() > 1) {
+            Collections.sort(playerObjectives);
+        }
         return playerObjectives;
     }
 
