@@ -17,7 +17,6 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
 
         super(tableEntry.getId(), quest, objectiveTemplate);
         setCompletionTime(tableEntry.getCompletionTime());
-        registerListeners();
     }
 
     @Override
