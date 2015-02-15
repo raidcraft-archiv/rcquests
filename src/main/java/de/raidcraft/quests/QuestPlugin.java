@@ -170,8 +170,8 @@ public class QuestPlugin extends BasePlugin {
     private void registerActionAPI() {
 
         ActionAPI.register(this)
-                .trigger(new HostTrigger())
                 .global()
+                    .trigger(new HostTrigger())
                     .action("quest.start", new StartQuestAction())
                     .action("quest.complete", new CompleteQuestAction())
                     .action("quest.objective.complete", new CompleteObjectiveAction());
