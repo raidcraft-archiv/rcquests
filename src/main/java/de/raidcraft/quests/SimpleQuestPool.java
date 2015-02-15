@@ -2,8 +2,8 @@ package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.config.SimpleConfiguration;
-import de.raidcraft.api.quests.quest.QuestTemplate;
 import de.raidcraft.quests.api.QuestPool;
+import de.raidcraft.quests.api.QuestTemplate;
 import de.raidcraft.util.MathUtil;
 import org.bukkit.configuration.ConfigurationSection;
 

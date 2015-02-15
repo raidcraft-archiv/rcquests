@@ -1,6 +1,5 @@
 package de.raidcraft.quests.api;
 
-import de.raidcraft.api.quests.holder.QuestHolder;
 
 public interface TimeQuestManager {
 

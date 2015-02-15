@@ -1,7 +1,7 @@
 package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.quests.holder.QuestHolder;
+import de.raidcraft.quests.api.QuestHolder;
 import de.raidcraft.quests.api.QuestPool;
 import de.raidcraft.quests.api.TimeQuestManager;
 import de.raidcraft.quests.tables.TTimeQuest;
