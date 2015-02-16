@@ -50,24 +50,20 @@ public final class QuestManager implements QuestProvider, Component {
     protected QuestManager(final QuestPlugin plugin) {
         this.plugin = plugin;
         RaidCraft.registerComponent(QuestManager.class, this);
-        try {
-            // lets register our own config loader
-            registerQuestConfigLoader(new QuestConfigLoader("quest") {
-                @Override
-                public void loadConfig(String id, ConfigurationSection config) {
+        // lets register our own config loader
+        registerQuestConfigLoader(new QuestConfigLoader("quest") {
+            @Override
+            public void loadConfig(String id, ConfigurationSection config) {
 
-                    SimpleQuestTemplate quest = new SimpleQuestTemplate(id, config);
-                    // lets register the triggers of the quest
-                    quest.registerListeners();
-                    loadedQuests.put(id, quest);
-                    plugin.info("Loaded quest: " + id + " - " + quest.getFriendlyName());
-                }
-            });
-            // and the quest host loader
-            registerQuestConfigLoader(new QuestHostConfigLoader(plugin));
-        } catch (QuestException e) {
-            plugin.getLogger().warning(e.getMessage());
-        }
+                SimpleQuestTemplate quest = new SimpleQuestTemplate(id, config);
+                // lets register the triggers of the quest
+                quest.registerListeners();
+                loadedQuests.put(id, quest);
+                plugin.info("Loaded quest: " + id + " - " + quest.getFriendlyName());
+            }
+        });
+        // and the quest host loader
+        registerQuestConfigLoader(new QuestHostConfigLoader(plugin));
     }
 
     public void load() {
@@ -123,9 +119,10 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     @Override
-    public void registerQuestConfigLoader(QuestConfigLoader loader) throws QuestException {
+    public void registerQuestConfigLoader(QuestConfigLoader loader) {
         if (configLoader.containsKey(loader.getSuffix())) {
-            throw new QuestException("Config loader with the suffix " + loader.getSuffix() + " is already registered!");
+            RaidCraft.LOGGER.warning("Config loader with the suffix " + loader.getSuffix() + " is already registered!");
+            return;
         }
         configLoader.put(loader.getSuffix(), loader);
         ConfigBuilder.registerConfigGenerator(loader);
@@ -147,9 +144,10 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     @Override
-    public void registerQuestHost(String type, Class<? extends QuestHost> clazz) throws InvalidQuestHostException {
+    public void registerQuestHost(String type, Class<? extends QuestHost> clazz) {
         if (isQuestHostType(type)) {
-            throw new InvalidQuestHostException("Tried to register duplicate quest host type: " + type);
+            RaidCraft.LOGGER.warning("Tried to register duplicate quest host type: " + type);
+            return;
         }
 
         try {
@@ -157,7 +155,7 @@ public final class QuestManager implements QuestProvider, Component {
             questHostTypes.put(type, constructor);
             plugin.info("Registered quest host type " + type + ": " + clazz.getCanonicalName());
         } catch (NoSuchMethodException e) {
-            throw new InvalidQuestHostException(e.getMessage());
+            e.printStackTrace();
         }
     }
 
