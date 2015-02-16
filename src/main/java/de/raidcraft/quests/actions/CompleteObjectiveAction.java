@@ -1,4 +1,4 @@
-package de.raidcraft.quests.api.script.action;
+package de.raidcraft.quests.actions;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;

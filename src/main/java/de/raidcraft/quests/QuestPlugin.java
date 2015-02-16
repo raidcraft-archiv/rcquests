@@ -17,15 +17,16 @@ import de.raidcraft.quests.api.InvalidQuestHostException;
 import de.raidcraft.quests.api.QuestConfigLoader;
 import de.raidcraft.quests.api.QuestException;
 import de.raidcraft.quests.api.provider.Quests;
-import de.raidcraft.quests.api.script.action.CompleteObjectiveAction;
-import de.raidcraft.quests.api.script.action.CompleteQuestAction;
-import de.raidcraft.quests.api.script.action.StartConversationAction;
-import de.raidcraft.quests.api.script.action.StartQuestAction;
+import de.raidcraft.quests.actions.CompleteObjectiveAction;
+import de.raidcraft.quests.actions.CompleteQuestAction;
+import de.raidcraft.quests.actions.StartConversationAction;
+import de.raidcraft.quests.actions.StartQuestAction;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.npc.NPCListener;
 import de.raidcraft.quests.npc.QuestNPCHost;
 import de.raidcraft.quests.npc.QuestTrait;
+import de.raidcraft.quests.requirements.HasCompletedQuestRequirement;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
@@ -174,7 +175,8 @@ public class QuestPlugin extends BasePlugin {
                     .trigger(new HostTrigger())
                     .action("quest.start", new StartQuestAction())
                     .action("quest.complete", new CompleteQuestAction())
-                    .action("quest.objective.complete", new CompleteObjectiveAction());
+                    .action("quest.objective.complete", new CompleteObjectiveAction())
+                    .requirement("quest.comppleted", new HasCompletedQuestRequirement());
         ActionAPI.register(RaidCraft.getComponent(RCConversationsPlugin.class))
                 .action("conversation.start", new StartConversationAction());
     }
