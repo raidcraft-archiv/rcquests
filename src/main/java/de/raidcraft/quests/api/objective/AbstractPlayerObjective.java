@@ -1,9 +1,7 @@
-package de.raidcraft.quests.api.impl;
+package de.raidcraft.quests.api.objective;
 
-import de.raidcraft.quests.api.ObjectiveTemplate;
-import de.raidcraft.quests.api.PlayerObjective;
-import de.raidcraft.quests.api.Quest;
-import de.raidcraft.quests.api.QuestHolder;
+import de.raidcraft.quests.api.quest.Quest;
+import de.raidcraft.quests.api.holder.QuestHolder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;

@@ -1,7 +1,7 @@
 package de.raidcraft.quests.trigger;
 
 import de.raidcraft.api.action.trigger.Trigger;
-import de.raidcraft.quests.api.raidcraftevents.QuestHostInteractEvent;
+import de.raidcraft.quests.api.events.QuestHostInteractEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 

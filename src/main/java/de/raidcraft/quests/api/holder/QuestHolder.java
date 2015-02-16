@@ -1,5 +1,8 @@
-package de.raidcraft.quests.api;
+package de.raidcraft.quests.api.holder;
 
+import de.raidcraft.quests.api.QuestException;
+import de.raidcraft.quests.api.quest.Quest;
+import de.raidcraft.quests.api.quest.QuestTemplate;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;

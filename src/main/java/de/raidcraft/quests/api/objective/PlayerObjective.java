@@ -1,6 +1,8 @@
-package de.raidcraft.quests.api;
+package de.raidcraft.quests.api.objective;
 
 import de.raidcraft.api.action.trigger.TriggerListener;
+import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.quests.api.quest.Quest;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;

@@ -1,4 +1,4 @@
-package de.raidcraft.quests.api;
+package de.raidcraft.quests.api.host;
 
 import de.raidcraft.api.conversations.ConversationHost;
 import org.bukkit.entity.Player;

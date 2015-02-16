@@ -16,7 +16,7 @@ import de.raidcraft.mobs.MobsPlugin;
 import de.raidcraft.quests.api.InvalidQuestHostException;
 import de.raidcraft.quests.api.QuestConfigLoader;
 import de.raidcraft.quests.api.QuestException;
-import de.raidcraft.quests.api.provider.Quests;
+import de.raidcraft.quests.api.Quests;
 import de.raidcraft.quests.actions.CompleteObjectiveAction;
 import de.raidcraft.quests.actions.CompleteQuestAction;
 import de.raidcraft.quests.actions.StartConversationAction;

@@ -1,7 +1,7 @@
 package de.raidcraft.quests.tables;
 
 import com.avaje.ebean.validation.NotNull;
-import de.raidcraft.quests.api.Quest;
+import de.raidcraft.quests.api.quest.Quest;
 import lombok.Getter;
 import lombok.Setter;
 

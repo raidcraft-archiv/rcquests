@@ -1,7 +1,7 @@
 package de.raidcraft.quests.listener;
 
 import de.raidcraft.quests.QuestPlugin;
-import de.raidcraft.quests.api.QuestHolder;
+import de.raidcraft.quests.api.holder.QuestHolder;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;

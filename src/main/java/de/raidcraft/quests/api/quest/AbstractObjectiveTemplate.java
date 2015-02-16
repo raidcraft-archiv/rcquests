@@ -1,10 +1,9 @@
-package de.raidcraft.quests.api.impl;
+package de.raidcraft.quests.api.quest;
 
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.trigger.TriggerFactory;
-import de.raidcraft.quests.api.ObjectiveTemplate;
-import de.raidcraft.quests.api.QuestTemplate;
+import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
