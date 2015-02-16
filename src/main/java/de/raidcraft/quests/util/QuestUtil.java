@@ -2,7 +2,7 @@ package de.raidcraft.quests.util;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.quests.QuestManager;
-import de.raidcraft.quests.api.QuestConfigLoader;
+import de.raidcraft.api.quests.QuestConfigLoader;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.regex.Matcher;

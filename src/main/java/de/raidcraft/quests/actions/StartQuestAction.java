@@ -5,7 +5,7 @@ import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.language.Translator;
 import de.raidcraft.quests.QuestManager;
 import de.raidcraft.quests.QuestPlugin;
-import de.raidcraft.quests.api.QuestException;
+import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;

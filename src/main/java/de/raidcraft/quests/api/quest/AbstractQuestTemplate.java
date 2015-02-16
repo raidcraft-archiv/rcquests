@@ -4,8 +4,6 @@ import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.trigger.TriggerFactory;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
-import de.raidcraft.quests.api.holder.QuestHolder;
-import de.raidcraft.quests.api.Quests;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -54,22 +52,6 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.startTrigger = loadStartTrigger(data.getConfigurationSection("trigger"));
         this.completionTrigger = loadCompletionTrigger(data.getConfigurationSection("complete-trigger"));
         this.completionActions = loadActions(data.getConfigurationSection("complete-actions"));
-    }
-
-    @Override
-    public boolean processTrigger(Player player) {
-
-        QuestHolder questHolder = Quests.getQuestHolder(player);
-        // lets check if we already have a quest that is started
-        // and do not execute actions if the quest is started
-        if (questHolder.hasActiveQuest(this)) {
-            return false;
-        }
-        // if holder has completed the quest also pass the trigger
-        if (questHolder.hasCompletedQuest(this)) {
-            return false;
-        }
-        return true;
     }
 
     public void registerListeners() {

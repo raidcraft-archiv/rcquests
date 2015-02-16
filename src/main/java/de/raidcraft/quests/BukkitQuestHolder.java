@@ -3,7 +3,7 @@ package de.raidcraft.quests;
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.quests.api.quest.Quest;
-import de.raidcraft.quests.api.QuestException;
+import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.api.holder.AbstractQuestHolder;
 import de.raidcraft.quests.tables.TPlayer;

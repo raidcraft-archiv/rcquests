@@ -9,6 +9,7 @@ import de.raidcraft.api.action.requirement.RequirementException;
 import de.raidcraft.api.action.requirement.RequirementFactory;
 import de.raidcraft.api.action.trigger.TriggerFactory;
 import de.raidcraft.api.action.trigger.TriggerManager;
+import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import de.raidcraft.quests.api.quest.AbstractQuestTemplate;
 import org.bukkit.configuration.ConfigurationSection;
@@ -27,6 +28,22 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     protected SimpleQuestTemplate(String id, ConfigurationSection data) {
 
         super(id, data);
+    }
+
+    @Override
+    public boolean processTrigger(Player player) {
+
+        QuestHolder questHolder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(player);
+        // lets check if we already have a quest that is started
+        // and do not execute actions if the quest is started
+        if (questHolder.hasActiveQuest(this)) {
+            return false;
+        }
+        // if holder has completed the quest also pass the trigger
+        if (questHolder.hasCompletedQuest(this)) {
+            return false;
+        }
+        return true;
     }
 
     @Override

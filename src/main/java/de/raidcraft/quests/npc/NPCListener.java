@@ -1,7 +1,7 @@
 package de.raidcraft.quests.npc;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.quests.api.host.QuestHost;
+import de.raidcraft.api.quests.host.QuestHost;
 import de.raidcraft.rcconversations.conversations.ConversationManager;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.event.EventHandler;
