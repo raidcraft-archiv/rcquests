@@ -45,7 +45,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
         return true;
     }
 
-    public void registerListeners() {
+    public void updateListeners() {
 
         if (!isCompleted()) {
             if (!isActive()) {
@@ -59,8 +59,6 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
             }
         } else {
             unregisterListeners();
-            // pass back the listener registration to the quest
-            getQuest().updateObjectiveListeners();
         }
     }
 
@@ -87,7 +85,6 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
 
         if (isCompleted()) return;
         this.completionTime = new Timestamp(System.currentTimeMillis());
-        unregisterListeners();
         getQuest().onObjectCompletion(this);
     }
 

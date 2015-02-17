@@ -34,7 +34,7 @@ public interface PlayerObjective extends TriggerListener<Player>, Comparable<Pla
 
     public void complete();
 
-    public void registerListeners();
+    public void updateListeners();
 
     public void unregisterListeners();
 

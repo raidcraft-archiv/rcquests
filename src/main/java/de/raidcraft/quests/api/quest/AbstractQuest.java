@@ -101,7 +101,7 @@ public abstract class AbstractQuest implements Quest {
         for (PlayerObjective playerObjective : getUncompletedObjectives()) {
             if (!playerObjective.isCompleted()) {
                 // lets register the listeners of our objectives
-                playerObjective.registerListeners();
+                playerObjective.updateListeners();
             }
             // abort if we are dealing with ordered required objectives
             if (!playerObjective.getObjectiveTemplate().isOptional() && getTemplate().isOrdered()) {
@@ -156,6 +156,7 @@ public abstract class AbstractQuest implements Quest {
         getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + getTemplate().getFriendlyName() + ": " + ChatColor.RESET
                 + ChatColor.AQUA + "Aufgabe " + ChatColor.GREEN + ChatColor.ITALIC + objective.getObjectiveTemplate().getFriendlyName()
                 + ChatColor.RESET + ChatColor.AQUA + " abgeschlossen.");
+        save();
         updateObjectiveListeners();
     }
 
@@ -180,12 +181,13 @@ public abstract class AbstractQuest implements Quest {
         
         // complete the quest and trigger the complete actions
         setCompletionTime(new Timestamp(System.currentTimeMillis()));
+
+        Bukkit.broadcastMessage(ChatColor.DARK_GREEN + getHolder().getPlayer().getName() + " hat die Quest '" +
+                ChatColor.GOLD + getFriendlyName() + ChatColor.DARK_GREEN + "' abgeschlossen!");
+
         // give rewards and execute completion actions
         getTemplate().getCompletionActions()
                 .forEach(action -> action.accept(getPlayer()));
-                
-        Bukkit.broadcastMessage(ChatColor.DARK_GREEN + getHolder().getPlayer().getName() + " hat die Quest '" +
-                ChatColor.GOLD + getFriendlyName() + ChatColor.DARK_GREEN + "' abgeschlossen!");
     }
 
     @Override

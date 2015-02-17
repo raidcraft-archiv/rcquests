@@ -82,9 +82,7 @@ public class SimpleQuest extends AbstractQuest {
         quest.setCompletionTime(getCompletionTime());
         database.save(quest);
         // also save all quest objectives
-        for (PlayerObjective objective : getPlayerObjectives()) {
-            objective.save();
-        }
+        getPlayerObjectives().forEach(PlayerObjective::save);
         // and requirements
         getTemplate().getRequirements().forEach(Requirement::save);
     }
