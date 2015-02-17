@@ -31,7 +31,7 @@ public class SimpleObjectiveTemplate extends AbstractObjectiveTemplate {
     protected Collection<Requirement<Player>> loadRequirements(ConfigurationSection data) {
 
         try {
-            return RequirementFactory.getInstance().createRequirements(data, Player.class);
+            return RequirementFactory.getInstance().createRequirements(getQuestTemplate().getListenerId() + "." + getId(),data, Player.class);
         } catch (RequirementException e) {
             RaidCraft.LOGGER.warning(data.getRoot().getName() + ": " + e.getMessage());
             return new ArrayList<>();
