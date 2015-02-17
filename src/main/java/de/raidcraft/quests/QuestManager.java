@@ -15,8 +15,8 @@ import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.api.quests.QuestProvider;
 import de.raidcraft.quests.config.QuestHostConfigLoader;
 import de.raidcraft.quests.tables.TPlayer;
-import de.raidcraft.quests.util.QuestUtil;
 import de.raidcraft.util.CaseInsensitiveMap;
+import de.raidcraft.util.ConfigUtil;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -110,7 +110,7 @@ public final class QuestManager implements QuestProvider, Component {
                         String id = (path + "." + file.getName().toLowerCase()).replace(loader.getSuffix(), "");
                         ConfigurationSection configFile = plugin.configure(new SimpleConfiguration<>(plugin, file));
                         // repace "this." with the absolte path, feature: relative path
-                        configFile = QuestUtil.replacePathReferences(configFile, path);
+                        configFile = ConfigUtil.replacePathReferences(configFile, path);
                         loader.loadConfig(id, configFile);
                     }
                 }
@@ -132,6 +132,7 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     @Nullable
+    @Override
     public QuestConfigLoader getQuestConfigLoader(String suffix) {
 
         QuestConfigLoader loader = null;
