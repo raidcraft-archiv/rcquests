@@ -153,10 +153,10 @@ public abstract class AbstractQuest implements Quest {
     @Override
     public void onObjectCompletion(PlayerObjective objective) {
 
-        updateObjectiveListeners();
         getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "" + ChatColor.UNDERLINE + getTemplate().getFriendlyName() + ": " + ChatColor.RESET
-                + ChatColor.AQUA + "Aufgabe " + ChatColor.GREEN + ChatColor.ITALIC + objective.getObjectiveTemplate().getFriendlyName() 
+                + ChatColor.AQUA + "Aufgabe " + ChatColor.GREEN + ChatColor.ITALIC + objective.getObjectiveTemplate().getFriendlyName()
                 + ChatColor.RESET + ChatColor.AQUA + " abgeschlossen.");
+        updateObjectiveListeners();
     }
 
     @Override

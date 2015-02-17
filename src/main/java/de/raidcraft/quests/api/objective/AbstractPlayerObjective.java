@@ -1,7 +1,9 @@
 package de.raidcraft.quests.api.objective;
 
-import de.raidcraft.quests.api.quest.Quest;
+import de.raidcraft.api.language.Translator;
+import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.quests.api.quest.Quest;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
@@ -46,9 +48,15 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     public void registerListeners() {
 
         if (!isCompleted()) {
-            // register our start trigger
-            getObjectiveTemplate().getTrigger().forEach(factory -> factory.registerListener(this));
-            setActive(true);
+            if (!isActive()) {
+                // register our start trigger
+                getObjectiveTemplate().getTrigger().forEach(factory -> factory.registerListener(this));
+                setActive(true);
+                Translator.msg(QuestPlugin.class, getQuestHolder().getPlayer(),
+                        "objective.start", "%1: %2!",
+                        getQuest().getFriendlyName(),
+                        getObjectiveTemplate().getFriendlyName());
+            }
         } else {
             unregisterListeners();
             // pass back the listener registration to the quest
