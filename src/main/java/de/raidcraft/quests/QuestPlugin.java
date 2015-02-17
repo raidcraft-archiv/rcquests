@@ -91,7 +91,7 @@ public class QuestPlugin extends BasePlugin {
                     .action("quest.start", new StartQuestAction())
                     .action("quest.complete", new CompleteQuestAction())
                     .action("quest.objective.complete", new CompleteObjectiveAction())
-                    .requirement("quest.comppleted", new HasCompletedQuestRequirement());
+                    .requirement("quest.completed", new HasCompletedQuestRequirement());
         ActionAPI.register(RaidCraft.getComponent(RCConversationsPlugin.class))
                 .action("conversation.start", new StartConversationAction());
     }
