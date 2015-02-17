@@ -80,7 +80,7 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     protected Collection<Requirement<Player>> loadRequirements(ConfigurationSection data) {
 
         try {
-            return RequirementFactory.getInstance().createRequirements(data, Player.class);
+            return RequirementFactory.getInstance().createRequirements(getListenerId(), data, Player.class);
         } catch (RequirementException e) {
             RaidCraft.LOGGER.warning(getId() + ": " + data.getRoot().getName() + ": " + e.getMessage());
             return new ArrayList<>();

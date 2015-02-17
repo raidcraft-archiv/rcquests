@@ -48,6 +48,12 @@ public abstract class AbstractQuest implements Quest {
     protected abstract List<PlayerObjective> loadObjectives();
 
     @Override
+    public String getListenerId() {
+
+        return getTemplate().getListenerId() + "." + getId();
+    }
+
+    @Override
     public boolean processTrigger(Player player) {
 
         if (!getPlayer().equals(player)) {

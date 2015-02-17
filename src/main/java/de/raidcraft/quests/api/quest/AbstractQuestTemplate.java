@@ -54,6 +54,12 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.completionActions = loadActions(data.getConfigurationSection("complete-actions"));
     }
 
+    @Override
+    public String getListenerId() {
+
+        return getId();
+    }
+
     public void registerListeners() {
 
         startTrigger.forEach(trigger -> trigger.registerListener(this));

@@ -32,6 +32,12 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     }
 
     @Override
+    public String getListenerId() {
+
+        return getQuest().getListenerId() + "." + getId();
+    }
+
+    @Override
     public boolean processTrigger(Player player) {
 
         if (!player.equals(getQuest().getHolder().getPlayer())) {
