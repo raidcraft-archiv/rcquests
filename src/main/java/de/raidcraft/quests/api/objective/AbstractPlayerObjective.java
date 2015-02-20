@@ -59,7 +59,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
                 getObjectiveTemplate().getTrigger().forEach(factory -> factory.registerListener(this));
                 setActive(true);
                 Translator.msg(QuestPlugin.class, getQuestHolder().getPlayer(),
-                        "objective.start", "%1: %2!",
+                        "objective.start", "%s: %s!",
                         getQuest().getFriendlyName(),
                         getObjectiveTemplate().getFriendlyName());
             }
