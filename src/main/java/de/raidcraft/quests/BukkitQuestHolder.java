@@ -32,6 +32,7 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
             try {
                 QuestTemplate questTemplate = component.getQuestTemplate(quest.getQuest());
                 SimpleQuest simpleQuest = new SimpleQuest(quest, questTemplate, this);
+                simpleQuest.updateObjectiveListeners();
                 addQuest(simpleQuest);
             } catch (QuestException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
@@ -71,6 +72,7 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
         if (!quest.isActive()) {
             quest.start();
         }
+        quest.updateObjectiveListeners();
         return quest;
     }
 
