@@ -52,13 +52,14 @@ public class QuestPlugin extends BasePlugin {
         registerEvents(new PlayerListener(this));
         // commands
         registerCommands(BaseCommands.class);
-        // load all of the quests after 2sec server start delay
+        // load all of the quests after 10sec server start delay
         // then all plugins, actions and co are loaded
         Bukkit.getScheduler().runTaskLater(this, () -> {
 
-            Quests.enable(questManager);
             getQuestManager().load();
-        }, 8 * 20L);
+            Quests.enable(questManager);
+            reload();
+        }, 10 * 20L);
 
         // register NPC stuff
         // DO NOT LOAD NPC's we have no persitent npc's
