@@ -21,6 +21,8 @@ import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import de.raidcraft.quests.trigger.HostTrigger;
+import de.raidcraft.quests.trigger.ObjectiveTrigger;
+import de.raidcraft.quests.trigger.QuestTrigger;
 import de.raidcraft.rcconversations.RCConversationsPlugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -70,8 +72,9 @@ public class QuestPlugin extends BasePlugin {
     @Override
     public void disable() {
 
-        getQuestManager().unload();
+        NPC_Manager.getInstance().clear(getName());
         Quests.disable(questManager);
+        getQuestManager().unload();
     }
 
     @Override
@@ -88,6 +91,8 @@ public class QuestPlugin extends BasePlugin {
         ActionAPI.register(this)
                 .global()
                     .trigger(new HostTrigger())
+                    .trigger(new QuestTrigger())
+                    .trigger(new ObjectiveTrigger())
                     .action("quest.start", new StartQuestAction())
                     .action("quest.complete", new CompleteQuestAction())
                     .action("quest.objective.complete", new CompleteObjectiveAction())

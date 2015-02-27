@@ -1,7 +1,12 @@
 package de.raidcraft.quests.api.quest;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.trigger.TriggerFactory;
+import de.raidcraft.quests.api.events.ObjectiveCompletedEvent;
+import de.raidcraft.quests.api.events.QuestCompleteEvent;
+import de.raidcraft.quests.api.events.QuestCompletedEvent;
+import de.raidcraft.quests.api.events.QuestStartedEvent;
 import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import lombok.Data;
@@ -163,6 +168,8 @@ public abstract class AbstractQuest implements Quest {
                 + ChatColor.AQUA + "Aufgabe " + ChatColor.GREEN + ChatColor.ITALIC + objective.getObjectiveTemplate().getFriendlyName()
                 + ChatColor.RESET + ChatColor.AQUA + " abgeschlossen.");
         save();
+        ObjectiveCompletedEvent event = new ObjectiveCompletedEvent(objective);
+        RaidCraft.callEvent(event);
         updateObjectiveListeners();
     }
 
@@ -174,6 +181,8 @@ public abstract class AbstractQuest implements Quest {
             save();
         }
         getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "Quest angenommen: " + ChatColor.GREEN + getFriendlyName());
+        QuestStartedEvent event = new QuestStartedEvent(this);
+        RaidCraft.callEvent(event);
     }
 
     @Override
@@ -182,6 +191,9 @@ public abstract class AbstractQuest implements Quest {
         if (!isActive() || !hasCompletedAllObjectives() || isCompleted()) {
             return;
         }
+        QuestCompleteEvent event = new QuestCompleteEvent(this);
+        RaidCraft.callEvent(event);
+        if (event.isCancelled()) return;
         // first unregister all listeners to avoid double completion
         unregisterListeners();
         
@@ -194,6 +206,9 @@ public abstract class AbstractQuest implements Quest {
         // give rewards and execute completion actions
         getTemplate().getCompletionActions()
                 .forEach(action -> action.accept(getPlayer()));
+
+        QuestCompletedEvent questCompletedEvent = new QuestCompletedEvent(this);
+        RaidCraft.callEvent(questCompletedEvent);
     }
 
     @Override

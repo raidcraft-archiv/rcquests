@@ -1,7 +1,10 @@
 package de.raidcraft.quests.api.objective;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.language.Translator;
 import de.raidcraft.quests.QuestPlugin;
+import de.raidcraft.quests.api.events.ObjectiveCompleteEvent;
+import de.raidcraft.quests.api.events.ObjectiveStartedEvent;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.quest.Quest;
 import lombok.Data;
@@ -62,6 +65,8 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
                         "objective.start", "%s: %s!",
                         getQuest().getFriendlyName(),
                         getObjectiveTemplate().getFriendlyName());
+                ObjectiveStartedEvent event = new ObjectiveStartedEvent(this);
+                RaidCraft.callEvent(event);
             }
         } else {
             unregisterListeners();
@@ -90,6 +95,9 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     public void complete() {
 
         if (isCompleted()) return;
+        ObjectiveCompleteEvent event = new ObjectiveCompleteEvent(this);
+        RaidCraft.callEvent(event);
+        if (event.isCancelled()) return;
         this.completionTime = new Timestamp(System.currentTimeMillis());
         getQuest().onObjectCompletion(this);
     }
