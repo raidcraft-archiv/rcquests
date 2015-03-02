@@ -33,7 +33,7 @@ public class SimpleObjectiveTemplate extends AbstractObjectiveTemplate {
         try {
             return RequirementFactory.getInstance().createRequirements(getQuestTemplate().getListenerId() + "." + getId(),data, Player.class);
         } catch (RequirementException e) {
-            RaidCraft.LOGGER.warning(data.getRoot().getName() + ": " + e.getMessage());
+            RaidCraft.LOGGER.warning(getId() + ": " + data.getRoot().getName() + ": " + e.getMessage());
             return new ArrayList<>();
         }
     }
@@ -50,7 +50,7 @@ public class SimpleObjectiveTemplate extends AbstractObjectiveTemplate {
         try {
             return ActionFactory.getInstance().createActions(data, Player.class);
         } catch (ActionException e) {
-            RaidCraft.LOGGER.warning(data.getRoot().getName() + ": " + e.getMessage());
+            RaidCraft.LOGGER.warning(getId() + ": " + data.getRoot().getName() + ": " + e.getMessage());
             return new ArrayList<>();
         }
     }
