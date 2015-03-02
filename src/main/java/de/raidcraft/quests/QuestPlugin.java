@@ -16,7 +16,6 @@ import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.npc.NPCListener;
 import de.raidcraft.quests.npc.QuestNPCHost;
 import de.raidcraft.quests.npc.QuestTrait;
-import de.raidcraft.quests.requirements.HasCompletedQuestRequirement;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
@@ -26,6 +25,8 @@ import de.raidcraft.quests.trigger.QuestTrigger;
 import de.raidcraft.rcconversations.RCConversationsPlugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,7 +97,10 @@ public class QuestPlugin extends BasePlugin {
                     .action("quest.start", new StartQuestAction())
                     .action("quest.complete", new CompleteQuestAction())
                     .action("quest.objective.complete", new CompleteObjectiveAction())
-                    .requirement("quest.completed", new HasCompletedQuestRequirement());
+                    .requirement("quest.completed", (Player player, ConfigurationSection config) ->
+                            getQuestManager().getQuestHolder(player).hasCompletedQuest(config.getString("quest")))
+                    .requirement("quest.active", (Player player, ConfigurationSection config) ->
+                            getQuestManager().getQuestHolder(player).hasActiveQuest(config.getString("quest")));
         ActionAPI.register(RaidCraft.getComponent(RCConversationsPlugin.class))
                 .action("conversation.start", new StartConversationAction());
     }
