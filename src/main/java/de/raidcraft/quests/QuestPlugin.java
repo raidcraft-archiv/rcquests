@@ -61,7 +61,7 @@ public class QuestPlugin extends BasePlugin {
 
             Quests.enable(questManager);
             getQuestManager().load();
-        }, getConfiguration().questLoadDelay * 20L);
+        }, getConfiguration().questLoadDelay * 10L);
 
         // register NPC stuff
         // DO NOT LOAD NPC's we have no persitent npc's
