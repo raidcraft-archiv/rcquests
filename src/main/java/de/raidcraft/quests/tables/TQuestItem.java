@@ -12,7 +12,7 @@ import java.util.UUID;
  * @author mdoering
  */
 @Entity
-@Table(name = "quests_player_quests")
+@Table(name = "quests_player_quest_items")
 @Getter
 @Setter
 public class TQuestItem {
