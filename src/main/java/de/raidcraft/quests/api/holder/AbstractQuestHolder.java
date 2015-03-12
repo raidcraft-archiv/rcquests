@@ -3,6 +3,7 @@ package de.raidcraft.quests.api.holder;
 import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.ui.QuestInventory;
 import de.raidcraft.util.CaseInsensitiveMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,11 +29,13 @@ public abstract class AbstractQuestHolder implements QuestHolder {
     private final int id;
     private final UUID player;
     private final Map<String, Quest> allQuests = new CaseInsensitiveMap<>();
+    private final QuestInventory questInventory;
 
     public AbstractQuestHolder(int id, UUID player) {
 
         this.id = id;
         this.player = player;
+        this.questInventory = new QuestInventory(this);
     }
 
     @Override

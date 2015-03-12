@@ -3,6 +3,7 @@ package de.raidcraft.quests.api.holder;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.ui.QuestInventory;
 import org.bukkit.entity.Player;
 
 import javax.annotation.Nullable;
@@ -58,6 +59,8 @@ public interface QuestHolder {
     public List<Quest> getCompletedQuests();
 
     public List<Quest> getActiveQuests();
+
+    public QuestInventory getQuestInventory();
 
     public default void sendMessage(String text) {
 

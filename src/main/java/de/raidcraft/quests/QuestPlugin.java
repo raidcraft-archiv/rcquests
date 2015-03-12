@@ -7,8 +7,10 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.npc.NPC_Manager;
 import de.raidcraft.api.quests.Quests;
+import de.raidcraft.quests.actions.AddQuestItemAction;
 import de.raidcraft.quests.actions.CompleteObjectiveAction;
 import de.raidcraft.quests.actions.CompleteQuestAction;
+import de.raidcraft.quests.actions.RemoveQuestItemAction;
 import de.raidcraft.quests.actions.StartConversationAction;
 import de.raidcraft.quests.actions.StartQuestAction;
 import de.raidcraft.quests.commands.BaseCommands;
@@ -19,6 +21,7 @@ import de.raidcraft.quests.npc.QuestTrait;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
+import de.raidcraft.quests.tables.TQuestItem;
 import de.raidcraft.quests.trigger.HostTrigger;
 import de.raidcraft.quests.trigger.ObjectiveTrigger;
 import de.raidcraft.quests.trigger.QuestTrigger;
@@ -97,6 +100,8 @@ public class QuestPlugin extends BasePlugin {
                     .action("quest.start", new StartQuestAction())
                     .action("quest.complete", new CompleteQuestAction())
                     .action("quest.objective.complete", new CompleteObjectiveAction())
+                    .action("quest.item.remove", new RemoveQuestItemAction())
+                    .action("quest.item.add", new AddQuestItemAction())
                     .requirement("quest.completed", (Player player, ConfigurationSection config) ->
                             getQuestManager().getQuestHolder(player).hasCompletedQuest(config.getString("quest")))
                     .requirement("quest.active", (Player player, ConfigurationSection config) ->
@@ -112,6 +117,7 @@ public class QuestPlugin extends BasePlugin {
         tables.add(TPlayer.class);
         tables.add(TPlayerQuest.class);
         tables.add(TPlayerObjective.class);
+        tables.add(TQuestItem.class);
         return tables;
     }
 

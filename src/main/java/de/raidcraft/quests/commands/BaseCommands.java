@@ -36,7 +36,7 @@ public class BaseCommands {
             // p: player, c: closed, d: daily
             flags = "p:cd"
     )
-    public void quests(CommandContext args, CommandSender sender) throws CommandException {
+         public void quests(CommandContext args, CommandSender sender) throws CommandException {
 
         QuestManager manager = plugin.getQuestManager();
         QuestHolder player = manager.getQuestHolder((Player) sender);
@@ -63,6 +63,17 @@ public class BaseCommands {
         }
 
         new QuestUI(player, quests, (args.hasFlag('c') ? QuestUI.Type.CLOSED : QuestUI.Type.ACTIVE)).open();
+    }
+
+    @Command(
+            aliases = {"questinventory", "qi"},
+            desc = "Opens the quest inventory of the player"
+    )
+    public void inventory(CommandContext args, CommandSender sender) throws CommandException {
+
+        QuestManager manager = plugin.getQuestManager();
+        QuestHolder player = manager.getQuestHolder((Player) sender);
+        player.getQuestInventory().open();
     }
 
     @Command(

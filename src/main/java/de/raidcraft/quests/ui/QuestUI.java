@@ -53,7 +53,7 @@ public class QuestUI implements Listener {
                 holder.getPlayer(),
                 ((RaidCraft.getComponent(QuestPlugin.class).getConfiguration().maxQuests + 9) / 9) * 9,
                 type.getInventoryName());
-        // lets now fill the inventory with our quest books
+        // lets fill the inventory with our quest books
         for (int i = 0; i < quests.size(); i++) {
             QuestBook questBook = new QuestBook(quests.get(i));
             inventory.setItem(i, questBook);

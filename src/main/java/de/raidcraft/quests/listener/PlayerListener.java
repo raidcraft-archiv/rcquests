@@ -1,10 +1,15 @@
 package de.raidcraft.quests.listener;
 
+import de.raidcraft.RaidCraft;
+import de.raidcraft.api.items.CustomItemStack;
+import de.raidcraft.api.items.ItemType;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 /**
@@ -31,6 +36,19 @@ public class PlayerListener implements Listener {
         QuestHolder holder = plugin.getQuestManager().clearPlayerCache(event.getPlayer().getUniqueId());
         if (holder != null) {
             holder.save();
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.HIGHEST)
+    public void onItemPickup(PlayerPickupItemEvent event) {
+
+        if (RaidCraft.isCustomItem(event.getItem().getItemStack())) {
+            CustomItemStack customItem = RaidCraft.getCustomItem(event.getItem().getItemStack());
+            if (customItem.getItem().getType() == ItemType.QUEST) {
+                plugin.getQuestManager().getQuestHolder(event.getPlayer()).getQuestInventory().addItem(customItem);
+                event.getItem().remove();
+                event.setCancelled(true);
+            }
         }
     }
 }
