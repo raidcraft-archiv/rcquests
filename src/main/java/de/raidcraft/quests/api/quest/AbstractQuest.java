@@ -7,8 +7,8 @@ import de.raidcraft.quests.api.events.ObjectiveCompletedEvent;
 import de.raidcraft.quests.api.events.QuestCompleteEvent;
 import de.raidcraft.quests.api.events.QuestCompletedEvent;
 import de.raidcraft.quests.api.events.QuestStartedEvent;
-import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.quests.api.objective.PlayerObjective;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -79,6 +79,7 @@ public abstract class AbstractQuest implements Quest {
     public void registerListeners() {
         if (isCompleted()) {
             // do not register anything if completed
+            unregisterListeners();
             return;
         }
         if (hasCompletedAllObjectives()) {

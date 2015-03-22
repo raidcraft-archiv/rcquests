@@ -98,6 +98,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
         ObjectiveCompleteEvent event = new ObjectiveCompleteEvent(this);
         RaidCraft.callEvent(event);
         if (event.isCancelled()) return;
+        unregisterListeners();
         this.completionTime = new Timestamp(System.currentTimeMillis());
         getQuest().onObjectCompletion(this);
     }
