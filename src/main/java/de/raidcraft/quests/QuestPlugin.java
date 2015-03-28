@@ -105,7 +105,9 @@ public class QuestPlugin extends BasePlugin {
                     .requirement("quest.completed", (Player player, ConfigurationSection config) ->
                             getQuestManager().getQuestHolder(player).hasCompletedQuest(config.getString("quest")))
                     .requirement("quest.active", (Player player, ConfigurationSection config) ->
-                            getQuestManager().getQuestHolder(player).hasActiveQuest(config.getString("quest")));
+                            getQuestManager().getQuestHolder(player).hasActiveQuest(config.getString("quest")))
+                .requirement("quest.item.has", (Player player, ConfigurationSection config) ->
+                        getQuestManager().getQuestHolder(player).getQuestInventory().contains(config.getString("item")));
         ActionAPI.register(RaidCraft.getComponent(RCConversationsPlugin.class))
                 .action("conversation.start", new StartConversationAction());
     }

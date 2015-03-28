@@ -196,6 +196,15 @@ public class QuestInventory implements Listener {
         emptyInventories.forEach(this::removeInventory);
     }
 
+    public boolean contains(String item) {
+
+        for (Inventory inventory : inventories) {
+            ItemStack itemStack = RaidCraft.getUnsafeItem(item);
+            if (itemStack != null && inventory.contains(itemStack)) return true;
+        }
+        return false;
+    }
+
     public void open(int index) {
 
         currentInventory = index;
