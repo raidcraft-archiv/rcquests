@@ -262,8 +262,12 @@ public class QuestInventory implements Listener {
             questItems.sort((q1, q2) -> Integer.compare(q1.getInventoryId(), q2.getInventoryId()));
             for (TQuestItem questItem : questItems) {
                 try {
-                    Inventory inventory = inventories.get(questItem.getInventoryId());
-                    if (inventory == null) {
+                    Inventory inventory;
+                    if (inventories.isEmpty()) {
+                        inventory = createInventory(questItem.getInventoryId());
+                    } else if (questItem.getInventoryId() < inventories.size()) {
+                        inventory = inventories.get(questItem.getInventoryId());
+                    } else {
                         inventory = createInventory(questItem.getInventoryId());
                     }
                     inventory.setItem(questItem.getSlot(), storage.getObject(questItem.getObjectStorageId()));
