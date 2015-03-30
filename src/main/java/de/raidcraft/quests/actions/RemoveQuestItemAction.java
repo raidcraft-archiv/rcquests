@@ -20,7 +20,7 @@ public class RemoveQuestItemAction implements Action<Player> {
 
         try {
             QuestHolder questHolder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(player);
-            ItemStack item = RaidCraft.getItem(config.getString(config.getString("item")), config.getInt("amount", 1));
+            ItemStack item = RaidCraft.getItem(config.getString("item"), config.getInt("amount", 1));
             questHolder.getQuestInventory().removeItem(item);
         } catch (CustomItemException e) {
             e.printStackTrace();
