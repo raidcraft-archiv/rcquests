@@ -185,7 +185,7 @@ public class QuestInventory implements Listener {
 
         List<Inventory> emptyInventories = new ArrayList<>();
         // remove the items beginning at the last inventory
-        for (int i = inventories.size(); i >= 0; --i) {
+        for (int i = inventories.size() - 1; i >= 0; i--) {
             Inventory inventory = inventories.get(i);
             Collection<ItemStack> values = inventory.removeItem(itemStack).values();
             itemStack = values.toArray(new ItemStack[values.size()]);
