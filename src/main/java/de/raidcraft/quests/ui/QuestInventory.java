@@ -138,7 +138,7 @@ public class QuestInventory implements Listener {
 
     private void removeInventory(Inventory inventory) {
 
-        if (inventories.remove(inventory)) {
+        if (inventories.size() > 1 && inventories.remove(inventory)) {
             inventory.clear();
             Inventory lastInventory = inventories.get(inventories.size() - 1);
             lastInventory.setItem(RIGHT_BUTTON, filler);
@@ -150,7 +150,7 @@ public class QuestInventory implements Listener {
         for (int slot = 0; slot < inventory.getSize(); slot++) {
             if (slot >= LEFT_BUTTON) return true;
             ItemStack item = inventory.getItem(slot);
-            if (item == null) return false;
+            if (item == null || item.getType() == Material.AIR) return false;
         }
         return true;
     }
@@ -160,7 +160,7 @@ public class QuestInventory implements Listener {
         for (int slot = 0; slot < inventory.getSize(); slot++) {
             if (slot >= LEFT_BUTTON) return true;
             ItemStack item = inventory.getItem(slot);
-            if (item != null) return false;
+            if (item != null && item.getType() != Material.AIR) return false;
         }
         return true;
     }
@@ -187,11 +187,11 @@ public class QuestInventory implements Listener {
         // remove the items beginning at the last inventory
         for (int i = inventories.size() - 1; i >= 0; i--) {
             Inventory inventory = inventories.get(i);
-            Collection<ItemStack> values = inventory.removeItem(itemStack).values();
-            itemStack = values.toArray(new ItemStack[values.size()]);
+            HashMap<Integer, ItemStack> unremovedItems = inventory.removeItem(itemStack);
             if (isInventoryEmpty(inventory)) {
                 emptyInventories.add(inventory);
             }
+            if (unremovedItems.isEmpty()) break;
         }
         emptyInventories.forEach(this::removeInventory);
     }
