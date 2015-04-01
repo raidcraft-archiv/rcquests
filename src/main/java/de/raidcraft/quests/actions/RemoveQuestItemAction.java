@@ -5,6 +5,7 @@ import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.quests.QuestManager;
 import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.util.ConfigUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -20,7 +21,17 @@ public class RemoveQuestItemAction implements Action<Player> {
 
         try {
             QuestHolder questHolder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(player);
-            ItemStack item = RaidCraft.getItem(config.getString("item"), config.getInt("amount", 1));
+            String itemString = config.getString("item");
+            ItemStack item = RaidCraft.getItem(itemString);
+            if (item == null) {
+                RaidCraft.LOGGER.warning("Invalid item id in " + ConfigUtil.getFileName(config) + " for " + itemString);
+                return;
+            }
+            int amount = config.getInt("amount", 1);
+            while (amount > item.getMaxStackSize()) {
+                questHolder.getQuestInventory().removeItem(RaidCraft.getItem(itemString, item.getMaxStackSize()));
+                amount -= item.getMaxStackSize();
+            }
             questHolder.getQuestInventory().removeItem(item);
         } catch (CustomItemException e) {
             e.printStackTrace();

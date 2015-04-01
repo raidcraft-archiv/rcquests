@@ -192,6 +192,7 @@ public class QuestInventory implements Listener {
                 emptyInventories.add(inventory);
             }
             if (unremovedItems.isEmpty()) break;
+            itemStack = unremovedItems.values().toArray(new ItemStack[unremovedItems.size()]);
         }
         emptyInventories.forEach(this::removeInventory);
     }

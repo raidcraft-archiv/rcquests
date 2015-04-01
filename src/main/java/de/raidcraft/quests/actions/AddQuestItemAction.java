@@ -5,6 +5,7 @@ import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.items.CustomItemException;
 import de.raidcraft.quests.QuestManager;
 import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.util.ConfigUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -19,9 +20,19 @@ public class AddQuestItemAction implements Action<Player> {
     public void accept(Player player, ConfigurationSection config) {
 
         try {
-            QuestHolder holder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(player);
-            ItemStack item = RaidCraft.getItem(config.getString("item"), config.getInt("amount", 1));
-            holder.getQuestInventory().addItem(item);
+            QuestHolder questHolder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(player);
+            String itemString = config.getString("item");
+            ItemStack item = RaidCraft.getItem(itemString);
+            if (item == null) {
+                RaidCraft.LOGGER.warning("Invalid item id in " + ConfigUtil.getFileName(config) + " for " + itemString);
+                return;
+            }
+            int amount = config.getInt("amount", 1);
+            while (amount > item.getMaxStackSize()) {
+                questHolder.getQuestInventory().addItem(RaidCraft.getItem(itemString, item.getMaxStackSize()));
+                amount -= item.getMaxStackSize();
+            }
+            questHolder.getQuestInventory().addItem(item);
         } catch (CustomItemException e) {
             player.sendMessage(ChatColor.RED + e.getMessage());
             e.printStackTrace();
