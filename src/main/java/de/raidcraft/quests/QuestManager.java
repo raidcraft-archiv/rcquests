@@ -21,6 +21,7 @@ import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -188,6 +189,16 @@ public final class QuestManager implements QuestProvider, Component {
             }
         }
         throw new InvalidQuestHostException("Unknown quest host with the id: " + id);
+    }
+
+    @Override
+    public boolean hasQuestItem(Player player, ItemStack item, int amount) {
+
+        QuestHolder questHolder = getQuestHolder(player);
+        if (questHolder == null) {
+            return false;
+        }
+        return questHolder.getQuestInventory().contains(item, amount);
     }
 
     public QuestHolder clearPlayerCache(UUID playerId) {
