@@ -47,13 +47,6 @@ public class PlayerListener implements Listener {
             CustomItemStack customItem = RaidCraft.getCustomItem(event.getItem().getItemStack());
             if (customItem.getItem().getType() == ItemType.QUEST) {
                 plugin.getQuestManager().getQuestHolder(event.getPlayer()).getQuestInventory().addItem(customItem);
-                /*FancyMessage message = new FancyMessage().color(ChatColor.AQUA)
-                        .color(ChatColor.UNDERLINE)
-                        .text("Quest Item aufgenommen:").tooltip("Öffne dein Quest Inventar mit /qi")
-                        .color(ChatColor.RESET)
-                        .text(" ")
-                        .itemTooltip(customItem);
-                message.send(event.getPlayer());*/
                 plugin.getTranslationProvider().msg(event.getPlayer(), "quest-item-pickup",
                         ChatColor.AQUA, "Du hast ein Quest Item aufgenommen (%s). Öffne dein Quest Inventar mit /qi.",
                         customItem.getItem().getName());
