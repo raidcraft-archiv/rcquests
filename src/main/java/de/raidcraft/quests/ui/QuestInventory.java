@@ -199,12 +199,22 @@ public class QuestInventory implements Listener {
 
     public boolean contains(ItemStack item, int amount) {
 
+        int count = 0;
         for (Inventory inventory : inventories) {
             if (inventory.containsAtLeast(item, amount)) {
                 return true;
+            } else {
+                if (inventory.contains(item)) {
+                    // we need to count the exact amount
+                    for (ItemStack itemStack : inventory.getContents()) {
+                        if (item.equals(itemStack)) {
+                            count += itemStack.getAmount();
+                        }
+                    }
+                }
             }
         }
-        return false;
+        return count >= amount;
     }
 
     public boolean contains(String item) {
