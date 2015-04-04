@@ -5,6 +5,7 @@ import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemType;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.holder.QuestHolder;
+import mkremins.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -47,9 +48,16 @@ public class PlayerListener implements Listener {
             CustomItemStack customItem = RaidCraft.getCustomItem(event.getItem().getItemStack());
             if (customItem.getItem().getType() == ItemType.QUEST) {
                 plugin.getQuestManager().getQuestHolder(event.getPlayer()).getQuestInventory().addItem(customItem);
-                plugin.getTranslationProvider().msg(event.getPlayer(), "quest-item-pickup",
+                FancyMessage message = new FancyMessage().color(ChatColor.AQUA)
+                        .color(ChatColor.UNDERLINE)
+                        .text("Quest Item aufgenommen:").tooltip("Öffne dein Quest Inventar mit /qi")
+                        .color(ChatColor.RESET)
+                        .text(" ")
+                        .itemTooltip(customItem);
+                message.send(event.getPlayer());
+                /*plugin.getTranslationProvider().msg(event.getPlayer(), "quest-item-pickup",
                         ChatColor.AQUA, "Du hast ein Quest Item aufgenommen (%s). Öffne dein Quest Inventar mit /qi.",
-                        customItem.getItem().getName());
+                        customItem.getItem().getName());*/
                 event.getItem().remove();
                 event.setCancelled(true);
             }
