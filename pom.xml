@@ -66,5 +66,10 @@
             <version>4.11</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>mkremins</groupId>
+            <artifactId>fanciful</artifactId>
+            <version>0.3.1</version>
+        </dependency>
     </dependencies>
 </project>
