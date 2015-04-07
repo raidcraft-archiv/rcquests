@@ -201,6 +201,22 @@ public final class QuestManager implements QuestProvider, Component {
         return questHolder.getQuestInventory().contains(item, amount);
     }
 
+    @Override
+    public void removeQuestItem(Player player, ItemStack... itemStack) {
+
+        QuestHolder questHolder = getQuestHolder(player);
+        if (questHolder == null) return;
+        questHolder.getQuestInventory().removeItem(itemStack);
+    }
+
+    @Override
+    public void addQuestItem(Player player, ItemStack... itemStack) {
+
+        QuestHolder questHolder = getQuestHolder(player);
+        if (questHolder == null) return;
+        questHolder.getQuestInventory().addItem(itemStack);
+    }
+
     public QuestHolder clearPlayerCache(UUID playerId) {
         return questPlayers.remove(playerId);
     }
