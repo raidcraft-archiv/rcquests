@@ -100,6 +100,7 @@ public abstract class AbstractQuest implements Quest {
 
         startTrigger.forEach(factory -> factory.unregisterListener(this));
         completionTrigger.forEach(factory -> factory.unregisterListener(this));
+        getPlayerObjectives().forEach(PlayerObjective::unregisterListeners);
     }
 
     @Override
@@ -114,6 +115,8 @@ public abstract class AbstractQuest implements Quest {
             if (!playerObjective.isCompleted()) {
                 // lets register the listeners of our objectives
                 playerObjective.updateListeners();
+            } else {
+                playerObjective.unregisterListeners();
             }
             // abort if we are dealing with ordered required objectives
             if (!playerObjective.getObjectiveTemplate().isOptional() && getTemplate().isOrdered()) {
