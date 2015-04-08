@@ -111,6 +111,10 @@ public abstract class AbstractQuest implements Quest {
             registerListeners();
             return;
         }
+        if (!isActive()) {
+            // do not register objective listeners if the quest is not started
+            return;
+        }
         for (PlayerObjective playerObjective : getUncompletedObjectives()) {
             if (!playerObjective.isCompleted()) {
                 // lets register the listeners of our objectives
