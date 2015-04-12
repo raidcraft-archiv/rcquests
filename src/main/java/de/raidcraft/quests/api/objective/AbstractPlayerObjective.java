@@ -1,6 +1,7 @@
 package de.raidcraft.quests.api.objective;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.action.action.RevertableAction;
 import de.raidcraft.api.language.Translator;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.events.ObjectiveCompleteEvent;
@@ -103,6 +104,19 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
         // lets execute all objective actions
         getObjectiveTemplate().getActions().forEach(action -> action.accept(getQuestHolder().getPlayer()));
         getQuest().onObjectCompletion(this);
+    }
+
+    @Override
+    public void abort() {
+
+        unregisterListeners();
+        setCompletionTime(null);
+        getObjectiveTemplate().getRequirements()
+                .forEach(req -> req.delete(getQuestHolder().getPlayer()));
+        getObjectiveTemplate().getActions().stream()
+                .filter(action -> action instanceof RevertableAction)
+                .forEach(action -> ((RevertableAction<Player>) action).revert(getQuestHolder().getPlayer()));
+        save();
     }
 
     @Override

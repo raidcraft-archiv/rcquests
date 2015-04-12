@@ -1,6 +1,7 @@
 package de.raidcraft.quests.api.quest;
 
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.action.action.RevertableAction;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.trigger.TriggerFactory;
 import de.raidcraft.quests.api.events.ObjectiveCompletedEvent;
@@ -222,10 +223,16 @@ public abstract class AbstractQuest implements Quest {
     @Override
     public void abort() {
 
-        setStartTime(null);
         // first unregister all listeners (includes complete listeners)
         unregisterListeners();
+        // remove everything that has todo with the quest
+        setStartTime(null);
+        getPlayerObjectives().forEach(PlayerObjective::abort);
+        getTemplate().getCompletionActions().stream()
+                .filter(action -> action instanceof RevertableAction)
+                .forEach(action -> ((RevertableAction<Player>) action).revert(getPlayer()));
         // and then we reregister our listeners because the player should be able to reaccept the quest
         registerListeners();
+        save();
     }
 }
