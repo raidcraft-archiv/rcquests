@@ -2,6 +2,7 @@ package de.raidcraft.quests;
 
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.action.action.RevertableAction;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import de.raidcraft.quests.api.objective.PlayerObjective;
@@ -10,6 +11,7 @@ import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +67,16 @@ public class SimpleQuest extends AbstractQuest {
             }
             // also delete all requirements
             getTemplate().getRequirements().forEach(requirement -> requirement.delete(getPlayer()));
-            getPlayerObjectives().forEach(objective -> objective.getObjectiveTemplate().getRequirements()
-                    .forEach(requirement -> requirement.delete(getPlayer())));
+            getPlayerObjectives().forEach(objective -> {
+                objective.getObjectiveTemplate().getRequirements()
+                        .forEach(requirement -> requirement.delete(getPlayer()));
+                objective.getObjectiveTemplate().getActions().stream()
+                        .filter(action -> action instanceof RevertableAction)
+                        .forEach(action -> ((RevertableAction<Player>) action).revert(getPlayer()));
+            });
+            getTemplate().getCompletionActions().stream()
+                    .filter(action -> action instanceof RevertableAction)
+                    .forEach(action -> ((RevertableAction<Player>) action).revert(getPlayer()));
         }
     }
 

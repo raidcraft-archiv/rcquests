@@ -85,6 +85,34 @@ public class AdminCommands {
     }
 
     @Command(
+            aliases = {"delete", "remove", "del"},
+            desc = "Removes the quest",
+            min = 1,
+            flags = "p:",
+            usage = "[-p <Player>] <Quest>"
+    )
+    @CommandPermissions("rcquests.admin.remove")
+    public void remove(CommandContext args, CommandSender sender) throws CommandException {
+
+        try {
+            Player targetPlayer = args.hasFlag('p') ? CommandUtil.grabPlayer(args.getFlag('p')) : (Player) sender;
+            String questName = args.getString(0);
+            if (targetPlayer == null) {
+                throw new CommandException("Der angegebene Spieler ist nicht Online!");
+            }
+            QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);
+            Quest quest = questPlayer.getQuest(questName);
+            if (!quest.isCompleted()) {
+                throw new CommandException("Die Quest " + quest.getFriendlyName() + " wurde noch nicht abgeschlossen!");
+            }
+            quest.delete();
+            sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.getFriendlyName() + "' wurde entfernt!");
+        } catch (QuestException e) {
+            throw new CommandException(e.getMessage());
+        }
+    }
+
+    @Command(
             aliases = {"create"},
             desc = "Starts the Quest Creation Wizard",
             min = 1,
