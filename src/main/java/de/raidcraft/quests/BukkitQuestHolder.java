@@ -7,10 +7,8 @@ import de.raidcraft.quests.api.holder.AbstractQuestHolder;
 import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.tables.TPlayer;
-import de.raidcraft.quests.tables.TPlayerQuest;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -40,37 +38,15 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
     }
 
     @Override
-    public Quest createQuest(QuestTemplate template) {
-
-        Optional<Quest> optionalQuest = getQuest(template);
-        if (optionalQuest.isPresent()) return optionalQuest.get();
-        EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
-        TPlayerQuest table = database.find(TPlayerQuest.class).where()
-                .eq("player_id", getId())
-                .eq("quest", template.getId()).findUnique();
-        if (table == null) {
-            table = new TPlayerQuest();
-            table.setPlayer(database.find(TPlayer.class, getId()));
-            table.setQuest(template.getId());
-            database.save(table);
-        }
-        Quest quest = new SimpleQuest(table, template, this);
-        addQuest(quest);
-        return quest;
-    }
-
-    @Override
     public Quest startQuest(QuestTemplate template) throws QuestException {
 
         super.startQuest(template);
-        Quest quest = createQuest(template);
-        if (quest.isCompleted()) {
-            throw new QuestException("Du hast diese Quest bereits abgeschlossen.");
-        }
+        Quest quest = RaidCraft.getComponent(QuestManager.class).createQuest(this, template);
         if (!quest.isActive()) {
             quest.start();
         }
         quest.updateObjectiveListeners();
+        addQuest(quest);
         return quest;
     }
 

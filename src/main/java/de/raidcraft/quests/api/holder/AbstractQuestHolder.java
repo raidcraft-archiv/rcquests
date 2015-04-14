@@ -11,6 +11,8 @@ import lombok.ToString;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -75,10 +77,23 @@ public abstract class AbstractQuestHolder implements QuestHolder {
             return Optional.of(activeQuests.get(name));
         }
         List<Quest> foundQuests = getAllQuests().stream()
-                .filter(quest -> quest.getFriendlyName().toLowerCase().contains(name.toLowerCase()))
-                .map(quest -> quest).collect(Collectors.toList());
-        if (foundQuests.isEmpty() || foundQuests.size() > 1) {
+                .filter(quest -> quest.getFullName().equalsIgnoreCase(name)).collect(Collectors.toList());
+        if (foundQuests.isEmpty()) {
             return Optional.empty();
+        }
+        if (foundQuests.size() > 1) {
+            // we have repeatable quests lets get the last quest or active quest
+            Optional<Quest> first = foundQuests.stream().filter(Quest::isActive).findFirst();
+            if (first.isPresent()) return first;
+            // now we only have completed quest
+            foundQuests.sort(new Comparator<Quest>() {
+                @Override
+                public int compare(Quest o1, Quest o2) {
+
+                    return o1.getCompletionTime().compareTo(o2.getCompletionTime());
+                }
+            });
+            return Optional.of(foundQuests.get(foundQuests.size() - 1));
         }
         return Optional.of(foundQuests.get(0));
     }
@@ -88,17 +103,13 @@ public abstract class AbstractQuestHolder implements QuestHolder {
 
         return getAllQuests().stream()
                 .filter(Quest::isCompleted)
-                .map(quest -> quest)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Quest> getActiveQuests() {
 
-        return getAllQuests().stream()
-                .filter(Quest::isActive)
-                .map(quest -> quest)
-                .collect(Collectors.toList());
+        return new ArrayList<>(activeQuests.values());
     }
 
     @Override

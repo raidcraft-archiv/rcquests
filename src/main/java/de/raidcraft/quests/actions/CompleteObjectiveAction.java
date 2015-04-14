@@ -30,6 +30,7 @@ public class CompleteObjectiveAction implements Action<Player> {
             return;
         }
         Quest quest = optionalQuest.get();
+        if (quest.isCompleted()) return;
         Optional<PlayerObjective> objective = quest.getUncompletedObjectives().stream()
                 .filter(obj -> obj.getId() == config.getInt("objective"))
                 .findFirst();

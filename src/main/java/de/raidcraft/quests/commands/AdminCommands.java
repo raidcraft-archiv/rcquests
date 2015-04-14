@@ -15,8 +15,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.Optional;
-
 /**
  * @author Silthus
  */
@@ -72,17 +70,21 @@ public class AdminCommands {
     public void abort(CommandContext args, CommandSender sender) throws CommandException {
 
         Player targetPlayer = args.hasFlag('p') ? CommandUtil.grabPlayer(args.getFlag('p')) : (Player) sender;
-        String questName = args.getString(0);
+        String questName = args.getJoinedStrings(0);
         if (targetPlayer == null) {
             throw new CommandException("Der angegebene Spieler ist nicht Online!");
         }
-        QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);
-        Optional<Quest> quest = questPlayer.getQuest(questName);
-        if (quest.isPresent() && quest.get().isActive()) {
-            quest.get().abort();
-            sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.get().getFriendlyName() + "' wurde abgebrochen!");
-        } else {
-            throw new CommandException("Quest " + questName + " existiert nicht oder ist nicht aktiv!");
+        try {
+            QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);
+            Quest quest = plugin.getQuestManager().findQuest(questPlayer, questName);
+            if (quest.isActive()) {
+                quest.abort();
+                sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.getFriendlyName() + "' wurde abgebrochen!");
+            } else {
+                throw new CommandException("Quest " + questName + " ist nicht aktiv und kann nicht abgebrochen werden!");
+            }
+        } catch (QuestException e) {
+            throw new CommandException(e.getMessage());
         }
     }
 
@@ -97,20 +99,21 @@ public class AdminCommands {
     public void remove(CommandContext args, CommandSender sender) throws CommandException {
 
         Player targetPlayer = args.hasFlag('p') ? CommandUtil.grabPlayer(args.getFlag('p')) : (Player) sender;
-        String questName = args.getString(0);
+        String questName = args.getJoinedStrings(0);
         if (targetPlayer == null) {
             throw new CommandException("Der angegebene Spieler ist nicht Online!");
         }
-        QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);
-        Optional<Quest> quest = questPlayer.getQuest(questName);
-        if (!quest.isPresent()) {
-            throw new CommandException("Die Quest " + questName + " existiert nicht!");
+        try {
+            QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);
+            Quest quest = plugin.getQuestManager().findQuest(questPlayer, questName);
+            if (!quest.isCompleted()) {
+                throw new CommandException("Die Quest " + quest.getFriendlyName() + " wurde noch nicht abgeschlossen!");
+            }
+            quest.delete();
+            sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.getFriendlyName() + "' wurde entfernt!");
+        } catch (QuestException e) {
+            throw new CommandException(e.getMessage());
         }
-        if (!quest.get().isCompleted()) {
-            throw new CommandException("Die Quest " + quest.get().getFriendlyName() + " wurde noch nicht abgeschlossen!");
-        }
-        quest.get().delete();
-        sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.get().getFriendlyName() + "' wurde entfernt!");
     }
 
     @Command(

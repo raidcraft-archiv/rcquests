@@ -49,8 +49,22 @@ public interface QuestHolder {
         return hasCompletedQuest(template.getId());
     }
 
+    /**
+     * Gets the given quest by its full unique name.
+     * To find a quest use {@link de.raidcraft.quests.QuestManager#findQuest(QuestHolder, String)}
+     *
+     * @param quest to get
+     *
+     * @return quest or empty {@link java.util.Optional} if quest was not found
+     */
     public Optional<Quest> getQuest(String quest);
 
+    /**
+     * Gets the given quest of the unique name from the template
+     *
+     * @param questTemplate to get quest for
+     * @return quest or empty {@link java.util.Optional} if quest was not found
+     */
     public Optional<Quest> getQuest(QuestTemplate questTemplate);
 
     public List<Quest> getAllQuests();
@@ -70,8 +84,6 @@ public interface QuestHolder {
     public void addQuest(Quest quest);
 
     public void removeQuest(Quest quest);
-
-    public Quest createQuest(QuestTemplate template);
 
     public Quest startQuest(QuestTemplate template) throws QuestException;
 

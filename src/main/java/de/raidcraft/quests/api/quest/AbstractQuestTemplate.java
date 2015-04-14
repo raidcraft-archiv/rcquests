@@ -29,6 +29,8 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     private final int requiredObjectiveAmount;
     private final boolean ordered;
     private final boolean locked;
+    private final boolean repeatable;
+    private final long cooldown;
     private final Collection<Action<Player>> completionActions;
     private final Collection<Requirement<Player>> requirements;
     private final Collection<ObjectiveTemplate> objectiveTemplates;
@@ -47,6 +49,8 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.requiredObjectiveAmount = data.getInt("required", 0);
         this.ordered = data.getBoolean("ordered", false);
         this.locked = data.getBoolean("locked", true);
+        this.cooldown = data.getLong("cooldown", 0);
+        this.repeatable = cooldown > 0 || data.getBoolean("repeatable", false);
         this.requirements = loadRequirements(data.getConfigurationSection("requirements"));
         this.objectiveTemplates = loadObjectives(data.getConfigurationSection("objectives"));
         this.startTrigger = loadStartTrigger(data.getConfigurationSection("trigger"));

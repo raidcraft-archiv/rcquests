@@ -29,6 +29,7 @@ public class CompleteQuestAction implements Action<Player> {
         QuestHolder questHolder = component.getQuestHolder(player);
         Optional<Quest> quest = questHolder.getQuest(config.getString("quest"));
         if (quest.isPresent()) {
+            if (quest.get().isCompleted()) return;
             quest.get().complete();
         } else {
             String msg = questHolder.getPlayer().getName() + " does not have the quest: " + config.getString("quest");

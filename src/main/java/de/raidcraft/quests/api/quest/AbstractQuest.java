@@ -79,11 +79,13 @@ public abstract class AbstractQuest implements Quest {
 
     public void registerListeners() {
         if (isCompleted()) {
+            setPhase(Phase.COMPLETE);
             // do not register anything if completed
             unregisterListeners();
             return;
         }
         if (hasCompletedAllObjectives()) {
+            setPhase(Phase.OJECTIVES_COMPLETED);
             if (completionTrigger.isEmpty()) {
                 // complete the quest
                 complete();
@@ -92,6 +94,7 @@ public abstract class AbstractQuest implements Quest {
             // register the completion trigger
             completionTrigger.forEach(factory -> factory.registerListener(this));
         } else {
+            setPhase(Phase.NOT_STARTED);
             // we need to register the objective trigger
             updateObjectiveListeners();
         }
@@ -108,14 +111,17 @@ public abstract class AbstractQuest implements Quest {
     public void updateObjectiveListeners() {
 
         if (hasCompletedAllObjectives()) {
+            setPhase(Phase.OJECTIVES_COMPLETED);
             unregisterListeners();
             registerListeners();
             return;
         }
         if (!isActive()) {
+            setPhase(Phase.NOT_STARTED);
             // do not register objective listeners if the quest is not started
             return;
         }
+        setPhase(Phase.IN_PROGRESS);
         for (PlayerObjective playerObjective : getUncompletedObjectives()) {
             if (!playerObjective.isCompleted()) {
                 // lets register the listeners of our objectives
@@ -188,6 +194,7 @@ public abstract class AbstractQuest implements Quest {
         if (!isActive()) {
             setStartTime(new Timestamp(System.currentTimeMillis()));
             getHolder().addQuest(this);
+            setPhase(Phase.IN_PROGRESS);
             save();
         }
         getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "Quest angenommen: " + ChatColor.GREEN + getFriendlyName());
@@ -209,6 +216,7 @@ public abstract class AbstractQuest implements Quest {
         
         // complete the quest and trigger the complete actions
         setCompletionTime(new Timestamp(System.currentTimeMillis()));
+        setPhase(Phase.COMPLETE);
 
         Bukkit.broadcastMessage(ChatColor.DARK_GREEN + getHolder().getPlayer().getName() + " hat die Quest '" +
                 ChatColor.GOLD + getFriendlyName() + ChatColor.DARK_GREEN + "' abgeschlossen!");
@@ -230,6 +238,7 @@ public abstract class AbstractQuest implements Quest {
         unregisterListeners();
         // remove everything that has todo with the quest
         setStartTime(null);
+        setPhase(Phase.NOT_STARTED);
         getPlayerObjectives().forEach(PlayerObjective::abort);
         getTemplate().getCompletionActions().stream()
                 .filter(action -> action instanceof RevertableAction)

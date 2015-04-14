@@ -12,12 +12,15 @@ import de.raidcraft.api.action.trigger.TriggerManager;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import de.raidcraft.quests.api.quest.AbstractQuestTemplate;
+import de.raidcraft.quests.api.quest.Quest;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -34,16 +37,22 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     public boolean processTrigger(Player player) {
 
         QuestHolder questHolder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(player);
+        Optional<Quest> quest = questHolder.getQuest(this);
+        if (!quest.isPresent()) return true;
         // lets check if we already have a quest that is started
         // and do not execute actions if the quest is started
-        if (questHolder.hasActiveQuest(this)) {
+        if (quest.get().isActive()) {
             return false;
         }
         // if holder has completed the quest also pass the trigger
-        if (questHolder.hasCompletedQuest(this)) {
-            return false;
+        if (quest.get().isCompleted()) {
+            // lets check if the quest is repeatable and allow the trigger if the cooldown is over
+            if (isRepeatable()
+                    && quest.get().getCompletionTime().toInstant().plusSeconds(getCooldown()).isBefore(Instant.now())) {
+                return true;
+            }
         }
-        return true;
+        return false;
     }
 
     @Override

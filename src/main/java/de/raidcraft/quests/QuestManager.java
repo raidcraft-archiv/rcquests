@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -275,6 +276,43 @@ public final class QuestManager implements QuestProvider, Component {
         return foundQuests.get(0);
     }
 
+    /**
+     * Will create a new {@link de.raidcraft.quests.api.quest.Quest} for the given {@link de.raidcraft.quests.api.holder.QuestHolder}.
+     * If an existing active Quest is found an exception will be thrown.
+     * If a completed quest is found and the quest is not repeatable an exception will be thrown.
+     * <p/>
+     * Creating this quest does not mean the quest will be started! {@link de.raidcraft.quests.api.quest.Quest#start()} needs to be called first.
+     *
+     * @param holder   to create quest for
+     * @param template to create quest of
+     *
+     * @return new quest if no active quest is found. If the quest is repeatable the old quest must be completed
+     *
+     * @throws de.raidcraft.api.quests.QuestException if quest is active or not repeatable and completed
+     */
+    public Quest createQuest(QuestHolder holder, QuestTemplate template) throws QuestException {
+
+        Optional<Quest> optionalQuest = holder.getQuest(template);
+        if (optionalQuest.isPresent()) {
+            if (optionalQuest.get().isActive()) {
+                throw new QuestException("Quest is already active and cannot be created! "
+                        + template.getFriendlyName() + " for " + holder.getPlayer().getName());
+            }
+            if (optionalQuest.get().isCompleted() && !template.isRepeatable()) {
+                throw new QuestException("Quest " + template.getFriendlyName() + " cannot be repeated and is already completed!");
+            }
+            throw new QuestException("Quest cannot be created because it is already present!");
+        }
+
+        EbeanServer database = plugin.getDatabase();
+        TPlayerQuest playerQuest = new TPlayerQuest();
+        playerQuest.setPlayer(database.find(TPlayer.class, holder.getId()));
+        playerQuest.setQuest(template.getId());
+        database.save(playerQuest);
+
+        return new SimpleQuest(playerQuest, template, holder);
+    }
+
     public List<Quest> getAllQuests(QuestHolder holder) {
 
         List<Quest> quests = new ArrayList<>();
@@ -292,5 +330,52 @@ public final class QuestManager implements QuestProvider, Component {
             }
         }
         return quests;
+    }
+
+    /**
+     * Tries to find the given quest using the following search order:
+     * * match of the full unique path to the quest (e.g. world.foo.bar.quest-name)
+     * * match of the unique name of the quest (e.g. quest-name)
+     * * full match of the friendly name in variants by replacing space with _ and - (e.g. Quest Name -> "Quest-Name" will match)
+     * * partial match of the quest name with contains (e.g. Quest Name -> "Quest" will match)
+     *
+     * @param holder of the quest
+     * @param name   to match for
+     *
+     * @return matching quest
+     *
+     * @throws de.raidcraft.api.quests.QuestException is thrown if no or more than one quest matches
+     */
+    public Quest findQuest(QuestHolder holder, String name) throws QuestException {
+
+        List<Quest> allQuests = getAllQuests(holder);
+        // match of the full unique path to the quest (e.g. world.foo.bar.quest-name)
+        Optional<Quest> first = allQuests.stream().filter(quest -> quest.getFullName().equalsIgnoreCase(name)).findFirst();
+        if (first.isPresent()) return first.get();
+        // match of the unique name of the quest (e.g. quest-name)
+        first = allQuests.stream().filter(quest -> quest.getName().equalsIgnoreCase(name)).findFirst();
+        if (first.isPresent()) return first.get();
+        // full match of the friendly name in variants by replacing space with _ and -
+        // (e.g. Quest Name -> "Quest-Name" will match)
+        List<Quest> quests = allQuests.stream().filter(quest -> quest.getFriendlyName().equalsIgnoreCase(name)
+                        || quest.getFriendlyName().equalsIgnoreCase(name.replace("-", " "))
+                        || quest.getFriendlyName().equalsIgnoreCase(name.replace("_", " "))
+        ).collect(Collectors.toList());
+        if (quests.size() > 1) {
+            throw new QuestException("Multiple Quests with the name " + name + " found: " +
+                    StringUtils.join(quests.stream().map(Quest::getFriendlyName).collect(Collectors.toList()), ","));
+        }
+        if (quests.size() == 1) return quests.get(0);
+        // partial match of the quest name with contains (e.g. Quest Name -> "Quest" will match)
+        quests = allQuests.stream().filter(quest ->
+                quest.getFullName().endsWith(name)
+                        || quest.getFriendlyName().contains(name))
+                .collect(Collectors.toList());
+        if (quests.size() > 1) {
+            throw new QuestException("Multiple Quests with the name " + name + " found: " +
+                    StringUtils.join(quests.stream().map(Quest::getFriendlyName).collect(Collectors.toList()), ","));
+        }
+        if (quests.size() == 1) return quests.get(0);
+        throw new QuestException("No matching Quest with the name " + name + " found!");
     }
 }

@@ -8,7 +8,6 @@ import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
-import java.util.Optional;
 
 /**
  * @author Silthus
@@ -33,12 +32,11 @@ public interface QuestTemplate extends TriggerListener<Player> {
 
     public String getDescription();
 
-    public default Optional<QuestPool> getQuestPool() {
-
-        return Optional.empty();
-    }
-
     public int getRequiredObjectiveAmount();
+
+    public boolean isRepeatable();
+
+    public long getCooldown();
 
     public boolean isOrdered();
 
