@@ -1,20 +1,23 @@
 package de.raidcraft.quests;
 
+import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.config.builder.ConfigBuilder;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.InvalidQuestHostException;
-import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.api.quests.QuestConfigLoader;
 import de.raidcraft.api.quests.QuestException;
-import de.raidcraft.quests.api.holder.QuestHolder;
-import de.raidcraft.api.quests.host.QuestHost;
-import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.api.quests.QuestProvider;
+import de.raidcraft.api.quests.host.QuestHost;
+import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.quests.api.objective.PlayerObjective;
+import de.raidcraft.quests.api.quest.Quest;
+import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.config.QuestHostConfigLoader;
 import de.raidcraft.quests.tables.TPlayer;
+import de.raidcraft.quests.tables.TPlayerQuest;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.ConfigUtil;
 import org.apache.commons.lang.StringUtils;
@@ -27,6 +30,7 @@ import javax.annotation.Nullable;
 import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -269,5 +273,24 @@ public final class QuestManager implements QuestProvider, Component {
             throw new QuestException("Du hast mehrere Quests mit dem Namen " + name + ": " + StringUtils.join(foundQuests, ", "));
         }
         return foundQuests.get(0);
+    }
+
+    public List<Quest> getAllQuests(QuestHolder holder) {
+
+        List<Quest> quests = new ArrayList<>();
+        EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
+        List<TPlayerQuest> databaseEntries = database.find(TPlayerQuest.class).where().eq("player_id", holder.getId()).findList();
+        for (TPlayerQuest quest : databaseEntries) {
+            try {
+                QuestTemplate questTemplate = getQuestTemplate(quest.getQuest());
+                SimpleQuest simpleQuest = new SimpleQuest(quest, questTemplate, holder);
+                simpleQuest.updateObjectiveListeners();
+                quests.add(simpleQuest);
+            } catch (QuestException e) {
+                RaidCraft.LOGGER.warning(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return quests;
     }
 }

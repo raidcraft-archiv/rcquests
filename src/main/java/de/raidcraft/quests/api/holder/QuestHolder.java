@@ -6,8 +6,8 @@ import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.ui.QuestInventory;
 import org.bukkit.entity.Player;
 
-import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -49,10 +49,9 @@ public interface QuestHolder {
         return hasCompletedQuest(template.getId());
     }
 
-    public Quest getQuest(String quest) throws QuestException;
+    public Optional<Quest> getQuest(String quest);
 
-    @Nullable
-    public Quest getQuest(QuestTemplate questTemplate);
+    public Optional<Quest> getQuest(QuestTemplate questTemplate);
 
     public List<Quest> getAllQuests();
 
@@ -70,7 +69,7 @@ public interface QuestHolder {
 
     public void addQuest(Quest quest);
 
-    public void abortQuest(Quest quest);
+    public void removeQuest(Quest quest);
 
     public Quest createQuest(QuestTemplate template);
 

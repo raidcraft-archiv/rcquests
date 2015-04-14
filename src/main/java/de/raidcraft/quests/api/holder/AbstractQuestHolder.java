@@ -1,20 +1,19 @@
 package de.raidcraft.quests.api.holder;
 
-import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.api.quests.QuestException;
+import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.ui.QuestInventory;
 import de.raidcraft.util.CaseInsensitiveMap;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -22,13 +21,13 @@ import java.util.stream.Collectors;
  * @author Silthus
  */
 @Data
-@ToString(exclude = "allQuests")
+@ToString(exclude = "activeQuests")
 @EqualsAndHashCode(of = "id")
 public abstract class AbstractQuestHolder implements QuestHolder {
 
     private final int id;
     private final UUID player;
-    private final Map<String, Quest> allQuests = new CaseInsensitiveMap<>();
+    private final Map<String, Quest> activeQuests = new CaseInsensitiveMap<>();
     private final QuestInventory questInventory;
 
     public AbstractQuestHolder(int id, UUID player) {
@@ -53,43 +52,35 @@ public abstract class AbstractQuestHolder implements QuestHolder {
     @Override
     public boolean hasQuest(String quest) {
 
-        return allQuests.containsKey(quest);
+        return activeQuests.containsKey(quest)
+                || getAllQuests().stream().filter(q -> q.getFullName().equals(quest)).findAny().isPresent();
     }
 
     @Override
     public boolean hasActiveQuest(String name) {
 
-        return hasQuest(name) && allQuests.get(name).isActive();
+        return activeQuests.containsKey(name) && activeQuests.get(name).isActive();
     }
 
     @Override
-    public Quest getQuest(QuestTemplate questTemplate) {
+    public Optional<Quest> getQuest(QuestTemplate questTemplate) {
 
-        return allQuests.get(questTemplate.getId());
+        return getQuest(questTemplate.getName());
     }
 
     @Override
-    public Quest getQuest(String name) throws QuestException {
+    public Optional<Quest> getQuest(String name) {
 
-        if (allQuests.containsKey(name)) {
-            return allQuests.get(name);
+        if (activeQuests.containsKey(name)) {
+            return Optional.of(activeQuests.get(name));
         }
-        List<Quest> foundQuests = allQuests.values().stream()
+        List<Quest> foundQuests = getAllQuests().stream()
                 .filter(quest -> quest.getFriendlyName().toLowerCase().contains(name.toLowerCase()))
                 .map(quest -> quest).collect(Collectors.toList());
-        if (foundQuests.isEmpty()) {
-            throw new QuestException("Du hast keine Quest mit dem Namen: " + name);
+        if (foundQuests.isEmpty() || foundQuests.size() > 1) {
+            return Optional.empty();
         }
-        if (foundQuests.size() > 1) {
-            throw new QuestException("Du hast mehrere Quests mit dem Namen " + name + ": " + StringUtils.join(foundQuests, ", "));
-        }
-        return foundQuests.get(0);
-    }
-
-    @Override
-    public List<Quest> getAllQuests() {
-
-        return new ArrayList<>(allQuests.values());
+        return Optional.of(foundQuests.get(0));
     }
 
     @Override
@@ -122,15 +113,14 @@ public abstract class AbstractQuestHolder implements QuestHolder {
     @Override
     public void addQuest(Quest quest) {
 
-        allQuests.put(quest.getFullName(), quest);
+        if (quest.isActive()) {
+            activeQuests.put(quest.getFullName(), quest);
+        }
     }
 
     @Override
-    public void abortQuest(Quest quest) {
+    public void removeQuest(Quest quest) {
 
-        Quest remove = allQuests.remove(quest.getFullName());
-        if (remove != null) {
-            remove.abort();
-        }
+        activeQuests.remove(quest.getFullName());
     }
 }

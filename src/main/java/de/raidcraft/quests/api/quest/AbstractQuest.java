@@ -187,6 +187,7 @@ public abstract class AbstractQuest implements Quest {
 
         if (!isActive()) {
             setStartTime(new Timestamp(System.currentTimeMillis()));
+            getHolder().addQuest(this);
             save();
         }
         getHolder().getPlayer().sendMessage(ChatColor.YELLOW + "Quest angenommen: " + ChatColor.GREEN + getFriendlyName());
@@ -216,6 +217,8 @@ public abstract class AbstractQuest implements Quest {
         getTemplate().getCompletionActions()
                 .forEach(action -> action.accept(getPlayer()));
 
+        getHolder().removeQuest(this);
+
         QuestCompletedEvent questCompletedEvent = new QuestCompletedEvent(this);
         RaidCraft.callEvent(questCompletedEvent);
     }
@@ -231,6 +234,7 @@ public abstract class AbstractQuest implements Quest {
         getTemplate().getCompletionActions().stream()
                 .filter(action -> action instanceof RevertableAction)
                 .forEach(action -> ((RevertableAction<Player>) action).revert(getPlayer()));
+        getHolder().removeQuest(this);
         // and then we reregister our listeners because the player should be able to reaccept the quest
         registerListeners();
         save();

@@ -5,15 +5,17 @@ import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
 import de.raidcraft.api.config.builder.ConfigBuilder;
-import de.raidcraft.quests.QuestPlugin;
-import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.api.quests.QuestException;
+import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.util.CommandUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Optional;
 
 /**
  * @author Silthus
@@ -69,18 +71,18 @@ public class AdminCommands {
     @CommandPermissions("rcquests.admin.abort")
     public void abort(CommandContext args, CommandSender sender) throws CommandException {
 
-        try {
-            Player targetPlayer = args.hasFlag('p') ? CommandUtil.grabPlayer(args.getFlag('p')) : (Player) sender;
-            String questName = args.getString(0);
-            if (targetPlayer == null) {
-                throw new CommandException("Der angegebene Spieler ist nicht Online!");
-            }
-            QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);
-            Quest quest = questPlayer.getQuest(questName);
-            quest.abort();
-            sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.getFriendlyName() + "' wurde abgebrochen!");
-        } catch (QuestException e) {
-            throw new CommandException(e.getMessage());
+        Player targetPlayer = args.hasFlag('p') ? CommandUtil.grabPlayer(args.getFlag('p')) : (Player) sender;
+        String questName = args.getString(0);
+        if (targetPlayer == null) {
+            throw new CommandException("Der angegebene Spieler ist nicht Online!");
+        }
+        QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);
+        Optional<Quest> quest = questPlayer.getQuest(questName);
+        if (quest.isPresent() && quest.get().isActive()) {
+            quest.get().abort();
+            sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.get().getFriendlyName() + "' wurde abgebrochen!");
+        } else {
+            throw new CommandException("Quest " + questName + " existiert nicht oder ist nicht aktiv!");
         }
     }
 
@@ -94,22 +96,21 @@ public class AdminCommands {
     @CommandPermissions("rcquests.admin.remove")
     public void remove(CommandContext args, CommandSender sender) throws CommandException {
 
-        try {
-            Player targetPlayer = args.hasFlag('p') ? CommandUtil.grabPlayer(args.getFlag('p')) : (Player) sender;
-            String questName = args.getString(0);
-            if (targetPlayer == null) {
-                throw new CommandException("Der angegebene Spieler ist nicht Online!");
-            }
-            QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);
-            Quest quest = questPlayer.getQuest(questName);
-            if (!quest.isCompleted()) {
-                throw new CommandException("Die Quest " + quest.getFriendlyName() + " wurde noch nicht abgeschlossen!");
-            }
-            quest.delete();
-            sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.getFriendlyName() + "' wurde entfernt!");
-        } catch (QuestException e) {
-            throw new CommandException(e.getMessage());
+        Player targetPlayer = args.hasFlag('p') ? CommandUtil.grabPlayer(args.getFlag('p')) : (Player) sender;
+        String questName = args.getString(0);
+        if (targetPlayer == null) {
+            throw new CommandException("Der angegebene Spieler ist nicht Online!");
         }
+        QuestHolder questPlayer = plugin.getQuestManager().getQuestHolder(targetPlayer);
+        Optional<Quest> quest = questPlayer.getQuest(questName);
+        if (!quest.isPresent()) {
+            throw new CommandException("Die Quest " + questName + " existiert nicht!");
+        }
+        if (!quest.get().isCompleted()) {
+            throw new CommandException("Die Quest " + quest.get().getFriendlyName() + " wurde noch nicht abgeschlossen!");
+        }
+        quest.get().delete();
+        sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.get().getFriendlyName() + "' wurde entfernt!");
     }
 
     @Command(
