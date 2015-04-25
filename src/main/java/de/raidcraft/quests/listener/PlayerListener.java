@@ -22,8 +22,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import java.util.Arrays;
-
 /**
  * @author Silthus
  */
@@ -113,6 +111,6 @@ public class PlayerListener implements Listener {
                 .then(" hat die Quest ").color(ChatColor.YELLOW);
         msg = QuestUtil.getQuestTooltip(msg, event.getQuest());
         msg.then(" abgeschlossen.").color(ChatColor.YELLOW)
-                .send(Arrays.asList(Bukkit.getOnlinePlayers()));
+                .send(Bukkit.getOnlinePlayers());
     }
 }
