@@ -67,7 +67,11 @@ public abstract class AbstractQuestHolder implements QuestHolder {
     @Override
     public Optional<Quest> getQuest(QuestTemplate questTemplate) {
 
-        return getQuest(questTemplate.getName());
+        String id = questTemplate.getId();
+        if (activeQuests.containsKey(id)) {
+            return Optional.of(activeQuests.get(id));
+        }
+        return getAllQuests().stream().filter(q -> q.getTemplate().equals(questTemplate)).findFirst();
     }
 
     @Override
