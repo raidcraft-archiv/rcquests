@@ -42,7 +42,7 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
 
         super.startQuest(template);
         Quest quest = RaidCraft.getComponent(QuestManager.class).createQuest(this, template);
-        if (!quest.isActive()) {
+        if (!quest.isActive() && !quest.isCompleted()) {
             quest.start();
         }
         addQuest(quest);

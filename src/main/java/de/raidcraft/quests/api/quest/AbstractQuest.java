@@ -113,15 +113,15 @@ public abstract class AbstractQuest implements Quest {
             unregisterListeners();
             return;
         }
+        if (!isActive()) {
+            setPhase(Phase.NOT_STARTED);
+            // do not register objective listeners if the quest is not started
+            return;
+        }
         if (hasCompletedAllObjectives()) {
             setPhase(Phase.OJECTIVES_COMPLETED);
             unregisterListeners();
             registerListeners();
-            return;
-        }
-        if (!isActive()) {
-            setPhase(Phase.NOT_STARTED);
-            // do not register objective listeners if the quest is not started
             return;
         }
         setPhase(Phase.IN_PROGRESS);
@@ -207,6 +207,9 @@ public abstract class AbstractQuest implements Quest {
         if (!isActive() || !hasCompletedAllObjectives() || isCompleted()) {
             return;
         }
+        // first unregister all listeners to avoid double completion
+        unregisterListeners();
+
         QuestCompleteEvent event = new QuestCompleteEvent(this);
         RaidCraft.callEvent(event);
         if (event.isCancelled()) return;
@@ -214,10 +217,6 @@ public abstract class AbstractQuest implements Quest {
         setCompletionTime(new Timestamp(System.currentTimeMillis()));
         setPhase(Phase.COMPLETE);
         save();
-
-        // first unregister all listeners to avoid double completion
-        unregisterListeners();
-
         // give rewards and execute completion actions
         getTemplate().getCompletionActions()
                 .forEach(action -> action.accept(getPlayer()));
