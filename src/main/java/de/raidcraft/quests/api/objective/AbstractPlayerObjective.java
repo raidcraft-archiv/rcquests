@@ -2,8 +2,6 @@ package de.raidcraft.quests.api.objective;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.RevertableAction;
-import de.raidcraft.api.language.Translator;
-import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.events.ObjectiveCompleteEvent;
 import de.raidcraft.quests.api.events.ObjectiveStartedEvent;
 import de.raidcraft.quests.api.holder.QuestHolder;
@@ -62,10 +60,6 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
                 // register our start trigger
                 getObjectiveTemplate().getTrigger().forEach(factory -> factory.registerListener(this));
                 setActive(true);
-                Translator.msg(QuestPlugin.class, getQuestHolder().getPlayer(),
-                        "objective.start", "%s: %s!",
-                        getQuest().getFriendlyName(),
-                        getObjectiveTemplate().getFriendlyName());
                 ObjectiveStartedEvent event = new ObjectiveStartedEvent(this);
                 RaidCraft.callEvent(event);
             }

@@ -10,17 +10,12 @@ import de.raidcraft.quests.api.events.QuestCompletedEvent;
 import de.raidcraft.quests.api.events.QuestStartedEvent;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.PlayerObjective;
-import de.raidcraft.quests.util.QuestUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import mkremins.fanciful.FancyMessage;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -183,13 +178,6 @@ public abstract class AbstractQuest implements Quest {
     public void onObjectCompletion(PlayerObjective objective) {
 
         save();
-        FancyMessage msg = QuestUtil.getQuestTooltip(new FancyMessage(""), this);
-        msg.then(": ").color(ChatColor.YELLOW)
-                .then("Aufgabe ").color(ChatColor.GREEN)
-                .then(objective.getObjectiveTemplate().getFriendlyName()).color(ChatColor.DARK_AQUA)
-                .tooltip(objective.getObjectiveTemplate().getDescription().split("|"))
-                .then(" abgeschlossen").color(ChatColor.GREEN)
-                .send(getPlayer());
         ObjectiveCompletedEvent event = new ObjectiveCompletedEvent(objective);
         RaidCraft.callEvent(event);
         updateObjectiveListeners();
@@ -204,10 +192,6 @@ public abstract class AbstractQuest implements Quest {
             setPhase(Phase.IN_PROGRESS);
             save();
         }
-        FancyMessage msg = new FancyMessage("Quest ").color(ChatColor.YELLOW);
-        msg = QuestUtil.getQuestTooltip(msg, this);
-        msg.then(" angenommen.").color(ChatColor.YELLOW)
-                .send(getPlayer());
         QuestStartedEvent event = new QuestStartedEvent(this);
         RaidCraft.callEvent(event);
     }
@@ -227,12 +211,6 @@ public abstract class AbstractQuest implements Quest {
         // complete the quest and trigger the complete actions
         setCompletionTime(new Timestamp(System.currentTimeMillis()));
         setPhase(Phase.COMPLETE);
-
-        FancyMessage msg = new FancyMessage(getPlayer().getName()).color(ChatColor.AQUA)
-                .then(" hat die Quest ").color(ChatColor.YELLOW);
-        msg = QuestUtil.getQuestTooltip(msg, this);
-        msg.then(" abgeschlossen.").color(ChatColor.YELLOW)
-                .send(Arrays.asList(Bukkit.getOnlinePlayers()));
 
         // give rewards and execute completion actions
         getTemplate().getCompletionActions()
