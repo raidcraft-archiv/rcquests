@@ -108,6 +108,11 @@ public abstract class AbstractQuest implements Quest {
     @Override
     public void updateObjectiveListeners() {
 
+        if (isCompleted()) {
+            setPhase(Phase.COMPLETE);
+            unregisterListeners();
+            return;
+        }
         if (hasCompletedAllObjectives()) {
             setPhase(Phase.OJECTIVES_COMPLETED);
             unregisterListeners();
@@ -191,9 +196,9 @@ public abstract class AbstractQuest implements Quest {
             getHolder().addQuest(this);
             setPhase(Phase.IN_PROGRESS);
             save();
+            QuestStartedEvent event = new QuestStartedEvent(this);
+            RaidCraft.callEvent(event);
         }
-        QuestStartedEvent event = new QuestStartedEvent(this);
-        RaidCraft.callEvent(event);
     }
 
     @Override
