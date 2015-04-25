@@ -210,12 +210,12 @@ public abstract class AbstractQuest implements Quest {
         QuestCompleteEvent event = new QuestCompleteEvent(this);
         RaidCraft.callEvent(event);
         if (event.isCancelled()) return;
-        // first unregister all listeners to avoid double completion
-        unregisterListeners();
-        
-        // complete the quest and trigger the complete actions
+
         setCompletionTime(new Timestamp(System.currentTimeMillis()));
         setPhase(Phase.COMPLETE);
+
+        // first unregister all listeners to avoid double completion
+        unregisterListeners();
 
         // give rewards and execute completion actions
         getTemplate().getCompletionActions()

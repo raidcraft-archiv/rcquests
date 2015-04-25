@@ -45,8 +45,8 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
         if (!quest.isActive()) {
             quest.start();
         }
-        quest.updateObjectiveListeners();
         addQuest(quest);
+        quest.updateObjectiveListeners();
         return quest;
     }
 

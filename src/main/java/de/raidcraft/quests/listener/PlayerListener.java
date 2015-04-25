@@ -6,7 +6,7 @@ import de.raidcraft.api.items.ItemType;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.events.ObjectiveCompletedEvent;
 import de.raidcraft.quests.api.events.ObjectiveStartedEvent;
-import de.raidcraft.quests.api.events.QuestCompletedEvent;
+import de.raidcraft.quests.api.events.QuestCompleteEvent;
 import de.raidcraft.quests.api.events.QuestStartedEvent;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.PlayerObjective;
@@ -105,7 +105,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onQuestComplete(QuestCompletedEvent event) {
+    public void onQuestComplete(QuestCompleteEvent event) {
 
         FancyMessage msg = new FancyMessage(event.getQuest().getPlayer().getName()).color(ChatColor.AQUA)
                 .then(" hat die Quest ").color(ChatColor.YELLOW);
