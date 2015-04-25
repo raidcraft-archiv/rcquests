@@ -12,6 +12,7 @@ import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.util.QuestUtil;
 import de.raidcraft.util.CustomItemUtil;
+import de.raidcraft.util.Title;
 import mkremins.fanciful.FancyMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -102,6 +103,15 @@ public class PlayerListener implements Listener {
         msg = QuestUtil.getQuestTooltip(msg, event.getQuest());
         msg.then(" angenommen.").color(ChatColor.YELLOW)
                 .send(event.getQuest().getPlayer());
+        Title title = new Title(event.getQuest().getFriendlyName());
+        title.setTitleColor(ChatColor.GOLD);
+        title.setSubtitle(event.getQuest().getDescription());
+        title.setSubtitleColor(ChatColor.AQUA);
+        title.setTimingsToTicks();
+        title.setStayTime(20 * 5);
+        title.setFadeInTime(10);
+        title.setFadeOutTime(20 * 3);
+        title.send(event.getQuest().getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
