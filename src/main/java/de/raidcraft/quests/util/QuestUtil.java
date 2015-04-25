@@ -19,10 +19,9 @@ public class QuestUtil {
         List<FancyMessage> tooltip = new ArrayList<>();
         tooltip.add(new FancyMessage(quest.getTemplate().getFriendlyName()).color(ChatColor.YELLOW));
 
-        String[] lines = quest.getDescription().split("|");
-        FancyMessage[] questDescription = new FancyMessage[lines.length];
-        for (int i = 0; i < lines.length; i++) {
-            tooltip.add(new FancyMessage(lines[i]).style(ChatColor.ITALIC).color(ChatColor.GOLD));
+        String[] lines = quest.getDescription().split("\\|");
+        for (String line : lines) {
+            tooltip.add(new FancyMessage(line).style(ChatColor.ITALIC).color(ChatColor.GOLD));
         }
 
         List<PlayerObjective> objectives = quest.getObjectives();
