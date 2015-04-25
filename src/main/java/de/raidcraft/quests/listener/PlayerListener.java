@@ -55,7 +55,7 @@ public class PlayerListener implements Listener {
                         .color(ChatColor.DARK_AQUA)
                         .then(" ")
                         .then("Quest Inventar öffnen.")
-                        .style(ChatColor.DARK_AQUA)
+                        .style(ChatColor.UNDERLINE)
                         .color(ChatColor.AQUA)
                         .command("/qi").send(event.getPlayer());
                 event.getItem().remove();

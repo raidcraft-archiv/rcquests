@@ -95,7 +95,7 @@ public final class QuestManager implements QuestProvider, Component {
         questPlayers.values().forEach(holder -> {
             holder.save();
             holder.getAllQuests()
-                    .forEach(quest -> quest.getPlayerObjectives()
+                    .forEach(quest -> quest.getObjectives()
                             .forEach(PlayerObjective::unregisterListeners));
         });
         loadedQuests.values()

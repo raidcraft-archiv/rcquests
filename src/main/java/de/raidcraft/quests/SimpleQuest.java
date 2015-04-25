@@ -67,7 +67,7 @@ public class SimpleQuest extends AbstractQuest {
             }
             // also delete all requirements
             getTemplate().getRequirements().forEach(requirement -> requirement.delete(getPlayer()));
-            getPlayerObjectives().forEach(objective -> {
+            getObjectives().forEach(objective -> {
                 objective.getObjectiveTemplate().getRequirements()
                         .forEach(requirement -> requirement.delete(getPlayer()));
                 objective.getObjectiveTemplate().getActions().stream()
@@ -90,6 +90,6 @@ public class SimpleQuest extends AbstractQuest {
         quest.setCompletionTime(getCompletionTime());
         database.save(quest);
         // also save all quest objectives
-        getPlayerObjectives().forEach(PlayerObjective::save);
+        getObjectives().forEach(PlayerObjective::save);
     }
 }

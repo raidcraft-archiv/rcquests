@@ -29,7 +29,7 @@ public class QuestBook extends ItemStack {
         lore.add(ChatColor.WHITE + quest.getDescription());
         lore.add("");
         // add quest objectives
-        for (PlayerObjective objective : quest.getPlayerObjectives()) {
+        for (PlayerObjective objective : quest.getObjectives()) {
             String friendlyName = objective.getObjectiveTemplate().getFriendlyName();
             if (!objective.getObjectiveTemplate().isHidden() || objective.isActive()) {
                 if (objective.isCompleted()) {

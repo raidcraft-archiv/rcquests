@@ -1,0 +1,41 @@
+package de.raidcraft.quests.util;
+
+import de.raidcraft.quests.api.objective.PlayerObjective;
+import de.raidcraft.quests.api.quest.Quest;
+import mkremins.fanciful.FancyMessage;
+import org.bukkit.ChatColor;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+/**
+ * @author Silthus
+ */
+public class QuestUtil {
+
+    public static FancyMessage getQuestTooltip(FancyMessage msg, Quest quest) {
+
+        List<FancyMessage> tooltip = new ArrayList<>();
+        tooltip.add(new FancyMessage(quest.getTemplate().getFriendlyName()).color(ChatColor.YELLOW));
+
+        String[] lines = quest.getDescription().split("|");
+        FancyMessage[] questDescription = new FancyMessage[lines.length];
+        for (int i = 0; i < lines.length; i++) {
+            tooltip.add(new FancyMessage(lines[i]).style(ChatColor.ITALIC).color(ChatColor.GOLD));
+        }
+
+        List<PlayerObjective> objectives = quest.getObjectives();
+        tooltip.addAll(objectives.stream()
+                .filter(objective -> !objective.getObjectiveTemplate().isHidden())
+                .map(objective -> new FancyMessage("  * ")
+                        .then(objective.getObjectiveTemplate().getFriendlyName())
+                        .style(objective.isCompleted() ? ChatColor.STRIKETHROUGH : ChatColor.UNDERLINE)
+                        .color(objective.isActive() ? ChatColor.AQUA : ChatColor.GRAY)).collect(Collectors.toList()));
+
+        return msg.then("[").color(ChatColor.DARK_BLUE)
+                .then(quest.getTemplate().getFriendlyName()).color(ChatColor.GOLD)
+                .formattedTooltip(tooltip.toArray(new FancyMessage[tooltip.size()]))
+                .then("]").color(ChatColor.DARK_BLUE);
+    }
+}

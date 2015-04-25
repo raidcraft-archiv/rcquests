@@ -2,8 +2,8 @@ package de.raidcraft.quests.api.quest;
 
 import com.avaje.ebean.annotation.EnumValue;
 import de.raidcraft.api.action.trigger.TriggerListener;
-import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.quests.api.objective.PlayerObjective;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
@@ -67,13 +67,13 @@ public interface Quest extends TriggerListener<Player> {
 
     public default List<PlayerObjective> getUncompletedObjectives() {
 
-        return getPlayerObjectives().stream()
+        return getObjectives().stream()
                 .filter(playerObjective -> !playerObjective.isCompleted())
                 .sorted()
                 .collect(Collectors.toList());
     }
 
-    public List<PlayerObjective> getPlayerObjectives();
+    public List<PlayerObjective> getObjectives();
 
     public QuestTemplate getTemplate();
 
