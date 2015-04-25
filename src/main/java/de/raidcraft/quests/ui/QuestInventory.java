@@ -239,7 +239,7 @@ public class QuestInventory implements Listener {
         }
         Inventory inventory = inventories.get(0);
         if (currentInventory < inventories.size()) {
-            inventories.get(currentInventory);
+            inventory = inventories.get(currentInventory);
         }
         holder.getPlayer().openInventory(inventory);
     }
