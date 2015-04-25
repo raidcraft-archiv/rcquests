@@ -213,6 +213,7 @@ public abstract class AbstractQuest implements Quest {
 
         setCompletionTime(new Timestamp(System.currentTimeMillis()));
         setPhase(Phase.COMPLETE);
+        save();
 
         // first unregister all listeners to avoid double completion
         unregisterListeners();
