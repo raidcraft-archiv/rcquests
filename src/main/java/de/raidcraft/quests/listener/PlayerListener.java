@@ -78,7 +78,7 @@ public class PlayerListener implements Listener {
         FancyMessage msg = QuestUtil.getQuestTooltip(new FancyMessage(""), event.getObjective().getQuest());
         msg.then(": ").color(ChatColor.YELLOW)
                 .then(event.getObjective().getObjectiveTemplate().getFriendlyName()).color(ChatColor.DARK_AQUA)
-                .tooltip(event.getObjective().getObjectiveTemplate().getDescription().split("|"))
+                //.tooltip(event.getObjective().getObjectiveTemplate().getDescription().split("|"))
                 .send(event.getObjective().getQuest().getPlayer());
     }
 
@@ -90,7 +90,7 @@ public class PlayerListener implements Listener {
         msg.then(": ").color(ChatColor.YELLOW)
                 .then("Aufgabe ").color(ChatColor.GREEN)
                 .then(objective.getObjectiveTemplate().getFriendlyName()).color(ChatColor.DARK_AQUA)
-                .tooltip(objective.getObjectiveTemplate().getDescription().split("|"))
+                //.tooltip(objective.getObjectiveTemplate().getDescription().split("|"))
                 .then(" abgeschlossen").color(ChatColor.GREEN)
                 .send(event.getObjective().getQuest().getPlayer());
     }
