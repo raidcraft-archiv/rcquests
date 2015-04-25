@@ -60,12 +60,14 @@ public class PlayerListener implements Listener {
                 plugin.getQuestManager().getQuestHolder(event.getPlayer()).getQuestInventory().addItem(customItem);
                 FancyMessage msg = new FancyMessage("Du hast das Quest Item ").color(ChatColor.DARK_AQUA);
                 msg = CustomItemUtil.getFormattedItemTooltip(msg, customItem);
-                msg.then(" aufgenommen.")
-                        .color(ChatColor.DARK_AQUA)
-                        .then(" ")
-                        .then("Klicke hier um dein Quest Inventar zu öffnen.")
+                msg.then(" in dein ")
+                        .then("Quest Inventar")
                         .color(ChatColor.AQUA)
-                        .command("/qi").send(event.getPlayer());
+                        .tooltip("Klicke hier um dein Quest Inventar zu öffnen.",
+                                "Oder gebe /qi ein.")
+                        .command("/qi")
+                        .then(" aufgenommen.").color(ChatColor.DARK_AQUA)
+                        .send(event.getPlayer());
                 event.getItem().remove();
                 event.setCancelled(true);
             }
