@@ -333,7 +333,6 @@ public final class QuestManager implements QuestProvider, Component {
             try {
                 QuestTemplate questTemplate = getQuestTemplate(quest.getQuest());
                 SimpleQuest simpleQuest = new SimpleQuest(quest, questTemplate, holder);
-                simpleQuest.updateObjectiveListeners();
                 quests.add(simpleQuest);
             } catch (QuestException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());

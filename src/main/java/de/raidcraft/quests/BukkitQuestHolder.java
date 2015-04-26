@@ -27,7 +27,10 @@ public class BukkitQuestHolder extends AbstractQuestHolder {
         QuestManager component = RaidCraft.getComponent(QuestManager.class);
         component.getAllQuests(this).stream()
                 .filter(Quest::isActive)
-                .forEach(this::addQuest);
+                .forEach(quest -> {
+                    quest.updateObjectiveListeners();
+                    addQuest(quest);
+                });
     }
 
     @Override
