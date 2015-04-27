@@ -15,6 +15,13 @@ public class HostTrigger extends Trigger implements Listener {
         super("host", "interact");
     }
 
+    @Information(
+            value = "host.interact",
+            desc = "Is triggered when the player interacts with the given host.",
+            conf = {
+                    "host: <id>"
+            }
+    )
     @EventHandler(ignoreCancelled = true)
     public void onQuestHostInteract(QuestHostInteractEvent event) {
 

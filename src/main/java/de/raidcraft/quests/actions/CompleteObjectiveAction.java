@@ -18,6 +18,14 @@ import java.util.Optional;
 public class CompleteObjectiveAction implements Action<Player> {
 
     @Override
+    @Information(
+            value = "quest.objective.complete",
+            desc = "Manually completes the given objective.",
+            conf = {
+                    "quest: <id>",
+                    "objective: <int:id>"
+            }
+    )
     public void accept(Player player, ConfigurationSection config) {
 
         QuestManager component = RaidCraft.getComponent(QuestManager.class);

@@ -97,9 +97,9 @@ public class QuestPlugin extends BasePlugin {
                     .trigger(new HostTrigger())
                     .trigger(new QuestTrigger())
                     .trigger(new ObjectiveTrigger())
-                    .action("quest.start", new StartQuestAction())
-                    .action("quest.complete", new CompleteQuestAction())
-                    .action("quest.objective.complete", new CompleteObjectiveAction())
+                    .action(new StartQuestAction())
+                    .action(new CompleteQuestAction())
+                    .action(new CompleteObjectiveAction())
                     .action("quest.item.remove", new RemoveQuestItemAction())
                     .action("quest.item.add", new AddQuestItemAction())
                     .requirement("quest.completed", (Player player, ConfigurationSection config) ->

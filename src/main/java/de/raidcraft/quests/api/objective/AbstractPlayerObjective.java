@@ -95,6 +95,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
         if (event.isCancelled()) return;
         unregisterListeners();
         this.completionTime = new Timestamp(System.currentTimeMillis());
+        save();
         // lets execute all objective actions
         getObjectiveTemplate().getActions().forEach(action -> action.accept(getQuestHolder().getPlayer()));
         getQuest().onObjectCompletion(this);

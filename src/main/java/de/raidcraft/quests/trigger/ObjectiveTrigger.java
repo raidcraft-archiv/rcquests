@@ -18,6 +18,13 @@ public class ObjectiveTrigger extends Trigger implements Listener {
         super("objective", "complete", "completed", "started");
     }
 
+    @Information(
+            value = "objective.started",
+            desc = "Is triggered when the objective was started.",
+            conf = {
+                    "quest: <id>"
+            }
+    )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onObjectiveStart(ObjectiveStartedEvent event) {
 
@@ -27,6 +34,14 @@ public class ObjectiveTrigger extends Trigger implements Listener {
         );
     }
 
+    @Information(
+            value = "objective.complete",
+            desc = "Is triggered before the objective gets completed and before messages are shown.",
+            conf = {
+                    "quest: <id>",
+                    "objective: <int:id>"
+            }
+    )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onObjectiveComplete(ObjectiveCompleteEvent event) {
 
@@ -36,6 +51,14 @@ public class ObjectiveTrigger extends Trigger implements Listener {
         );
     }
 
+    @Information(
+            value = "objective.completed",
+            desc = "Is triggered after the objective was completed and after messages have been issued.",
+            conf = {
+                    "quest: <id>",
+                    "objective: <int:id>"
+            }
+    )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onObjectiveCompleted(ObjectiveCompletedEvent event) {
 

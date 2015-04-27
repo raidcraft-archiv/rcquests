@@ -17,6 +17,13 @@ import org.bukkit.entity.Player;
 public class StartQuestAction implements Action<Player> {
 
     @Override
+    @Information(
+            value = "quest.start",
+            desc = "Starts the given quest. Will only work if it is valid to start the quest.",
+            conf = {
+                    "quest: <id>"
+            }
+    )
     public void accept(Player player, ConfigurationSection config) {
 
         RaidCraft.LOGGER.info("Start Quest Action was triggered for " + player.getName() + " : " + config.getString("quest"));

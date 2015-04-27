@@ -19,6 +19,13 @@ import java.util.Optional;
 public class CompleteQuestAction implements Action<Player> {
 
     @Override
+    @Information(
+            value = "quest.complete",
+            desc = "Manually completes the given quest. Can be executed even if not all objectives are completed.",
+            conf = {
+                    "quest: <id>"
+            }
+    )
     public void accept(Player player, ConfigurationSection config) {
 
         if (!player.hasPermission("rcquests.quest.complete")) {

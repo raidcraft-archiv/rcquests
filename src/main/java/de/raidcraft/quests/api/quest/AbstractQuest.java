@@ -204,7 +204,7 @@ public abstract class AbstractQuest implements Quest {
     @Override
     public void complete() {
 
-        if (!isActive() || !hasCompletedAllObjectives() || isCompleted()) {
+        if (!isActive() || isCompleted()) {
             return;
         }
         // first unregister all listeners to avoid double completion
