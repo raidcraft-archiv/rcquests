@@ -4,7 +4,6 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
-import de.raidcraft.api.config.builder.ConfigBuilder;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.holder.QuestHolder;
@@ -114,18 +113,5 @@ public class AdminCommands {
         } catch (QuestException e) {
             throw new CommandException(e.getMessage());
         }
-    }
-
-    @Command(
-            aliases = {"create"},
-            desc = "Starts the Quest Creation Wizard",
-            min = 1,
-            usage = "<path.to.the.quest.root.dir>"
-    )
-    @CommandPermissions("rcquests.admin.create")
-    public void create(CommandContext args, CommandSender sender) {
-
-        ConfigBuilder.createBuilder(plugin, (Player) sender, args.getString(0));
-        sender.sendMessage(ChatColor.RED + "Started Quest Builder! Exit with '/rccb save'. See commands with '/rccb' and '/rccb <TabAutoComplete> ?'");
     }
 }

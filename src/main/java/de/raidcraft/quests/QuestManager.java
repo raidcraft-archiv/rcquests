@@ -4,7 +4,6 @@ import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
-import de.raidcraft.api.config.builder.ConfigBuilder;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.QuestConfigLoader;
@@ -142,7 +141,6 @@ public final class QuestManager implements QuestProvider, Component {
             return;
         }
         configLoader.put(loader.getSuffix(), loader);
-        ConfigBuilder.registerInformation(loader);
         if (loadedQuestFiles) {
             load();
         }
