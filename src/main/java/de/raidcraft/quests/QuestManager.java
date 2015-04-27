@@ -142,7 +142,7 @@ public final class QuestManager implements QuestProvider, Component {
             return;
         }
         configLoader.put(loader.getSuffix(), loader);
-        ConfigBuilder.registerConfigGenerator(loader);
+        ConfigBuilder.registerInformation(loader);
         if (loadedQuestFiles) {
             load();
         }
