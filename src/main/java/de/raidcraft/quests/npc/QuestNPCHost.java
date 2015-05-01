@@ -2,8 +2,8 @@ package de.raidcraft.quests.npc;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemException;
-import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.api.quests.host.AbstractQuestHost;
+import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.rcconversations.npc.ConversationsTrait;
 import de.raidcraft.rcconversations.npc.TalkCloseTrait;
 import net.citizensnpcs.api.event.DespawnReason;
@@ -12,6 +12,7 @@ import net.citizensnpcs.api.trait.trait.Equipment;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
@@ -105,11 +106,16 @@ public class QuestNPCHost extends AbstractQuestHost {
         npc = QuestTrait.getNPC(getId());
         // if NPC not exists, warn admin and create new one
         if (npc == null) {
-            ConfigurationSection loc = data.getConfigurationSection("location");
-            Location defaultLocation = new Location(Bukkit.getWorld(loc.getString("world", "world")),
-                    loc.getInt("x", 23), loc.getInt("y", 3), loc.getInt("z", 178));
             QuestPlugin plugin = RaidCraft.getComponent(QuestPlugin.class);
-            plugin.info("Quest NPC not exists and spawned automaticly hostid:" + getId(), "npc");
+            ConfigurationSection loc = data.getConfigurationSection("location");
+            World world;
+            world = Bukkit.getWorld(loc.getString("world"));
+            if (world == null) {
+                plugin.info("Quest NPC world is not loaded and NPC was not spawned: " + getId(), "npc");
+                return;
+            }
+            Location defaultLocation = new Location(world, loc.getInt("x", 23), loc.getInt("y", 3), loc.getInt("z", 178));
+            plugin.info("Quest NPC not exists and spawned automaticly hostid: " + getId(), "npc");
             npc = NPC_Quest_Manager.getInstance().spawnNonPersistNpcQuest(
                     defaultLocation, getFriendlyName(), plugin.getName(), getDefaultConversationName(), getId());
         }
