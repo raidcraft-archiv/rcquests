@@ -34,7 +34,9 @@ public class QuestNPCHost extends AbstractQuestHost {
         super(id, data);
         this.data = data;
         // spawn a NPC
-        spawn();
+        if (!spawn()) {
+            return;
+        }
 
         npc.addTrait(QuestTrait.class);
         npc.addTrait(ConversationsTrait.class);
@@ -101,7 +103,7 @@ public class QuestNPCHost extends AbstractQuestHost {
     }
 
     @Override
-    public void spawn() {
+    public boolean spawn() {
         // spawn a NPC
         npc = QuestTrait.getNPC(getId());
         // if NPC not exists, warn admin and create new one
@@ -112,13 +114,15 @@ public class QuestNPCHost extends AbstractQuestHost {
             world = Bukkit.getWorld(loc.getString("world"));
             if (world == null) {
                 plugin.info("Quest NPC world is not loaded and NPC was not spawned: " + getId(), "npc");
-                return;
+                return false;
             }
             Location defaultLocation = new Location(world, loc.getInt("x", 23), loc.getInt("y", 3), loc.getInt("z", 178));
             plugin.info("Quest NPC not exists and spawned automaticly hostid: " + getId(), "npc");
             npc = NPC_Quest_Manager.getInstance().spawnNonPersistNpcQuest(
                     defaultLocation, getFriendlyName(), plugin.getName(), getDefaultConversationName(), getId());
+            return true;
         }
+        return false;
     }
 
     @Override
