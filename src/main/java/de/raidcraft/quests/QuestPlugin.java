@@ -3,6 +3,7 @@ package de.raidcraft.quests;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.action.ActionAPI;
+import de.raidcraft.api.chat.Chat;
 import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.npc.NPC_Manager;
@@ -50,7 +51,7 @@ public class QuestPlugin extends BasePlugin {
         questManager = new QuestManager(this);
 
         registerActionAPI();
-
+        Chat.registerAutoCompletionProvider(this, new QuestAutoCompletionProvider());
         // register our quest hosts
         Quests.registerQuestHost(this, "NPC", QuestNPCHost.class);
 
