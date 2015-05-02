@@ -31,7 +31,7 @@ public class QuestAutoCompletionProvider extends AutoCompletionProvider {
 
         QuestHolder questHolder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(player);
         return questHolder.getActiveQuests().stream()
-                .filter(q -> message == null || q.getFriendlyName().startsWith(message))
+                .filter(q -> message == null || q.getFriendlyName().toLowerCase().startsWith(message.toLowerCase()))
                 .map(Quest::getFriendlyName)
                 .collect(Collectors.toList());
     }
