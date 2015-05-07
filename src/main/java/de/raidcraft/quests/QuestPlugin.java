@@ -8,6 +8,7 @@ import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.npc.NPC_Manager;
 import de.raidcraft.api.quests.Quests;
+import de.raidcraft.api.random.RDS;
 import de.raidcraft.quests.actions.AddQuestItemAction;
 import de.raidcraft.quests.actions.CompleteObjectiveAction;
 import de.raidcraft.quests.actions.CompleteQuestAction;
@@ -19,6 +20,7 @@ import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.npc.NPCListener;
 import de.raidcraft.quests.npc.QuestNPCHost;
 import de.raidcraft.quests.npc.QuestTrait;
+import de.raidcraft.quests.random.RDSQuestObject;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
@@ -72,6 +74,7 @@ public class QuestPlugin extends BasePlugin {
         // their are automatically spawaned over the host.yml files
         Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
         NPC_Manager.getInstance().registerTrait(QuestTrait.class, "quest");
+        RDS.registerObject(new RDSQuestObject.RDSQuestFactory());
     }
 
     @Override
