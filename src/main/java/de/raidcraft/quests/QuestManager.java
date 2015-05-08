@@ -48,6 +48,7 @@ public final class QuestManager implements QuestProvider, Component {
     private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
     private final Map<String, QuestHost> loadedQuestHosts = new CaseInsensitiveMap<>();
     private final Map<String, Constructor<? extends QuestHost>> questHostTypes = new CaseInsensitiveMap<>();
+    private final Map<QuestConfigLoader, Map<String, ConfigurationSection>> queuedConfigLoaders = new HashMap<>();
 
     private final Map<UUID, QuestHolder> questPlayers = new HashMap<>();
 
@@ -56,8 +57,8 @@ public final class QuestManager implements QuestProvider, Component {
     protected QuestManager(final QuestPlugin plugin) {
         this.plugin = plugin;
         RaidCraft.registerComponent(QuestManager.class, this);
-        // lets register our own config loader
-        registerQuestConfigLoader(new QuestConfigLoader("quest") {
+        // lets register our own config loader with a high priority to load it last
+        registerQuestConfigLoader(new QuestConfigLoader("quest", 100) {
             @Override
             public void loadConfig(String id, ConfigurationSection config) {
 
@@ -87,6 +88,12 @@ public final class QuestManager implements QuestProvider, Component {
         File baseFolder = new File(plugin.getDataFolder(), plugin.getConfiguration().quests_base_folder);
         baseFolder.mkdirs();
         loadQuestConfigs(baseFolder, "");
+        // lets sort our loaders by priority
+        queuedConfigLoaders.keySet().stream()
+                .sorted()
+                .forEachOrdered(loader -> queuedConfigLoaders.get(loader).entrySet()
+                        .forEach(entry -> loader.loadConfig(entry.getKey(), entry.getValue())));
+        queuedConfigLoaders.clear();
         loadedQuestFiles = true;
     }
 
@@ -127,7 +134,10 @@ public final class QuestManager implements QuestProvider, Component {
                         ConfigurationSection configFile = plugin.configure(new SimpleConfiguration<>(plugin, file));
                         // repace "this." with the absolte path, feature: relative path
                         configFile = ConfigUtil.replacePathReferences(configFile, path);
-                        loader.loadConfig(id, configFile);
+                        if (!queuedConfigLoaders.containsKey(loader)) {
+                            queuedConfigLoaders.put(loader, new HashMap<>());
+                        }
+                        queuedConfigLoaders.get(loader).put(id, configFile);
                     }
                 }
             }
