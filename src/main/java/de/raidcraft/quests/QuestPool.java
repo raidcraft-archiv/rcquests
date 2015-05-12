@@ -77,9 +77,12 @@ public class QuestPool extends GenericRDSTable implements Listener, TriggerListe
         if (quests != null && quests.getKeys(false) != null) {
             for (String key : quests.getKeys(false)) {
                 ConfigurationSection section = quests.getConfigurationSection(key);
-                section.set("quest", key);
+                if (!section.isSet("quest")) {
+                    section.set("quest", key);
+                }
                 Optional<RDSObject> quest = RDS.createObject(RDSQuestObject.RDS_NAME, section);
                 if (quest.isPresent()) {
+                    quest.get().setUnique(true);
                     addEntry(quest.get());
                 } else {
                     RaidCraft.LOGGER.warning("Can only add repeatable quests to a quest pool: " + key + " in " + ConfigUtil.getFileName(config));
