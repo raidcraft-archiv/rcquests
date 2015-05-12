@@ -92,7 +92,11 @@ public class QuestPool extends GenericRDSTable implements Listener, TriggerListe
         try {
             triggers.addAll(TriggerManager.getInstance().createTriggerFactories(config.getConfigurationSection("trigger")));
             rewardActions.addAll(ActionFactory.getInstance().createActions(config.getConfigurationSection("actions"), Player.class));
-            triggers.forEach(triggerFactory -> triggerFactory.registerListener(this));
+            if (!triggers.isEmpty()) {
+                triggers.forEach(triggerFactory -> triggerFactory.registerListener(this));
+            } else {
+                RaidCraft.LOGGER.warning("Quest Pool " + ConfigUtil.getFileName(config) + " has no trigger defined and will not execute!");
+            }
         } catch (ActionException e) {
             e.printStackTrace();
         }
