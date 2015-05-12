@@ -109,6 +109,9 @@ public final class QuestManager implements QuestProvider, Component {
 
     public void unload() {
 
+        loadedQuestPools.values()
+                .forEach(questPool -> questPool.getTriggers()
+                        .forEach(triggerFactory -> triggerFactory.unregisterListener(questPool)));
         loadedQuestPools.clear();
         questPlayers.values().forEach(holder -> {
             holder.save();

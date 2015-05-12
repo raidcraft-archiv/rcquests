@@ -5,11 +5,16 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.action.ActionException;
 import de.raidcraft.api.action.action.ActionFactory;
+import de.raidcraft.api.action.trigger.TriggerFactory;
+import de.raidcraft.api.action.trigger.TriggerListener;
+import de.raidcraft.api.action.trigger.TriggerManager;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.random.GenericRDSTable;
 import de.raidcraft.api.random.RDSObject;
 import de.raidcraft.quests.api.events.QuestPoolQuestCompletedEvent;
+import de.raidcraft.quests.api.events.QuestPoolQuestStartedEvent;
 import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.random.RDSQuestObject;
 import de.raidcraft.quests.tables.TPlayer;
@@ -18,11 +23,14 @@ import de.raidcraft.quests.tables.TPlayerQuestPool;
 import de.raidcraft.util.ConfigUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -36,7 +44,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class QuestPool extends GenericRDSTable implements Listener {
+public class QuestPool extends GenericRDSTable implements Listener, TriggerListener<Player> {
 
     private final boolean enabled;
     private final String name;
@@ -45,6 +53,7 @@ public class QuestPool extends GenericRDSTable implements Listener {
     private final double cooldown;
     private final boolean abortPrevious;
     private final Optional<LocalTime> resetTime;
+    private final List<TriggerFactory> triggers = new ArrayList<>();
     private final List<Action<Player>> rewardActions = new ArrayList<>();
 
     protected QuestPool(String name, ConfigurationSection config) {
@@ -81,7 +90,9 @@ public class QuestPool extends GenericRDSTable implements Listener {
         }
 
         try {
+            triggers.addAll(TriggerManager.getInstance().createTriggerFactories(config.getConfigurationSection("trigger")));
             rewardActions.addAll(ActionFactory.getInstance().createActions(config.getConfigurationSection("actions"), Player.class));
+            triggers.forEach(triggerFactory -> triggerFactory.registerListener(this));
         } catch (ActionException e) {
             e.printStackTrace();
         }
@@ -142,5 +153,68 @@ public class QuestPool extends GenericRDSTable implements Listener {
     public void onQuestCompleted(QuestPoolQuestCompletedEvent event) {
 
         rewardActions.forEach(playerAction -> playerAction.accept(event.getQuest().getPlayer()));
+    }
+
+    @Override
+    public Class<Player> getTriggerEntityType() {
+
+        return Player.class;
+    }
+
+    @Override
+    public boolean processTrigger(Player entity) {
+
+        QuestHolder questHolder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(entity);
+        Optional<TPlayerQuestPool> entry = getDatabaseEntry(questHolder);
+        if (!entry.isPresent() || questHolder == null) {
+            return false;
+        }
+        TPlayerQuestPool dbPool = entry.get();
+        // first lets check if the cooldown has passed since the last reset
+        if (Instant.now().isBefore(dbPool.getLastReset().toInstant().plusSeconds((long) getCooldown()))) {
+            return false;
+        }
+        // check if the time now is before the defined reset time and abort
+        if (getResetTime().isPresent() && LocalTime.now().isBefore(getResetTime().get())) {
+            return false;
+        }
+        // lets see if we need to abort all active quest pool quests
+        if (isAbortPrevious()) {
+            List<TPlayerQuest> activeQuests = getActiveQuests(dbPool);
+            for (TPlayerQuest activeQuest : activeQuests) {
+                Optional<Quest> optional = questHolder.getQuest(activeQuest.getQuest());
+                if (optional.isPresent() && optional.get().isActive()) {
+                    optional.get().abort();
+                }
+            }
+        }
+        // ok we are good to go lets see if we can get any new quests
+        List<QuestTemplate> result = getResult(questHolder);
+        if (result.isEmpty()) {
+            return false;
+        }
+        EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
+        // ok we got some quests, lets reset the timer
+        int startCount = 0;
+        dbPool.setLastReset(Timestamp.from(Instant.now()));
+        for (QuestTemplate questTemplate : result) {
+            try {
+                Quest quest = questHolder.startQuest(questTemplate);
+                TPlayerQuest playerQuest = database.find(TPlayerQuest.class, quest.getId());
+                if (playerQuest != null) {
+                    playerQuest.setQuestPool(dbPool);
+                    database.update(playerQuest);
+                    RaidCraft.callEvent(new QuestPoolQuestStartedEvent(quest, dbPool));
+                    startCount++;
+                }
+            } catch (QuestException e) {
+                questHolder.sendMessage(ChatColor.RED + "Unable to start QuestPool Quest: " + e.getMessage());
+            }
+        }
+        if (startCount > 0) {
+            dbPool.setLastStart(Timestamp.from(Instant.now()));
+        }
+        database.update(dbPool);
+        return true;
     }
 }

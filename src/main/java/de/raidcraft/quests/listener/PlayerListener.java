@@ -4,8 +4,6 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemType;
 import de.raidcraft.quests.QuestPlugin;
-import de.raidcraft.quests.QuestPool;
-import de.raidcraft.quests.QuestPoolTask;
 import de.raidcraft.quests.api.events.ObjectiveCompletedEvent;
 import de.raidcraft.quests.api.events.ObjectiveStartedEvent;
 import de.raidcraft.quests.api.events.QuestAbortedEvent;
@@ -40,12 +38,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        QuestHolder questHolder = plugin.getQuestManager().getQuestHolder(event.getPlayer());
-        // lets check the quest pool
-        plugin.getQuestManager().getQuestPools().stream()
-                .filter(QuestPool::isEnabled).forEach(questPool -> {
-            Bukkit.getScheduler().runTaskLater(plugin, new QuestPoolTask(questPool, questHolder), plugin.getConfiguration().questPoolDelay);
-        });
+        plugin.getQuestManager().getQuestHolder(event.getPlayer());
     }
 
     @EventHandler(ignoreCancelled = true)
