@@ -10,6 +10,7 @@ import de.raidcraft.api.action.trigger.TriggerListener;
 import de.raidcraft.api.action.trigger.TriggerManager;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.random.GenericRDSTable;
+import de.raidcraft.api.random.RDS;
 import de.raidcraft.api.random.RDSObject;
 import de.raidcraft.quests.api.events.QuestPoolQuestCompletedEvent;
 import de.raidcraft.quests.api.events.QuestPoolQuestStartedEvent;
@@ -74,17 +75,14 @@ public class QuestPool extends GenericRDSTable implements Listener, TriggerListe
 
         ConfigurationSection quests = config.getConfigurationSection("quests");
         if (quests != null && quests.getKeys(false) != null) {
-            QuestManager questManager = RaidCraft.getComponent(QuestManager.class);
             for (String key : quests.getKeys(false)) {
-                try {
-                    QuestTemplate questTemplate = questManager.getQuestTemplate(key);
-                    if (questTemplate.isRepeatable()) {
-                        addEntry(new RDSQuestObject(questTemplate));
-                    } else {
-                        RaidCraft.LOGGER.warning("Can only add repeatable quests to a quest pool: " + key + " in " + ConfigUtil.getFileName(config));
-                    }
-                } catch (QuestException e) {
-                    RaidCraft.LOGGER.warning("Quest " + key + " in quest pool not found! " + ConfigUtil.getFileName(config));
+                ConfigurationSection section = quests.getConfigurationSection(key);
+                section.set("quest", key);
+                Optional<RDSObject> quest = RDS.createObject(RDSQuestObject.RDS_NAME, section);
+                if (quest.isPresent()) {
+                    addEntry(quest.get());
+                } else {
+                    RaidCraft.LOGGER.warning("Can only add repeatable quests to a quest pool: " + key + " in " + ConfigUtil.getFileName(config));
                 }
             }
         }

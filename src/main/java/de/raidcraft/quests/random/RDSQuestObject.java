@@ -15,7 +15,9 @@ import org.bukkit.configuration.ConfigurationSection;
  */
 public class RDSQuestObject extends GenericRDSValue<QuestTemplate> {
 
-    @RDSObjectFactory.Name("quest")
+    public static final String RDS_NAME = "quest";
+
+    @RDSObjectFactory.Name(RDS_NAME)
     public static class RDSQuestFactory implements RDSObjectFactory {
 
         @Override
