@@ -4,10 +4,12 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemType;
 import de.raidcraft.quests.QuestPlugin;
+import de.raidcraft.quests.QuestPool;
 import de.raidcraft.quests.api.events.ObjectiveCompletedEvent;
 import de.raidcraft.quests.api.events.ObjectiveStartedEvent;
 import de.raidcraft.quests.api.events.QuestAbortedEvent;
 import de.raidcraft.quests.api.events.QuestCompleteEvent;
+import de.raidcraft.quests.api.events.QuestPoolQuestCompletedEvent;
 import de.raidcraft.quests.api.events.QuestStartedEvent;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.PlayerObjective;
@@ -22,6 +24,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+
+import java.util.Optional;
 
 /**
  * @author Silthus
@@ -122,5 +126,14 @@ public class PlayerListener implements Listener {
         QuestUtil.getQuestTooltip(msg, event.getQuest())
                 .then(" wurde abgebrochen.").color(org.bukkit.ChatColor.RED)
                 .send(event.getQuest().getPlayer());
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onQuestCompleted(QuestPoolQuestCompletedEvent event) {
+
+        Optional<QuestPool> questPool = plugin.getQuestManager().getQuestPool(event.getQuestPool().getQuestPool());
+        if (questPool.isPresent()) {
+            questPool.get().getRewardActions().forEach(playerAction -> playerAction.accept(event.getQuest().getPlayer()));
+        }
     }
 }

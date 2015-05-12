@@ -12,7 +12,6 @@ import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.random.GenericRDSTable;
 import de.raidcraft.api.random.RDS;
 import de.raidcraft.api.random.RDSObject;
-import de.raidcraft.quests.api.events.QuestPoolQuestCompletedEvent;
 import de.raidcraft.quests.api.events.QuestPoolQuestStartedEvent;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.quest.Quest;
@@ -27,8 +26,6 @@ import lombok.EqualsAndHashCode;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -44,7 +41,7 @@ import java.util.stream.Collectors;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class QuestPool extends GenericRDSTable implements Listener, TriggerListener<Player> {
+public class QuestPool extends GenericRDSTable implements TriggerListener<Player> {
 
     private final boolean enabled;
     private final String name;
@@ -84,21 +81,24 @@ public class QuestPool extends GenericRDSTable implements Listener, TriggerListe
                     quest.get().setUnique(true);
                     addEntry(quest.get());
                 } else {
-                    RaidCraft.LOGGER.warning("Can only add repeatable quests to a quest pool: " + key + " in " + ConfigUtil.getFileName(config));
+                    RaidCraft.LOGGER.warning("Quest " + config.getString("quest") + " was not found in " + ConfigUtil.getFileName(config));
                 }
             }
         }
-
-        try {
-            triggers.addAll(TriggerManager.getInstance().createTriggerFactories(config.getConfigurationSection("trigger")));
-            rewardActions.addAll(ActionFactory.getInstance().createActions(config.getConfigurationSection("actions"), Player.class));
-            if (!triggers.isEmpty() && isEnabled()) {
-                triggers.forEach(triggerFactory -> triggerFactory.registerListener(this));
-            } else {
-                RaidCraft.LOGGER.warning("Quest Pool " + ConfigUtil.getFileName(config) + " has no trigger defined and will not execute!");
+        if (!getContents().isEmpty()) {
+            try {
+                triggers.addAll(TriggerManager.getInstance().createTriggerFactories(config.getConfigurationSection("trigger")));
+                rewardActions.addAll(ActionFactory.getInstance().createActions(config.getConfigurationSection("actions"), Player.class));
+                if (!triggers.isEmpty() && isEnabled()) {
+                    triggers.forEach(triggerFactory -> triggerFactory.registerListener(this));
+                } else {
+                    RaidCraft.LOGGER.warning("Quest Pool " + ConfigUtil.getFileName(config) + " has no trigger defined and will not execute!");
+                }
+            } catch (ActionException e) {
+                e.printStackTrace();
             }
-        } catch (ActionException e) {
-            e.printStackTrace();
+        } else {
+            RaidCraft.LOGGER.warning("No quests in the quest pool " + getName() + " defined!");
         }
     }
 
@@ -189,12 +189,6 @@ public class QuestPool extends GenericRDSTable implements Listener, TriggerListe
             return result;
         }
         return new ArrayList<>();
-    }
-
-    @EventHandler(ignoreCancelled = true)
-    public void onQuestCompleted(QuestPoolQuestCompletedEvent event) {
-
-        rewardActions.forEach(playerAction -> playerAction.accept(event.getQuest().getPlayer()));
     }
 
     @Override

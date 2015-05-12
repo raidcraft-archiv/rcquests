@@ -24,7 +24,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
@@ -87,7 +86,6 @@ public final class QuestManager implements QuestProvider, Component {
 
                 QuestPool pool = new QuestPool(id, config);
                 loadedQuestPools.put(id, pool);
-                plugin.registerEvents(pool);
                 plugin.info("Loaded quest pool: " + id + " - " + pool.getFriendlyName());
             }
         });
@@ -112,11 +110,8 @@ public final class QuestManager implements QuestProvider, Component {
     public void unload() {
 
         loadedQuestPools.values()
-                .forEach(questPool -> {
-                    HandlerList.unregisterAll(questPool);
-                    questPool.getTriggers()
-                            .forEach(triggerFactory -> triggerFactory.unregisterListener(questPool));
-                });
+                .forEach(questPool -> questPool.getTriggers()
+                        .forEach(triggerFactory -> triggerFactory.unregisterListener(questPool)));
         loadedQuestPools.clear();
         questPlayers.values().forEach(holder -> {
             holder.save();
@@ -418,5 +413,10 @@ public final class QuestManager implements QuestProvider, Component {
         }
         if (quests.size() == 1) return quests.get(0);
         throw new QuestException("No matching Quest with the name " + name + " found!");
+    }
+
+    public Optional<QuestPool> getQuestPool(String identifier) {
+
+        return Optional.ofNullable(loadedQuestPools.get(identifier));
     }
 }
