@@ -32,7 +32,5 @@ public class TPlayer {
     @JoinColumn(name = "player_id")
     @OneToMany(cascade = CascadeType.REMOVE)
     private List<TPlayerQuest> quests;
-    private int activeQuests; // TODO: replace with query
-    private int completedQuests; // TODO: replace with query
 }
 

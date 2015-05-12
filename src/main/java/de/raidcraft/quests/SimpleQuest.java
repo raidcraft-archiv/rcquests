@@ -8,7 +8,6 @@ import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.api.quest.AbstractQuest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
-import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import org.bukkit.entity.Player;
@@ -58,13 +57,6 @@ public class SimpleQuest extends AbstractQuest {
         TPlayerQuest quest = database.find(TPlayerQuest.class, getId());
         if (quest != null) {
             database.delete(quest);
-            if (isCompleted()) {
-                TPlayer tPlayer = database.find(TPlayer.class).where().eq("player", getPlayer().getName()).findUnique();
-                if (tPlayer != null && tPlayer.getCompletedQuests() > 0) {
-                    tPlayer.setCompletedQuests(tPlayer.getCompletedQuests() - 1);
-                    database.save(tPlayer);
-                }
-            }
             // also delete all requirements
             getTemplate().getRequirements().forEach(requirement -> requirement.delete(getPlayer()));
             getObjectives().forEach(objective -> {

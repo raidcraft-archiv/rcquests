@@ -265,8 +265,6 @@ public final class QuestManager implements QuestProvider, Component {
                     .eq("player_id", playerId).findUnique();
             if (table == null) {
                 table = new TPlayer();
-                table.setCompletedQuests(0);
-                table.setActiveQuests(0);
                 table.setPlayer(name.toLowerCase());
                 table.setPlayerId(playerId);
                 plugin.getDatabase().save(table);
