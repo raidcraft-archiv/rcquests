@@ -92,7 +92,7 @@ public class QuestPool extends GenericRDSTable implements Listener, TriggerListe
         try {
             triggers.addAll(TriggerManager.getInstance().createTriggerFactories(config.getConfigurationSection("trigger")));
             rewardActions.addAll(ActionFactory.getInstance().createActions(config.getConfigurationSection("actions"), Player.class));
-            if (!triggers.isEmpty()) {
+            if (!triggers.isEmpty() && isEnabled()) {
                 triggers.forEach(triggerFactory -> triggerFactory.registerListener(this));
             } else {
                 RaidCraft.LOGGER.warning("Quest Pool " + ConfigUtil.getFileName(config) + " has no trigger defined and will not execute!");
@@ -167,6 +167,8 @@ public class QuestPool extends GenericRDSTable implements Listener, TriggerListe
 
     @Override
     public boolean processTrigger(Player entity) {
+
+        if (!isEnabled()) return false;
 
         QuestHolder questHolder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(entity);
         Optional<TPlayerQuestPool> entry = getDatabaseEntry(questHolder);
