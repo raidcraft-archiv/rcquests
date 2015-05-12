@@ -35,7 +35,6 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -137,32 +136,57 @@ public class QuestPool extends GenericRDSTable implements Listener, TriggerListe
 
         if (activeQuests.size() < maxActiveQuests) {
             if (getCount() > maxActiveQuests - activeQuests.size()) setCount(maxActiveQuests - activeQuests.size());
-            Collection<RDSObject> result = super.getResult();
-            List<QuestTemplate> queriedQuests = result.stream()
+
+            List<String> questNames = activeQuests.stream().map(TPlayerQuest::getQuest).collect(Collectors.toList());
+            List<RDSQuestObject> disabledQuests = new ArrayList<>();
+            // lets disable all quests in the pool if they are active or on cooldow
+            getContents().stream().filter(RDSObject::isEnabled)
+                    .filter(object -> object instanceof RDSQuestObject)
+                    .map(object -> (RDSQuestObject) object)
+                    .filter(rdsQuestObject -> rdsQuestObject.getValue().isPresent())
+                    .forEach(quest -> {
+                        QuestTemplate questTemplate = quest.getValue().get();
+                        if (questNames.contains(questTemplate.getId())) {
+                            quest.setEnabled(false);
+                            disabledQuests.add(quest);
+                            return;
+                        }
+                        if (questHolder.hasActiveQuest(questTemplate)) {
+                            quest.setEnabled(false);
+                            disabledQuests.add(quest);
+                            return;
+                        }
+                        if (questHolder.hasCompletedQuest(questTemplate)) {
+                            if (!questTemplate.isRepeatable()) {
+                                quest.setEnabled(false);
+                                disabledQuests.add(quest);
+                                return;
+                            }
+                            Optional<Quest> optional = questHolder.getQuest(questTemplate);
+                            if (!optional.isPresent()) {
+                                quest.setEnabled(false);
+                                disabledQuests.add(quest);
+                                return;
+                            }
+                            if (Instant.now().isBefore(optional.get().getCompletionTime().toInstant().plusSeconds(questTemplate.getCooldown()))) {
+                                quest.setEnabled(false);
+                                disabledQuests.add(quest);
+                                return;
+                            }
+                        }
+                    });
+
+            List<QuestTemplate> result = super.getResult().stream()
                     .filter(object -> object instanceof RDSQuestObject)
                     .map(object -> (RDSQuestObject) object)
                     .filter(rdsQuestObject -> rdsQuestObject.getValue().isPresent())
                     .map(rdsQuestObject -> rdsQuestObject.getValue().get())
                     .collect(Collectors.toList());
-            // lets filter out quests that are already active
-            List<String> questNames = activeQuests.stream().map(TPlayerQuest::getQuest).collect(Collectors.toList());
-            return queriedQuests.stream()
-                    .filter(questTemplate -> !questNames.contains(questTemplate.getId()))
-                    .filter(questTemplate -> !questHolder.hasActiveQuest(questTemplate))
-                    .filter(questTemplate -> {
-                        if (questHolder.hasCompletedQuest(questTemplate)) {
-                            if (!questTemplate.isRepeatable()) {
-                                return false;
-                            }
-                            Optional<Quest> quest = questHolder.getQuest(questTemplate);
-                            if (!quest.isPresent()) return false;
-                            if (Instant.now().isBefore(quest.get().getCompletionTime().toInstant().plusSeconds(questTemplate.getCooldown()))) {
-                                return false;
-                            }
-                        }
-                        return true;
-                    })
-                    .collect(Collectors.toList());
+
+            // ok we got our results now lets re-enable all quests again that were disable
+            disabledQuests.forEach(rdsQuestObject -> rdsQuestObject.setEnabled(true));
+
+            return result;
         }
         return new ArrayList<>();
     }
