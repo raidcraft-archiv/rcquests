@@ -15,6 +15,7 @@ import de.raidcraft.quests.actions.CompleteQuestAction;
 import de.raidcraft.quests.actions.RemoveQuestItemAction;
 import de.raidcraft.quests.actions.StartConversationAction;
 import de.raidcraft.quests.actions.StartQuestAction;
+import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.npc.NPCListener;
@@ -24,9 +25,11 @@ import de.raidcraft.quests.random.RDSQuestObject;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
+import de.raidcraft.quests.tables.TPlayerQuestPool;
 import de.raidcraft.quests.tables.TQuestItem;
 import de.raidcraft.quests.trigger.HostTrigger;
 import de.raidcraft.quests.trigger.ObjectiveTrigger;
+import de.raidcraft.quests.trigger.QuestPoolTrigger;
 import de.raidcraft.quests.trigger.QuestTrigger;
 import de.raidcraft.rcconversations.RCConversationsPlugin;
 import lombok.Getter;
@@ -101,17 +104,34 @@ public class QuestPlugin extends BasePlugin {
                     .trigger(new HostTrigger())
                     .trigger(new QuestTrigger())
                     .trigger(new ObjectiveTrigger())
+                    .trigger(new QuestPoolTrigger())
                     .action(new StartQuestAction())
                     .action(new CompleteQuestAction())
                     .action(new CompleteObjectiveAction())
                     .action("quest.item.remove", new RemoveQuestItemAction())
                     .action("quest.item.add", new AddQuestItemAction())
-                    .requirement("quest.completed", (Player player, ConfigurationSection config) ->
-                            getQuestManager().getQuestHolder(player).hasCompletedQuest(config.getString("quest")))
-                    .requirement("quest.active", (Player player, ConfigurationSection config) ->
-                            getQuestManager().getQuestHolder(player).hasActiveQuest(config.getString("quest")))
-                .requirement("quest.item.has", (Player player, ConfigurationSection config) ->
-                        getQuestManager().getQuestHolder(player).getQuestInventory().contains(config.getString("item")));
+                    .requirement("questpool.successive.count", (Player player, ConfigurationSection config) -> {
+                        QuestHolder questHolder = getQuestManager().getQuestHolder(player);
+                        if (questHolder == null) return false;
+                        TPlayerQuestPool questPool = getDatabase().find(TPlayerQuestPool.class).where()
+                                .eq("player_id", questHolder.getId())
+                                .eq("quest_pool", config.getString("pool"))
+                                .findUnique();
+                        if (questPool == null) return false;
+                        return questPool.getSuccessiveQuestCounter() >= config.getInt("count");
+                    })
+                    .requirement("quest.completed", (Player player, ConfigurationSection config) -> {
+                        QuestHolder holder = getQuestManager().getQuestHolder(player);
+                        return holder != null && holder.hasCompletedQuest(config.getString("quest"));
+                    })
+                    .requirement("quest.active", (Player player, ConfigurationSection config) -> {
+                        QuestHolder holder = getQuestManager().getQuestHolder(player);
+                        return holder != null && holder.hasActiveQuest(config.getString("quest"));
+                    })
+                    .requirement("quest.item.has", (Player player, ConfigurationSection config) -> {
+                        QuestHolder holder = getQuestManager().getQuestHolder(player);
+                        return holder != null && holder.getQuestInventory().contains(config.getString("item"));
+                    });
         ActionAPI.register(RaidCraft.getComponent(RCConversationsPlugin.class))
                 .action("conversation.start", new StartConversationAction());
     }
@@ -135,6 +155,8 @@ public class QuestPlugin extends BasePlugin {
         public int maxQuests = 27;
         @Setting("quest-load-delay")
         public int questLoadDelay = 30;
+        @Setting("quest-pool-delay")
+        public int questPoolDelay = 100;
 
         public LocalConfiguration(QuestPlugin plugin) {
 

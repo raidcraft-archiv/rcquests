@@ -95,11 +95,11 @@ public interface Quest extends TriggerListener<Player> {
 
     public void updateObjectiveListeners();
 
-    public void start();
+    public boolean start();
 
-    public void complete();
+    public boolean complete();
 
-    public void abort();
+    public boolean abort();
 
     public void delete();
 

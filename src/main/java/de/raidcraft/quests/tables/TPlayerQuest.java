@@ -33,6 +33,8 @@ public class TPlayerQuest {
     private Quest.Phase phase;
     private Timestamp startTime;
     private Timestamp completionTime;
+    @ManyToOne
+    private TPlayerQuestPool questPool;
     @JoinColumn(name = "quest_id")
     @OneToMany(cascade = CascadeType.REMOVE)
     private List<TPlayerObjective> objectives;

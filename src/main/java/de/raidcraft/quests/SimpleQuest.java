@@ -3,6 +3,8 @@ package de.raidcraft.quests;
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.RevertableAction;
+import de.raidcraft.quests.api.events.QuestPoolQuestAbortedEvent;
+import de.raidcraft.quests.api.events.QuestPoolQuestCompletedEvent;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import de.raidcraft.quests.api.objective.PlayerObjective;
@@ -10,6 +12,7 @@ import de.raidcraft.quests.api.quest.AbstractQuest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
+import de.raidcraft.quests.tables.TPlayerQuestPool;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -48,6 +51,43 @@ public class SimpleQuest extends AbstractQuest {
             objectives.add(new SimplePlayerObjective(entry, this, objectiveTemplate));
         }
         return objectives;
+    }
+
+    @Override
+    public boolean complete() {
+
+        boolean complete = super.complete();
+        if (complete) {
+            EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
+            TPlayerQuest quest = database.find(TPlayerQuest.class, getId());
+            if (quest != null && quest.getQuestPool() != null) {
+                TPlayerQuestPool questPool = quest.getQuestPool();
+                questPool.setLastCompletion(quest.getCompletionTime());
+                questPool.setSuccessiveQuestCounter(questPool.getSuccessiveQuestCounter() + 1);
+                database.update(questPool);
+                RaidCraft.callEvent(new QuestPoolQuestCompletedEvent(this, questPool));
+                return true;
+            }
+        }
+        return complete;
+    }
+
+    @Override
+    public boolean abort() {
+
+        boolean abort = super.abort();
+        if (abort) {
+            EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
+            TPlayerQuest quest = database.find(TPlayerQuest.class, getId());
+            if (quest != null && quest.getQuestPool() != null) {
+                TPlayerQuestPool questPool = quest.getQuestPool();
+                questPool.setSuccessiveQuestCounter(0);
+                database.update(questPool);
+                RaidCraft.callEvent(new QuestPoolQuestAbortedEvent(this, questPool));
+                return true;
+            }
+        }
+        return abort;
     }
 
     @Override

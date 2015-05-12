@@ -28,7 +28,10 @@ public class QuestTrigger extends Trigger implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onQuestStart(QuestStartedEvent event) {
 
-        informListeners("started", event.getQuest().getPlayer(), config -> event.getQuest().getFullName().equals(config.getString("quest")));
+        informListeners("started", event.getQuest().getPlayer(), config -> {
+            if (config.isSet("quest") && !event.getQuest().getFullName().equalsIgnoreCase(config.getString("quest"))) return false;
+            return true;
+        });
     }
 
     @Information(
@@ -41,7 +44,10 @@ public class QuestTrigger extends Trigger implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onQuestComplete(QuestCompleteEvent event) {
 
-        informListeners("complete", event.getQuest().getPlayer(), config -> event.getQuest().getFullName().equals(config.getString("quest")));
+        informListeners("complete", event.getQuest().getPlayer(), config -> {
+            if (config.isSet("quest") && !event.getQuest().getFullName().equalsIgnoreCase(config.getString("quest"))) return false;
+            return true;
+        });
     }
 
     @Information(
@@ -54,6 +60,9 @@ public class QuestTrigger extends Trigger implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onQuestCompleted(QuestCompletedEvent event) {
 
-        informListeners("completed", event.getQuest().getPlayer(), config -> event.getQuest().getFullName().equals(config.getString("quest")));
+        informListeners("completed", event.getQuest().getPlayer(), config -> {
+            if (config.isSet("quest") && !event.getQuest().getFullName().equalsIgnoreCase(config.getString("quest"))) return false;
+            return true;
+        });
     }
 }

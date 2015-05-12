@@ -5,36 +5,36 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
- * @author Silthus
+ * @author mdoering
  */
 @Entity
-@Table(name = "quests_players")
+@Table(name = "quests_player_pools")
 @Getter
 @Setter
-public class TPlayer {
+public class TPlayerQuestPool {
 
     @Id
     private int id;
     @NotNull
-    @Column(unique = true)
-    private String player;
-    private UUID playerId;
-    @JoinColumn(name = "player_id")
+    @ManyToOne
+    private TPlayer player;
+    private String questPool;
+    private Timestamp lastStart;
+    private Timestamp lastCompletion;
+    private Timestamp lastReset;
+    private int successiveQuestCounter = 0;
+    @JoinColumn(name = "quest_pool_id")
     @OneToMany(cascade = CascadeType.REMOVE)
     private List<TPlayerQuest> quests = new ArrayList<>();
-    @JoinColumn(name = "player_id")
-    @OneToMany(cascade = CascadeType.REMOVE)
-    private List<TPlayerQuestPool> questPools = new ArrayList<>();
 }
-

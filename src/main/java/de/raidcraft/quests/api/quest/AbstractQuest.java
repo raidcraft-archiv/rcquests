@@ -5,6 +5,7 @@ import de.raidcraft.api.action.action.RevertableAction;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.trigger.TriggerFactory;
 import de.raidcraft.quests.api.events.ObjectiveCompletedEvent;
+import de.raidcraft.quests.api.events.QuestAbortedEvent;
 import de.raidcraft.quests.api.events.QuestCompleteEvent;
 import de.raidcraft.quests.api.events.QuestCompletedEvent;
 import de.raidcraft.quests.api.events.QuestStartedEvent;
@@ -189,7 +190,7 @@ public abstract class AbstractQuest implements Quest {
     }
 
     @Override
-    public void start() {
+    public boolean start() {
 
         if (!isActive()) {
             setStartTime(new Timestamp(System.currentTimeMillis()));
@@ -198,21 +199,23 @@ public abstract class AbstractQuest implements Quest {
             save();
             QuestStartedEvent event = new QuestStartedEvent(this);
             RaidCraft.callEvent(event);
+            return true;
         }
+        return false;
     }
 
     @Override
-    public void complete() {
+    public boolean complete() {
 
         if (!isActive() || isCompleted()) {
-            return;
+            return false;
         }
         // first unregister all listeners to avoid double completion
         unregisterListeners();
 
         QuestCompleteEvent event = new QuestCompleteEvent(this);
         RaidCraft.callEvent(event);
-        if (event.isCancelled()) return;
+        if (event.isCancelled()) return false;
 
         setCompletionTime(new Timestamp(System.currentTimeMillis()));
         setPhase(Phase.COMPLETE);
@@ -225,14 +228,15 @@ public abstract class AbstractQuest implements Quest {
 
         QuestCompletedEvent questCompletedEvent = new QuestCompletedEvent(this);
         RaidCraft.callEvent(questCompletedEvent);
+        return true;
     }
 
     @Override
-    public void abort() {
+    public boolean abort() {
 
         // first unregister all listeners (includes complete listeners)
         unregisterListeners();
-        // remove everything that has todo with the quest
+        // remove everything that has to do with the quest
         setStartTime(null);
         setPhase(Phase.NOT_STARTED);
         getObjectives().forEach(PlayerObjective::abort);
@@ -240,8 +244,10 @@ public abstract class AbstractQuest implements Quest {
                 .filter(action -> action instanceof RevertableAction)
                 .forEach(action -> ((RevertableAction<Player>) action).revert(getPlayer()));
         getHolder().removeQuest(this);
+        save();
+        RaidCraft.callEvent(new QuestAbortedEvent(this));
         // and then we reregister our listeners because the player should be able to reaccept the quest
         registerListeners();
-        save();
+        return true;
     }
 }

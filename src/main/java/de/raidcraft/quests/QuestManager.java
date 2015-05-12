@@ -46,6 +46,7 @@ public final class QuestManager implements QuestProvider, Component {
     private final QuestPlugin plugin;
     private final Map<String, QuestConfigLoader> configLoader = new CaseInsensitiveMap<>();
     private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
+    private final Map<String, QuestPool> loadedQuestPools = new CaseInsensitiveMap<>();
     private final Map<String, QuestHost> loadedQuestHosts = new CaseInsensitiveMap<>();
     private final Map<String, Constructor<? extends QuestHost>> questHostTypes = new CaseInsensitiveMap<>();
     private final Map<QuestConfigLoader, Map<String, ConfigurationSection>> queuedConfigLoaders = new HashMap<>();
@@ -79,6 +80,15 @@ public final class QuestManager implements QuestProvider, Component {
                 plugin.info("Loaded quest: " + id + " - " + quest.getFriendlyName());
             }
         });
+        registerQuestConfigLoader(new QuestConfigLoader("pool", 1000) {
+            @Override
+            public void loadConfig(String id, ConfigurationSection config) {
+
+                QuestPool pool = new QuestPool(id, config);
+                loadedQuestPools.put(id, pool);
+                plugin.info("Loaded quest pool: " + id + " - " + pool.getFriendlyName());
+            }
+        });
         // and the quest host loader
         registerQuestConfigLoader(new QuestHostConfigLoader(plugin));
     }
@@ -98,6 +108,8 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     public void unload() {
+
+        loadedQuestPools.clear();
         questPlayers.values().forEach(holder -> {
             holder.save();
             holder.getAllQuests()
@@ -346,6 +358,11 @@ public final class QuestManager implements QuestProvider, Component {
             }
         }
         return quests;
+    }
+
+    public List<QuestPool> getQuestPools() {
+
+        return new ArrayList<>(loadedQuestPools.values());
     }
 
     /**

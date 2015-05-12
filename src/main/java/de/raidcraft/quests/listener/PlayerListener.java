@@ -4,8 +4,11 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemType;
 import de.raidcraft.quests.QuestPlugin;
+import de.raidcraft.quests.QuestPool;
+import de.raidcraft.quests.QuestPoolTask;
 import de.raidcraft.quests.api.events.ObjectiveCompletedEvent;
 import de.raidcraft.quests.api.events.ObjectiveStartedEvent;
+import de.raidcraft.quests.api.events.QuestAbortedEvent;
 import de.raidcraft.quests.api.events.QuestCompleteEvent;
 import de.raidcraft.quests.api.events.QuestStartedEvent;
 import de.raidcraft.quests.api.holder.QuestHolder;
@@ -37,7 +40,12 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        plugin.getQuestManager().getQuestHolder(event.getPlayer());
+        QuestHolder questHolder = plugin.getQuestManager().getQuestHolder(event.getPlayer());
+        // lets check the quest pool
+        plugin.getQuestManager().getQuestPools().stream()
+                .filter(QuestPool::isEnabled).forEach(questPool -> {
+            Bukkit.getScheduler().runTaskLater(plugin, new QuestPoolTask(questPool, questHolder), plugin.getConfiguration().questPoolDelay);
+        });
     }
 
     @EventHandler(ignoreCancelled = true)
@@ -112,5 +120,14 @@ public class PlayerListener implements Listener {
         msg = QuestUtil.getQuestTooltip(msg, event.getQuest());
         msg.then(" abgeschlossen.").color(ChatColor.YELLOW)
                 .send(Bukkit.getOnlinePlayers());
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onQuestAbort(QuestAbortedEvent event) {
+
+        FancyMessage msg = new FancyMessage("Die Quest ").color(org.bukkit.ChatColor.RED);
+        QuestUtil.getQuestTooltip(msg, event.getQuest())
+                .then(" wurde abgebrochen.").color(org.bukkit.ChatColor.RED)
+                .send(event.getQuest().getPlayer());
     }
 }
