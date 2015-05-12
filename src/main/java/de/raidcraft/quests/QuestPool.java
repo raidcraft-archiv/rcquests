@@ -149,6 +149,19 @@ public class QuestPool extends GenericRDSTable implements Listener, TriggerListe
             return queriedQuests.stream()
                     .filter(questTemplate -> !questNames.contains(questTemplate.getId()))
                     .filter(questTemplate -> !questHolder.hasActiveQuest(questTemplate))
+                    .filter(questTemplate -> {
+                        if (questHolder.hasCompletedQuest(questTemplate)) {
+                            if (!questTemplate.isRepeatable()) {
+                                return false;
+                            }
+                            Optional<Quest> quest = questHolder.getQuest(questTemplate);
+                            if (!quest.isPresent()) return false;
+                            if (Instant.now().isBefore(quest.get().getCompletionTime().toInstant().plusSeconds(questTemplate.getCooldown()))) {
+                                return false;
+                            }
+                        }
+                        return true;
+                    })
                     .collect(Collectors.toList());
         }
         return new ArrayList<>();
