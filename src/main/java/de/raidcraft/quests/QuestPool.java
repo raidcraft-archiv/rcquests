@@ -192,12 +192,6 @@ public class QuestPool extends GenericRDSTable implements TriggerListener<Player
     }
 
     @Override
-    public Class<Player> getTriggerEntityType() {
-
-        return Player.class;
-    }
-
-    @Override
     public boolean processTrigger(Player entity) {
 
         if (!isEnabled()) return false;

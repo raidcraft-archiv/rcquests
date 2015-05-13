@@ -14,12 +14,6 @@ import java.util.Collection;
  */
 public interface QuestTemplate extends TriggerListener<Player> {
 
-    @Override
-    public default Class<Player> getTriggerEntityType() {
-
-        return Player.class;
-    }
-
     public String getId();
 
     public String getBasePath();
