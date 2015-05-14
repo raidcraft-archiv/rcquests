@@ -144,6 +144,7 @@ public class QuestPlugin extends BasePlugin {
         tables.add(TPlayerQuest.class);
         tables.add(TPlayerObjective.class);
         tables.add(TQuestItem.class);
+        tables.add(TPlayerQuestPool.class);
         return tables;
     }
 
