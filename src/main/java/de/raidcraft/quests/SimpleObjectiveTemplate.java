@@ -1,20 +1,14 @@
 package de.raidcraft.quests;
 
-import de.raidcraft.RaidCraft;
-import de.raidcraft.api.action.action.Action;
-import de.raidcraft.api.action.action.ActionException;
-import de.raidcraft.api.action.ActionFactory;
-import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.requirement.RequirementException;
-import de.raidcraft.api.action.RequirementFactory;
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.TriggerFactory;
-import de.raidcraft.api.action.TriggerManager;
-import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.api.action.action.Action;
+import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.quests.api.objective.AbstractObjectiveTemplate;
+import de.raidcraft.quests.api.quest.QuestTemplate;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -30,28 +24,18 @@ public class SimpleObjectiveTemplate extends AbstractObjectiveTemplate {
     @Override
     protected Collection<Requirement<Player>> loadRequirements(ConfigurationSection data) {
 
-        try {
-            return RequirementFactory.getInstance().createRequirements(getQuestTemplate().getListenerId() + "." + getId(),data, Player.class);
-        } catch (RequirementException e) {
-            RaidCraft.LOGGER.warning(getId() + ": " + data.getRoot().getName() + ": " + e.getMessage());
-            return new ArrayList<>();
-        }
+        return ActionAPI.createRequirements(getQuestTemplate().getListenerId() + "." + getId(), data, Player.class);
     }
 
     @Override
     protected Collection<TriggerFactory> loadTrigger(ConfigurationSection data) {
 
-        return TriggerManager.getInstance().createTriggerFactories(data);
+        return ActionAPI.createTrigger(data);
     }
 
     @Override
     protected Collection<Action<Player>> loadActions(ConfigurationSection data) {
 
-        try {
-            return ActionFactory.getInstance().createActions(data, Player.class);
-        } catch (ActionException e) {
-            RaidCraft.LOGGER.warning(getId() + ": " + data.getRoot().getName() + ": " + e.getMessage());
-            return new ArrayList<>();
-        }
+        return ActionAPI.createActions(data, Player.class);
     }
 }

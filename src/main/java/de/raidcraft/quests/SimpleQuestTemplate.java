@@ -1,14 +1,10 @@
 package de.raidcraft.quests;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.action.action.Action;
-import de.raidcraft.api.action.action.ActionException;
-import de.raidcraft.api.action.ActionFactory;
-import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.requirement.RequirementException;
-import de.raidcraft.api.action.RequirementFactory;
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.TriggerFactory;
-import de.raidcraft.api.action.TriggerManager;
+import de.raidcraft.api.action.action.Action;
+import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import de.raidcraft.quests.api.quest.AbstractQuestTemplate;
@@ -31,6 +27,12 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     protected SimpleQuestTemplate(String id, ConfigurationSection data) {
 
         super(id, data);
+    }
+
+    @Override
+    public Class<Player> getTriggerEntityType() {
+
+        return Player.class;
     }
 
     @Override
@@ -76,34 +78,24 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     @Override
     protected Collection<TriggerFactory> loadStartTrigger(ConfigurationSection data) {
 
-        return TriggerManager.getInstance().createTriggerFactories(data);
+        return ActionAPI.createTrigger(data);
     }
 
     @Override
     protected Collection<TriggerFactory> loadCompletionTrigger(ConfigurationSection data) {
 
-        return TriggerManager.getInstance().createTriggerFactories(data);
+        return ActionAPI.createTrigger(data);
     }
 
     @Override
     protected Collection<Requirement<Player>> loadRequirements(ConfigurationSection data) {
 
-        try {
-            return RequirementFactory.getInstance().createRequirements(getListenerId(), data, Player.class);
-        } catch (RequirementException e) {
-            RaidCraft.LOGGER.warning(getId() + ": " + data.getRoot().getName() + ": " + e.getMessage());
-            return new ArrayList<>();
-        }
+        return ActionAPI.createRequirements(getListenerId(), data, Player.class);
     }
 
     @Override
     protected Collection<Action<Player>> loadActions(ConfigurationSection data) {
 
-        try {
-            return ActionFactory.getInstance().createActions(data, Player.class);
-        } catch (ActionException e) {
-            RaidCraft.LOGGER.warning(getId() + ": " + data.getRoot().getName() + ": " + e.getMessage());
-            return new ArrayList<>();
-        }
+        return ActionAPI.createActions(data, Player.class);
     }
 }

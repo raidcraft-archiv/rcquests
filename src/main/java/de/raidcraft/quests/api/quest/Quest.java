@@ -29,6 +29,13 @@ public interface Quest extends TriggerListener<Player> {
 
     int getId();
 
+
+    @Override
+    default Class<Player> getTriggerEntityType() {
+
+        return Player.class;
+    }
+
     default String getName() {
 
         return getTemplate().getName();
