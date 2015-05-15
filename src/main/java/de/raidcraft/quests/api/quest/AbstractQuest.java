@@ -3,7 +3,7 @@ package de.raidcraft.quests.api.quest;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.RevertableAction;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.trigger.TriggerFactory;
+import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.quests.api.events.ObjectiveCompletedEvent;
 import de.raidcraft.quests.api.events.QuestAbortedEvent;
 import de.raidcraft.quests.api.events.QuestCompleteEvent;

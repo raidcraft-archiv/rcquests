@@ -12,27 +12,27 @@ import java.sql.Timestamp;
  */
 public interface PlayerObjective extends TriggerListener<Player>, Comparable<PlayerObjective> {
 
-    public int getId();
+    int getId();
 
-    public Quest getQuest();
+    Quest getQuest();
 
-    public ObjectiveTemplate getObjectiveTemplate();
+    ObjectiveTemplate getObjectiveTemplate();
 
-    public QuestHolder getQuestHolder();
+    QuestHolder getQuestHolder();
 
-    public Timestamp getCompletionTime();
+    Timestamp getCompletionTime();
 
-    public boolean isActive();
+    boolean isActive();
 
-    public boolean isCompleted();
+    boolean isCompleted();
 
-    public void complete();
+    void complete();
 
-    public void abort();
+    void abort();
 
-    public void updateListeners();
+    void updateListeners();
 
-    public void unregisterListeners();
+    void unregisterListeners();
 
-    public void save();
+    void save();
 }

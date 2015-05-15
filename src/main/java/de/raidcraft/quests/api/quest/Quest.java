@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  */
 public interface Quest extends TriggerListener<Player> {
 
-    public enum Phase {
+    enum Phase {
 
         @EnumValue("NOT_STARTED")
         NOT_STARTED,
@@ -27,39 +27,39 @@ public interface Quest extends TriggerListener<Player> {
         COMPLETE
     }
 
-    public int getId();
+    int getId();
 
-    public default String getName() {
+    default String getName() {
 
         return getTemplate().getName();
     }
 
-    public default String getFullName() {
+    default String getFullName() {
 
         return getTemplate().getId();
     }
 
-    public default String getFriendlyName() {
+    default String getFriendlyName() {
 
         return getTemplate().getFriendlyName();
     }
 
-    public default String getAuthor() {
+    default String getAuthor() {
 
         return getTemplate().getAuthor();
     }
 
-    public default String getDescription() {
+    default String getDescription() {
 
         return getTemplate().getDescription();
     }
 
-    public default Player getPlayer() {
+    default Player getPlayer() {
 
         return getHolder().getPlayer();
     }
 
-    public default List<PlayerObjective> getUncompletedObjectives() {
+    default List<PlayerObjective> getUncompletedObjectives() {
 
         return getObjectives().stream()
                 .filter(playerObjective -> !playerObjective.isCompleted())
@@ -67,35 +67,35 @@ public interface Quest extends TriggerListener<Player> {
                 .collect(Collectors.toList());
     }
 
-    public List<PlayerObjective> getObjectives();
+    List<PlayerObjective> getObjectives();
 
-    public QuestTemplate getTemplate();
+    QuestTemplate getTemplate();
 
-    public QuestHolder getHolder();
+    QuestHolder getHolder();
 
-    public Phase getPhase();
+    Phase getPhase();
 
-    public boolean isCompleted();
+    boolean isCompleted();
 
-    public boolean hasCompletedAllObjectives();
+    boolean hasCompletedAllObjectives();
 
-    public void onObjectCompletion(PlayerObjective objective);
+    void onObjectCompletion(PlayerObjective objective);
 
-    public boolean isActive();
+    boolean isActive();
 
-    public Timestamp getStartTime();
+    Timestamp getStartTime();
 
-    public Timestamp getCompletionTime();
+    Timestamp getCompletionTime();
 
-    public void updateObjectiveListeners();
+    void updateObjectiveListeners();
 
-    public boolean start();
+    boolean start();
 
-    public boolean complete();
+    boolean complete();
 
-    public boolean abort();
+    boolean abort();
 
-    public void delete();
+    void delete();
 
-    public void save();
+    void save();
 }

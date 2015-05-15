@@ -2,7 +2,7 @@ package de.raidcraft.quests.api.objective;
 
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.trigger.TriggerFactory;
+import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import org.bukkit.entity.Player;
 
@@ -13,23 +13,23 @@ import java.util.Collection;
  */
 public interface ObjectiveTemplate extends Comparable<ObjectiveTemplate> {
 
-    public int getId();
+    int getId();
 
-    public String getFriendlyName();
+    String getFriendlyName();
 
-    public String getDescription();
+    String getDescription();
 
-    public boolean isOptional();
+    boolean isOptional();
 
-    public boolean isHidden();
+    boolean isHidden();
 
-    public boolean isAutoCompleting();
+    boolean isAutoCompleting();
 
-    public QuestTemplate getQuestTemplate();
+    QuestTemplate getQuestTemplate();
 
-    public Collection<Requirement<Player>> getRequirements();
+    Collection<Requirement<Player>> getRequirements();
 
-    public Collection<TriggerFactory> getTrigger();
+    Collection<TriggerFactory> getTrigger();
 
-    public Collection<Action<Player>> getActions();
+    Collection<Action<Player>> getActions();
 }

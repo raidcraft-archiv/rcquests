@@ -2,7 +2,7 @@ package de.raidcraft.quests.api.quest;
 
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.trigger.TriggerFactory;
+import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.trigger.TriggerListener;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import org.bukkit.entity.Player;
@@ -14,35 +14,35 @@ import java.util.Collection;
  */
 public interface QuestTemplate extends TriggerListener<Player> {
 
-    public String getId();
+    String getId();
 
-    public String getBasePath();
+    String getBasePath();
 
-    public String getName();
+    String getName();
 
-    public String getFriendlyName();
+    String getFriendlyName();
 
-    public String getAuthor();
+    String getAuthor();
 
-    public String getDescription();
+    String getDescription();
 
-    public int getRequiredObjectiveAmount();
+    int getRequiredObjectiveAmount();
 
-    public boolean isRepeatable();
+    boolean isRepeatable();
 
-    public long getCooldown();
+    long getCooldown();
 
-    public boolean isOrdered();
+    boolean isOrdered();
 
-    public boolean isLocked();
+    boolean isLocked();
 
-    public Collection<ObjectiveTemplate> getObjectiveTemplates();
+    Collection<ObjectiveTemplate> getObjectiveTemplates();
 
-    public Collection<Requirement<Player>> getRequirements();
+    Collection<Requirement<Player>> getRequirements();
 
-    public Collection<TriggerFactory> getStartTrigger();
+    Collection<TriggerFactory> getStartTrigger();
 
-    public Collection<TriggerFactory> getCompletionTrigger();
+    Collection<TriggerFactory> getCompletionTrigger();
 
-    public Collection<Action<Player>> getCompletionActions();
+    Collection<Action<Player>> getCompletionActions();
 }

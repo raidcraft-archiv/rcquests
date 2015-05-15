@@ -15,28 +15,28 @@ import java.util.UUID;
  */
 public interface QuestHolder {
 
-    public int getId();
+    int getId();
 
-    public UUID getPlayerId();
+    UUID getPlayerId();
 
-    public Player getPlayer();
+    Player getPlayer();
 
-    public boolean hasQuest(String quest);
+    boolean hasQuest(String quest);
 
-    public default boolean hasQuest(QuestTemplate template) {
+    default boolean hasQuest(QuestTemplate template) {
 
         return hasQuest(template.getId());
     }
 
-    public boolean hasActiveQuest(String quest);
+    boolean hasActiveQuest(String quest);
 
-    public default boolean hasActiveQuest(QuestTemplate template) {
+    default boolean hasActiveQuest(QuestTemplate template) {
 
         return hasActiveQuest(template.getId());
     }
 
     // TODO: do it better in AbstractQuestHolder class
-    public default boolean hasCompletedQuest(String questId) {
+    default boolean hasCompletedQuest(String questId) {
         for (Quest quest : getCompletedQuests()) {
             if (quest.getTemplate().getId().equals(questId)) {
                 return true;
@@ -45,7 +45,7 @@ public interface QuestHolder {
         return false;
     }
 
-    public default boolean hasCompletedQuest(QuestTemplate template) {
+    default boolean hasCompletedQuest(QuestTemplate template) {
         return hasCompletedQuest(template.getId());
     }
 
@@ -57,7 +57,7 @@ public interface QuestHolder {
      *
      * @return quest or empty {@link java.util.Optional} if quest was not found
      */
-    public Optional<Quest> getQuest(String quest);
+    Optional<Quest> getQuest(String quest);
 
     /**
      * Gets the given quest of the unique name from the template
@@ -65,27 +65,27 @@ public interface QuestHolder {
      * @param questTemplate to get quest for
      * @return quest or empty {@link java.util.Optional} if quest was not found
      */
-    public Optional<Quest> getQuest(QuestTemplate questTemplate);
+    Optional<Quest> getQuest(QuestTemplate questTemplate);
 
-    public List<Quest> getAllQuests();
+    List<Quest> getAllQuests();
 
-    public List<Quest> getCompletedQuests();
+    List<Quest> getCompletedQuests();
 
-    public List<Quest> getActiveQuests();
+    List<Quest> getActiveQuests();
 
-    public QuestInventory getQuestInventory();
+    QuestInventory getQuestInventory();
 
-    public default void sendMessage(String text) {
+    default void sendMessage(String text) {
 
         if (text == null || text.equals("")) return;
         getPlayer().sendMessage(text);
     }
 
-    public void addQuest(Quest quest);
+    void addQuest(Quest quest);
 
-    public void removeQuest(Quest quest);
+    void removeQuest(Quest quest);
 
-    public Quest startQuest(QuestTemplate template) throws QuestException;
+    Quest startQuest(QuestTemplate template) throws QuestException;
 
-    public void save();
+    void save();
 }

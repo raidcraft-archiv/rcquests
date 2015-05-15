@@ -5,9 +5,9 @@ import de.raidcraft.quests.api.holder.QuestHolder;
 
 public interface TimeQuestManager {
 
-    public static final String TYPE_DAILY = "daily";
+    String TYPE_DAILY = "daily";
 
-    public boolean checkTimeQuests(String type, QuestHolder holder);
+    boolean checkTimeQuests(String type, QuestHolder holder);
 
-    public void reload();
+    void reload();
 }
