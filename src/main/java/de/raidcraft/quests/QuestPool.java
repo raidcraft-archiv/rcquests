@@ -2,12 +2,10 @@ package de.raidcraft.quests;
 
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.action.action.Action;
-import de.raidcraft.api.action.action.ActionException;
-import de.raidcraft.api.action.ActionFactory;
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.TriggerFactory;
+import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.trigger.TriggerListener;
-import de.raidcraft.api.action.TriggerManager;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.random.GenericRDSTable;
 import de.raidcraft.api.random.RDS;
@@ -86,20 +84,22 @@ public class QuestPool extends GenericRDSTable implements TriggerListener<Player
             }
         }
         if (!getContents().isEmpty()) {
-            try {
-                triggers.addAll(TriggerManager.getInstance().createTriggerFactories(config.getConfigurationSection("trigger")));
-                rewardActions.addAll(ActionFactory.getInstance().createActions(config.getConfigurationSection("actions"), Player.class));
-                if (!triggers.isEmpty() && isEnabled()) {
-                    triggers.forEach(triggerFactory -> triggerFactory.registerListener(this));
-                } else {
-                    RaidCraft.LOGGER.warning("Quest Pool " + ConfigUtil.getFileName(config) + " has no trigger defined and will not execute!");
-                }
-            } catch (ActionException e) {
-                e.printStackTrace();
+            triggers.addAll(ActionAPI.createTrigger(config.getConfigurationSection("trigger")));
+            rewardActions.addAll(ActionAPI.createActions(config.getConfigurationSection("actions"), Player.class));
+            if (!triggers.isEmpty() && isEnabled()) {
+                triggers.forEach(triggerFactory -> triggerFactory.registerListener(this));
+            } else {
+                RaidCraft.LOGGER.warning("Quest Pool " + ConfigUtil.getFileName(config) + " has no trigger defined and will not execute!");
             }
         } else {
             RaidCraft.LOGGER.warning("No quests in the quest pool " + getName() + " defined!");
         }
+    }
+
+    @Override
+    public Class<Player> getTriggerEntityType() {
+
+        return Player.class;
     }
 
     public Optional<TPlayerQuestPool> getDatabaseEntry(QuestHolder questHolder) {
