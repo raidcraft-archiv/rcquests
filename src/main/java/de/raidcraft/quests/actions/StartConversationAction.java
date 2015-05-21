@@ -2,7 +2,7 @@ package de.raidcraft.quests.actions;
 
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.Action;
-import de.raidcraft.api.conversations.ConversationHost;
+import de.raidcraft.api.conversations.legacy.ConversationHost;
 import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.api.quests.host.QuestHost;
