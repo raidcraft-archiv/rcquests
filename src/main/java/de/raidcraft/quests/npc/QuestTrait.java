@@ -38,6 +38,8 @@ public class QuestTrait extends Trait {
 
     @Nullable
     public QuestHost getQuestHost() {
+        if(hostId == null) return null; // ignore invalid host
+
         try {
             return Quests.getQuestHost(getHostId());
         } catch (InvalidQuestHostException e) {
