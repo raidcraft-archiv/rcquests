@@ -294,20 +294,22 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     public QuestTemplate getQuestTemplate(String name) throws QuestException {
-        if (loadedQuests.containsKey(name)) {
-            return loadedQuests.get(name);
+
+        String questName = name.toLowerCase().replace(".quest", "").trim();
+        if (loadedQuests.containsKey(questName)) {
+            return loadedQuests.get(questName);
         }
 
         List<QuestTemplate> foundQuests = loadedQuests.values().stream()
-                .filter(quest -> quest.getFriendlyName().toLowerCase().contains(name.toLowerCase()))
+                .filter(quest -> quest.getFriendlyName().toLowerCase().contains(questName))
                 .map(quest -> quest)
                 .collect(Collectors.toList());
 
         if (foundQuests.isEmpty()) {
-            throw new QuestException("Du hast keine Quest mit dem Namen: " + name);
+            throw new QuestException("Du hast keine Quest mit dem Namen: " + questName);
         }
         if (foundQuests.size() > 1) {
-            throw new QuestException("Du hast mehrere Quests mit dem Namen " + name + ": " + StringUtils.join(foundQuests, ", "));
+            throw new QuestException("Du hast mehrere Quests mit dem Namen " + questName + ": " + StringUtils.join(foundQuests, ", "));
         }
         return foundQuests.get(0);
     }
