@@ -8,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * @author Silthus
@@ -26,7 +27,9 @@ public class QuestBook extends ItemStack {
         meta.setAuthor(quest.getAuthor());
         meta.setTitle(quest.getFriendlyName());
         ArrayList<String> lore = new ArrayList<>();
-        lore.add(ChatColor.WHITE + quest.getDescription());
+        if (!Objects.isNull(quest.getDescription())) {
+            lore.add(ChatColor.WHITE + quest.getDescription());
+        }
         lore.add("");
         // add quest objectives
         for (PlayerObjective objective : quest.getObjectives()) {

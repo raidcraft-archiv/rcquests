@@ -7,6 +7,7 @@ import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -19,9 +20,11 @@ public class QuestUtil {
         List<FancyMessage> tooltip = new ArrayList<>();
         tooltip.add(new FancyMessage(quest.getTemplate().getFriendlyName()).color(ChatColor.YELLOW));
 
-        String[] lines = quest.getDescription().split("\\|");
-        for (String line : lines) {
-            tooltip.add(new FancyMessage(line).style(ChatColor.ITALIC).color(ChatColor.GOLD));
+        if (!Objects.isNull(quest.getDescription())) {
+            String[] lines = quest.getDescription().split("\\|");
+            for (String line : lines) {
+                tooltip.add(new FancyMessage(line).style(ChatColor.ITALIC).color(ChatColor.GOLD));
+            }
         }
 
         List<PlayerObjective> objectives = quest.getObjectives();
