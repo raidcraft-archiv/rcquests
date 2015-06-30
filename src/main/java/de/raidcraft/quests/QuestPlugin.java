@@ -133,7 +133,7 @@ public class QuestPlugin extends BasePlugin {
                         return holder != null && holder.getQuestInventory().contains(config.getString("item"));
                     });
         ActionAPI.register(RaidCraft.getComponent(RCConversationsPlugin.class))
-                .action("conversation.start", new StartConversationAction());
+                .action(new StartConversationAction());
     }
 
     @Override

@@ -18,6 +18,14 @@ import org.bukkit.entity.Player;
 public class StartConversationAction implements Action<Player> {
 
     @Override
+    @Information(
+            value = "conversation.start",
+            desc = "Starts the given conversation with the given host.",
+            conf = {
+                    "host",
+                    "conv"
+            }
+    )
     public void accept(Player player, ConfigurationSection config) {
 
         String hostId = config.getString("host");
