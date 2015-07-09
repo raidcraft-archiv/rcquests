@@ -19,7 +19,7 @@ public class CompleteObjectiveAction implements Action<Player> {
 
     @Override
     @Information(
-            value = "quest.objective.complete",
+            value = "objective.complete",
             desc = "Manually completes the given objective.",
             conf = {
                     "quest: <id>",
@@ -30,6 +30,7 @@ public class CompleteObjectiveAction implements Action<Player> {
 
         QuestManager component = RaidCraft.getComponent(QuestManager.class);
         QuestHolder questHolder = component.getQuestHolder(player);
+        if (questHolder == null) return;
         Optional<Quest> optionalQuest = questHolder.getQuest(config.getString("quest"));
         if (!optionalQuest.isPresent()) {
             String msg = questHolder.getPlayer().getName() + " does not have the quest: " + config.getString("quest");

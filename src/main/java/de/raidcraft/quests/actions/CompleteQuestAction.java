@@ -34,6 +34,7 @@ public class CompleteQuestAction implements Action<Player> {
         }
         QuestManager component = RaidCraft.getComponent(QuestManager.class);
         QuestHolder questHolder = component.getQuestHolder(player);
+        if (questHolder == null) return;
         Optional<Quest> quest = questHolder.getQuest(config.getString("quest"));
         if (quest.isPresent()) {
             if (quest.get().isCompleted()) return;
