@@ -24,7 +24,9 @@ public interface Quest extends TriggerListener<Player> {
         @EnumValue("OBJECTIVES_COMPLETED")
         OJECTIVES_COMPLETED,
         @EnumValue("COMPLETE")
-        COMPLETE
+        COMPLETE,
+        @EnumValue("ABORTED")
+        ABORTED
     }
 
     int getId();
@@ -70,6 +72,7 @@ public interface Quest extends TriggerListener<Player> {
 
         return getObjectives().stream()
                 .filter(playerObjective -> !playerObjective.isCompleted())
+                .filter(playerObjective -> !playerObjective.isAborted())
                 .sorted()
                 .collect(Collectors.toList());
     }
@@ -84,6 +87,8 @@ public interface Quest extends TriggerListener<Player> {
 
     boolean isCompleted();
 
+    boolean isAborted();
+
     boolean hasCompletedAllObjectives();
 
     void onObjectCompletion(PlayerObjective objective);
@@ -93,6 +98,8 @@ public interface Quest extends TriggerListener<Player> {
     Timestamp getStartTime();
 
     Timestamp getCompletionTime();
+
+    Timestamp getAbortionTime();
 
     void updateObjectiveListeners();
 

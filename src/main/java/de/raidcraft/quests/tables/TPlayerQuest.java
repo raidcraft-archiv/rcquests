@@ -33,6 +33,7 @@ public class TPlayerQuest {
     private Quest.Phase phase;
     private Timestamp startTime;
     private Timestamp completionTime;
+    private Timestamp abortionTime;
     @ManyToOne
     private TPlayerQuestPool questPool;
     @JoinColumn(name = "quest_id")

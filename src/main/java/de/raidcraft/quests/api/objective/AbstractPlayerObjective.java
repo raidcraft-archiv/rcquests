@@ -1,7 +1,6 @@
 package de.raidcraft.quests.api.objective;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.action.action.RevertableAction;
 import de.raidcraft.quests.api.events.ObjectiveCompleteEvent;
 import de.raidcraft.quests.api.events.ObjectiveStartedEvent;
 import de.raidcraft.quests.api.holder.QuestHolder;
@@ -12,6 +11,7 @@ import lombok.NonNull;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 
 /**
  * @author Silthus
@@ -25,6 +25,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     private final ObjectiveTemplate objectiveTemplate;
     private boolean active = false;
     private Timestamp completionTime;
+    private Timestamp abortionTime;
 
     public AbstractPlayerObjective(int id, Quest quest, ObjectiveTemplate objectiveTemplate) {
 
@@ -55,7 +56,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
 
     public void updateListeners() {
 
-        if (!isCompleted()) {
+        if (!isCompleted() && !isAborted()) {
             if (!isActive()) {
                 // register our start trigger
                 getObjectiveTemplate().getTrigger().forEach(factory -> factory.registerListener(this));
@@ -87,6 +88,12 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     }
 
     @Override
+    public boolean isAborted() {
+
+        return abortionTime != null;
+    }
+
+    @Override
     public void complete() {
 
         if (isCompleted()) return;
@@ -106,11 +113,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
 
         unregisterListeners();
         setCompletionTime(null);
-        getObjectiveTemplate().getRequirements()
-                .forEach(req -> req.delete(getQuestHolder().getPlayer()));
-        getObjectiveTemplate().getActions().stream()
-                .filter(action -> action instanceof RevertableAction)
-                .forEach(action -> ((RevertableAction<Player>) action).revert(getQuestHolder().getPlayer()));
+        setAbortionTime(Timestamp.from(Instant.now()));
         save();
     }
 

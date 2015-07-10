@@ -16,6 +16,7 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
 
         super(tableEntry.getId(), quest, objectiveTemplate);
         setCompletionTime(tableEntry.getCompletionTime());
+        setAbortionTime(tableEntry.getAbortionTime());
     }
 
     @Override
@@ -24,6 +25,7 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         TPlayerObjective objective = database.find(TPlayerObjective.class, getId());
         objective.setCompletionTime(getCompletionTime());
+        objective.setAbortionTime(getAbortionTime());
         database.save(objective);
     }
 }

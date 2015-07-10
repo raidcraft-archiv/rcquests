@@ -28,9 +28,13 @@ public interface PlayerObjective extends TriggerListener<Player>, Comparable<Pla
 
     Timestamp getCompletionTime();
 
+    Timestamp getAbortionTime();
+
     boolean isActive();
 
     boolean isCompleted();
+
+    boolean isAborted();
 
     void complete();
 

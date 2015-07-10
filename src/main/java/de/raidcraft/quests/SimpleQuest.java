@@ -30,6 +30,7 @@ public class SimpleQuest extends AbstractQuest {
         setPhase(quest.getPhase());
         setStartTime(quest.getStartTime());
         setCompletionTime(quest.getCompletionTime());
+        setAbortionTime(quest.getAbortionTime());
     }
 
     @Override
@@ -120,6 +121,7 @@ public class SimpleQuest extends AbstractQuest {
         quest.setPhase(getPhase());
         quest.setStartTime(getStartTime());
         quest.setCompletionTime(getCompletionTime());
+        quest.setAbortionTime(getAbortionTime());
         database.save(quest);
         // also save all quest objectives
         getObjectives().forEach(PlayerObjective::save);

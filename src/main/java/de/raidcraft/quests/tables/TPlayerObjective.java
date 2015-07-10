@@ -27,4 +27,5 @@ public class TPlayerObjective {
     @NotNull
     private int objectiveId;
     private Timestamp completionTime;
+    private Timestamp abortionTime;
 }

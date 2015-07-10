@@ -1,9 +1,8 @@
 package de.raidcraft.quests.api.quest;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.action.action.RevertableAction;
-import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.TriggerFactory;
+import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.quests.api.events.ObjectiveCompletedEvent;
 import de.raidcraft.quests.api.events.QuestAbortedEvent;
 import de.raidcraft.quests.api.events.QuestCompleteEvent;
@@ -17,6 +16,7 @@ import lombok.ToString;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -39,6 +39,7 @@ public abstract class AbstractQuest implements Quest {
     private Phase phase;
     private Timestamp startTime;
     private Timestamp completionTime;
+    private Timestamp abortionTime;
 
     public AbstractQuest(int id, QuestTemplate template, QuestHolder holder) {
 
@@ -147,6 +148,12 @@ public abstract class AbstractQuest implements Quest {
     }
 
     @Override
+    public boolean isAborted() {
+
+        return abortionTime != null;
+    }
+
+    @Override
     public boolean isActive() {
 
         return getStartTime() != null && !isCompleted();
@@ -236,18 +243,13 @@ public abstract class AbstractQuest implements Quest {
 
         // first unregister all listeners (includes complete listeners)
         unregisterListeners();
-        // remove everything that has to do with the quest
-        setStartTime(null);
-        setPhase(Phase.NOT_STARTED);
         getObjectives().forEach(PlayerObjective::abort);
-        getTemplate().getCompletionActions().stream()
-                .filter(action -> action instanceof RevertableAction)
-                .forEach(action -> ((RevertableAction<Player>) action).revert(getPlayer()));
-        getHolder().removeQuest(this);
+        // we need to remove all requirements tracked by the quest
+        getTemplate().getRequirements().forEach(playerRequirement -> playerRequirement.delete(getPlayer()));
+        setAbortionTime(Timestamp.from(Instant.now()));
+        setPhase(Phase.ABORTED);
         save();
         RaidCraft.callEvent(new QuestAbortedEvent(this));
-        // and then we reregister our listeners because the player should be able to reaccept the quest
-        registerListeners();
         return true;
     }
 }
