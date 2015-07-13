@@ -29,8 +29,15 @@ public class ObjectiveTrigger extends Trigger implements Listener {
     public void onObjectiveStart(ObjectiveStartedEvent event) {
 
         informListeners("started", event.getObjective().getQuest().getPlayer(),
-                config -> event.getObjective().getId() == config.getInt("objective")
-                && event.getObjective().getQuest().getFullName().equals(config.getString("quest"))
+                config -> {
+                    if (config.isSet("objective") && event.getObjective().getId() != config.getInt("objective")) {
+                        return false;
+                    }
+                    if (config.isSet("quest") && !event.getObjective().getQuest().getFullName().equals(config.getString("quest"))) {
+                        return false;
+                    }
+                    return true;
+                }
         );
     }
 
@@ -46,8 +53,15 @@ public class ObjectiveTrigger extends Trigger implements Listener {
     public void onObjectiveComplete(ObjectiveCompleteEvent event) {
 
         informListeners("complete", event.getObjective().getQuest().getPlayer(),
-                config -> event.getObjective().getId() == config.getInt("objective")
-                        && event.getObjective().getQuest().getFullName().equals(config.getString("quest"))
+                config -> {
+                    if (config.isSet("objective") && event.getObjective().getId() != config.getInt("objective")) {
+                        return false;
+                    }
+                    if (config.isSet("quest") && !event.getObjective().getQuest().getFullName().equals(config.getString("quest"))) {
+                        return false;
+                    }
+                    return true;
+                }
         );
     }
 
@@ -63,8 +77,15 @@ public class ObjectiveTrigger extends Trigger implements Listener {
     public void onObjectiveCompleted(ObjectiveCompletedEvent event) {
 
         informListeners("completed", event.getObjective().getQuest().getPlayer(),
-                config -> event.getObjective().getId() == config.getInt("objective")
-                        && event.getObjective().getQuest().getFullName().equals(config.getString("quest"))
+                config -> {
+                    if (config.isSet("objective") && event.getObjective().getId() != config.getInt("objective")) {
+                        return false;
+                    }
+                    if (config.isSet("quest") && !event.getObjective().getQuest().getFullName().equals(config.getString("quest"))) {
+                        return false;
+                    }
+                    return true;
+                }
         );
     }
 }
