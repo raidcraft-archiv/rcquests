@@ -1,6 +1,5 @@
 package de.raidcraft.quests;
 
-import de.raidcraft.RaidCraft;
 import de.raidcraft.api.BasePlugin;
 import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.chat.Chat;
@@ -13,7 +12,6 @@ import de.raidcraft.quests.actions.AddQuestItemAction;
 import de.raidcraft.quests.actions.CompleteObjectiveAction;
 import de.raidcraft.quests.actions.CompleteQuestAction;
 import de.raidcraft.quests.actions.RemoveQuestItemAction;
-import de.raidcraft.quests.actions.StartConversationAction;
 import de.raidcraft.quests.actions.StartQuestAction;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.commands.BaseCommands;
@@ -31,7 +29,6 @@ import de.raidcraft.quests.trigger.HostTrigger;
 import de.raidcraft.quests.trigger.ObjectiveTrigger;
 import de.raidcraft.quests.trigger.QuestPoolTrigger;
 import de.raidcraft.quests.trigger.QuestTrigger;
-import de.raidcraft.rcconversations.RCConversationsPlugin;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -131,8 +128,8 @@ public class QuestPlugin extends BasePlugin {
                         QuestHolder holder = getQuestManager().getQuestHolder(player);
                         return holder != null && holder.getQuestInventory().contains(config.getString("item"));
                     });
-        ActionAPI.register(RaidCraft.getComponent(RCConversationsPlugin.class))
-                .action(new StartConversationAction());
+//        ActionAPI.register(RaidCraft.getComponent(RCConversationsPlugin.class))
+//                .action(new StartConversationAction());
     }
 
     @Override
