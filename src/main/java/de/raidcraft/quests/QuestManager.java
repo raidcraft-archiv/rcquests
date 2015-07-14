@@ -14,7 +14,6 @@ import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
-import de.raidcraft.quests.config.QuestHostConfigLoader;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import de.raidcraft.util.CaseInsensitiveMap;
@@ -90,7 +89,7 @@ public final class QuestManager implements QuestProvider, Component {
             }
         });
         // and the quest host loader
-        registerQuestConfigLoader(new QuestHostConfigLoader(plugin));
+        // registerQuestConfigLoader(new QuestHostConfigLoader(plugin));
     }
 
     public void load() {
