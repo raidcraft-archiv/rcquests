@@ -16,16 +16,12 @@ import de.raidcraft.quests.actions.StartQuestAction;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
-import de.raidcraft.quests.npc.NPCListener;
-import de.raidcraft.quests.npc.QuestNPCHost;
-import de.raidcraft.quests.npc.QuestTrait;
 import de.raidcraft.quests.random.RDSQuestObject;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import de.raidcraft.quests.tables.TPlayerQuestPool;
 import de.raidcraft.quests.tables.TQuestItem;
-import de.raidcraft.quests.trigger.HostTrigger;
 import de.raidcraft.quests.trigger.ObjectiveTrigger;
 import de.raidcraft.quests.trigger.QuestPoolTrigger;
 import de.raidcraft.quests.trigger.QuestTrigger;
@@ -54,8 +50,6 @@ public class QuestPlugin extends BasePlugin {
 
         registerActionAPI();
         Chat.registerAutoCompletionProvider(this, new QuestAutoCompletionProvider());
-        // register our quest hosts
-        Quests.registerQuestHost(this, "NPC", QuestNPCHost.class);
 
         // register our events
         registerEvents(new PlayerListener(this));
@@ -69,11 +63,6 @@ public class QuestPlugin extends BasePlugin {
             getQuestManager().load();
         }, getConfiguration().questLoadDelay * 10L);
 
-        // register NPC stuff
-        // DO NOT LOAD NPC's we have no persitent npc's
-        // their are automatically spawaned over the host.yml files
-        Bukkit.getPluginManager().registerEvents(new NPCListener(), this);
-        NPC_Manager.getInstance().registerTrait(QuestTrait.class, "quest");
         RDS.registerObject(new RDSQuestObject.RDSQuestFactory());
     }
 
@@ -97,7 +86,6 @@ public class QuestPlugin extends BasePlugin {
 
         ActionAPI.register(this)
                 .global()
-                    .trigger(new HostTrigger())
                     .trigger(new QuestTrigger())
                     .trigger(new ObjectiveTrigger())
                     .trigger(new QuestPoolTrigger())
