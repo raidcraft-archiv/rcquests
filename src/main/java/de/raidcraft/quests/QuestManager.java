@@ -5,11 +5,9 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.player.UnknownPlayerException;
-import de.raidcraft.api.quests.InvalidQuestHostException;
 import de.raidcraft.api.quests.QuestConfigLoader;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestProvider;
-import de.raidcraft.api.quests.host.QuestHost;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.api.quest.Quest;
@@ -27,8 +25,6 @@ import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -46,8 +42,6 @@ public final class QuestManager implements QuestProvider, Component {
     private final Map<String, QuestConfigLoader> configLoader = new CaseInsensitiveMap<>();
     private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
     private final Map<String, QuestPool> loadedQuestPools = new CaseInsensitiveMap<>();
-    private final Map<String, QuestHost> loadedQuestHosts = new CaseInsensitiveMap<>();
-    private final Map<String, Constructor<? extends QuestHost>> questHostTypes = new CaseInsensitiveMap<>();
     private final Map<QuestConfigLoader, Map<String, ConfigurationSection>> queuedConfigLoaders = new HashMap<>();
 
     private final Map<UUID, QuestHolder> questPlayers = new HashMap<>();
@@ -123,7 +117,6 @@ public final class QuestManager implements QuestProvider, Component {
                         .forEach(trigger -> trigger.unregisterListener(template)));
         loadedQuests.clear();
         questPlayers.clear();
-        loadedQuestHosts.clear();
         loadedQuestFiles = false;
     }
 
@@ -181,56 +174,6 @@ public final class QuestManager implements QuestProvider, Component {
             loader = configLoader.get("." + suffix + ".yml");
         }
         return loader;
-    }
-
-    @Override
-    public void registerQuestHost(String type, Class<? extends QuestHost> clazz) {
-        if (isQuestHostType(type)) {
-            RaidCraft.LOGGER.warning("Tried to register duplicate quest host type: " + type);
-            return;
-        }
-
-        try {
-            Constructor<? extends QuestHost> constructor = clazz.getDeclaredConstructor(String.class, ConfigurationSection.class);
-            questHostTypes.put(type, constructor);
-            plugin.info("Registered quest host type " + type + ": " + clazz.getCanonicalName());
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public boolean isQuestHostType(String type) {
-        return questHostTypes.containsKey(type);
-    }
-
-    public void createQuestHost(String type, String id, ConfigurationSection config) {
-        try {
-            Constructor<? extends QuestHost> constructor = questHostTypes.get(type);
-            constructor.setAccessible(true);
-            QuestHost questHost = constructor.newInstance(id, config);
-            loadedQuestHosts.put(questHost.getId(), questHost);
-            plugin.info("Loaded quest host: " + questHost.getId() + " - " + questHost.getFriendlyName(), "host");
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public QuestHost getQuestHost(String id) throws InvalidQuestHostException {
-        if (loadedQuestHosts.containsKey(id)) {
-            return loadedQuestHosts.get(id);
-        }
-
-        // check for null string
-        if(id != null) {
-            // search for string end
-            for (String key : loadedQuestHosts.keySet()) {
-                if (key.endsWith(id)) {
-                    return loadedQuestHosts.get(key);
-                }
-            }
-        }
-        throw new InvalidQuestHostException("Unknown quest host with the id: " + id);
     }
 
     @Override
