@@ -181,6 +181,8 @@ public class QuestPool extends GenericRDSTable implements TriggerListener<Player
                     .map(object -> (RDSQuestObject) object)
                     .filter(rdsQuestObject -> rdsQuestObject.getValue().isPresent())
                     .map(rdsQuestObject -> rdsQuestObject.getValue().get())
+                    .filter(object -> object.getRequirements().stream()
+                            .allMatch(objectRequirement -> objectRequirement.test(questHolder.getPlayer())))
                     .collect(Collectors.toList());
 
             // ok we got our results now lets re-enable all quests again that were disable
