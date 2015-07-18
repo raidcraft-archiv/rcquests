@@ -89,6 +89,8 @@ public interface Quest extends TriggerListener<Player> {
 
     boolean isAborted();
 
+    boolean isObjectiveCompleted(int id);
+
     boolean hasCompletedAllObjectives();
 
     void onObjectCompletion(PlayerObjective objective);

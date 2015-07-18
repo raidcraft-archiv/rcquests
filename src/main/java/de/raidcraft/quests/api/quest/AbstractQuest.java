@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Silthus
@@ -157,6 +158,15 @@ public abstract class AbstractQuest implements Quest {
     public boolean isActive() {
 
         return getStartTime() != null && !isCompleted();
+    }
+
+    @Override
+    public boolean isObjectiveCompleted(int id) {
+
+        Optional<PlayerObjective> objective = getObjectives().stream()
+                .filter(playerObjective -> playerObjective.getObjectiveTemplate().getId() == id)
+                .findAny();
+        return objective.isPresent() && objective.get().isCompleted();
     }
 
     @Override

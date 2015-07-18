@@ -17,6 +17,7 @@ import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.random.RDSQuestObject;
+import de.raidcraft.quests.requirements.ObjectiveCompletedRequirement;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
@@ -94,6 +95,7 @@ public class QuestPlugin extends BasePlugin {
                     .action(new CompleteObjectiveAction())
                     .action("quest.item.remove", new RemoveQuestItemAction())
                     .action("quest.item.add", new AddQuestItemAction())
+                .requirement(new ObjectiveCompletedRequirement())
                     .requirement("questpool.successive.count", (Player player, ConfigurationSection config) -> {
                         QuestHolder questHolder = getQuestManager().getQuestHolder(player);
                         if (questHolder == null) return false;
