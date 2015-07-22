@@ -78,6 +78,7 @@ public class AdminCommands {
             Quest quest = plugin.getQuestManager().findQuest(questPlayer, questName);
             if (quest.isActive()) {
                 quest.abort();
+                quest.delete();
                 sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.getFriendlyName() + "' wurde abgebrochen!");
             } else {
                 throw new CommandException("Quest " + questName + " ist nicht aktiv und kann nicht abgebrochen werden!");
