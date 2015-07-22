@@ -57,10 +57,10 @@ public final class QuestManager implements QuestProvider, Component {
             public void loadConfig(String id, ConfigurationSection config) {
 
                 if (config.isSet("worlds") && config.isList("worlds")) {
-                    Optional<World> any = Bukkit.getServer().getWorlds().stream().filter(w -> {
-                        List<String> worlds = config.getStringList("worlds");
-                        return worlds.contains(w.getName());
-                    }).findAny();
+                    List<String> worlds = config.getStringList("worlds");
+                    Optional<World> any = Bukkit.getServer().getWorlds().stream()
+                            .filter(w -> worlds.contains(w.getName()))
+                            .findAny();
                     if (!any.isPresent()) {
                         plugin.getLogger().info("Excluded Quest " + id + " because the required world is not loaded.");
                         return;
