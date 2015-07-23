@@ -8,6 +8,7 @@ import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.npc.NPC_Manager;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.api.random.RDS;
+import de.raidcraft.quests.actions.AbortQuestAction;
 import de.raidcraft.quests.actions.AddQuestItemAction;
 import de.raidcraft.quests.actions.CompleteObjectiveAction;
 import de.raidcraft.quests.actions.CompleteQuestAction;
@@ -91,6 +92,7 @@ public class QuestPlugin extends BasePlugin {
                     .trigger(new ObjectiveTrigger())
                     .trigger(new QuestPoolTrigger())
                     .action(new StartQuestAction())
+                .action(new AbortQuestAction())
                     .action(new CompleteQuestAction())
                     .action(new CompleteObjectiveAction())
                     .action("quest.item.remove", new RemoveQuestItemAction())

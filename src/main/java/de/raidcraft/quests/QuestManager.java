@@ -367,4 +367,9 @@ public final class QuestManager implements QuestProvider, Component {
 
         return Optional.ofNullable(loadedQuestPools.get(identifier));
     }
+
+    public void clearCache(Player player) {
+
+        questPlayers.remove(player.getUniqueId());
+    }
 }

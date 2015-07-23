@@ -79,6 +79,7 @@ public class AdminCommands {
             if (quest.isActive()) {
                 quest.abort();
                 quest.delete();
+                plugin.getQuestManager().clearCache(questPlayer.getPlayer());
                 sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.getFriendlyName() + "' wurde abgebrochen!");
             } else {
                 throw new CommandException("Quest " + questName + " ist nicht aktiv und kann nicht abgebrochen werden!");
@@ -110,6 +111,7 @@ public class AdminCommands {
                 throw new CommandException("Die Quest " + quest.getFriendlyName() + " wurde noch nicht abgeschlossen!");
             }
             quest.delete();
+            plugin.getQuestManager().clearCache(questPlayer.getPlayer());
             sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.getFriendlyName() + "' wurde entfernt!");
         } catch (QuestException e) {
             throw new CommandException(e.getMessage());
