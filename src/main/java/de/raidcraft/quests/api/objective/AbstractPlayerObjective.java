@@ -46,10 +46,11 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
         if (!player.equals(getQuest().getHolder().getPlayer())) {
             return false;
         }
-        if (getObjectiveTemplate().isAutoCompleting() &&
-                getObjectiveTemplate().getRequirements().stream()
+        if (getObjectiveTemplate().getRequirements().stream()
                 .allMatch(requirement -> requirement.test(player))) {
-            complete();
+            if (getObjectiveTemplate().isAutoCompleting()) {
+                complete();
+            }
         }
         return true;
     }
