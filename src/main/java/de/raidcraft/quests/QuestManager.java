@@ -305,7 +305,6 @@ public final class QuestManager implements QuestProvider, Component {
                 quests.add(simpleQuest);
             } catch (QuestException e) {
                 RaidCraft.LOGGER.warning(e.getMessage());
-                e.printStackTrace();
             }
         }
         return quests;
