@@ -42,6 +42,10 @@ public interface QuestTemplate extends TriggerListener<Player> {
 
     Collection<TriggerFactory> getStartTrigger();
 
+    Collection<Action<Player>> getStartActions();
+
+    Collection<TriggerFactory> getActiveTrigger();
+
     Collection<TriggerFactory> getCompletionTrigger();
 
     Collection<Action<Player>> getCompletionActions();

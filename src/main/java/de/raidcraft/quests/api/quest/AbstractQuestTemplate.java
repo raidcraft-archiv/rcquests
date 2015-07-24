@@ -1,5 +1,6 @@
 package de.raidcraft.quests.api.quest;
 
+import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.TriggerFactory;
@@ -31,10 +32,12 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     private final boolean locked;
     private final boolean repeatable;
     private final long cooldown;
+    private final Collection<Action<Player>> startActions;
     private final Collection<Action<Player>> completionActions;
     private final Collection<Requirement<Player>> requirements;
     private final Collection<ObjectiveTemplate> objectiveTemplates;
     private final Collection<TriggerFactory> startTrigger;
+    private final Collection<TriggerFactory> activeTrigger;
     private final Collection<TriggerFactory> completionTrigger;
 
     public AbstractQuestTemplate(String id, ConfigurationSection data) {
@@ -54,7 +57,9 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.requirements = loadRequirements(data.getConfigurationSection("requirements"));
         this.objectiveTemplates = loadObjectives(data.getConfigurationSection("objectives"));
         this.startTrigger = loadStartTrigger(data.getConfigurationSection("trigger"));
+        this.activeTrigger = ActionAPI.createTrigger(data.getConfigurationSection("active-trigger"));
         this.completionTrigger = loadCompletionTrigger(data.getConfigurationSection("complete-trigger"));
+        this.startActions = ActionAPI.createActions(data.getConfigurationSection("start-actions"), Player.class);
         this.completionActions = loadActions(data.getConfigurationSection("complete-actions"));
     }
 

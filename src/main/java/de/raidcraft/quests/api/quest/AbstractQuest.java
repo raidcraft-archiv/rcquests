@@ -3,6 +3,7 @@ package de.raidcraft.quests.api.quest;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.action.trigger.TriggerListener;
 import de.raidcraft.quests.api.events.ObjectiveCompletedEvent;
 import de.raidcraft.quests.api.events.QuestAbortedEvent;
 import de.raidcraft.quests.api.events.QuestCompleteEvent;
@@ -35,7 +36,10 @@ public abstract class AbstractQuest implements Quest {
     private final QuestHolder holder;
     private final List<PlayerObjective> playerObjectives;
     private final Collection<TriggerFactory> startTrigger;
+    private final Collection<TriggerFactory> activeTrigger;
+    private final TriggerListener<Player> activeTriggerListener;
     private final Collection<TriggerFactory> completionTrigger;
+    private final TriggerListener<Player> completionTriggerListener;
 
     private Phase phase;
     private Timestamp startTime;
@@ -49,7 +53,34 @@ public abstract class AbstractQuest implements Quest {
         this.holder = holder;
         this.playerObjectives = loadObjectives();
         this.startTrigger = template.getStartTrigger();
+        this.activeTrigger = template.getActiveTrigger();
+        this.activeTriggerListener = new TriggerListener<Player>() {
+            @Override
+            public Class<Player> getTriggerEntityType() {
+
+                return Player.class;
+            }
+
+            @Override
+            public boolean processTrigger(Player entity) {
+
+                return isActive();
+            }
+        };
         this.completionTrigger = template.getCompletionTrigger();
+        this.completionTriggerListener = new TriggerListener<Player>() {
+            @Override
+            public Class<Player> getTriggerEntityType() {
+
+                return Player.class;
+            }
+
+            @Override
+            public boolean processTrigger(Player entity) {
+
+                return hasCompletedAllObjectives() && !isCompleted() && isActive();
+            }
+        };
     }
 
     protected abstract List<PlayerObjective> loadObjectives();
@@ -75,7 +106,6 @@ public abstract class AbstractQuest implements Quest {
             registerListeners();
         }
         return true;
-
     }
 
     public void registerListeners() {
@@ -93,7 +123,7 @@ public abstract class AbstractQuest implements Quest {
                 return;
             }
             // register the completion trigger
-            completionTrigger.forEach(factory -> factory.registerListener(this));
+            completionTrigger.forEach(factory -> factory.registerListener(completionTriggerListener));
         } else {
             setPhase(Phase.NOT_STARTED);
             // we need to register the objective trigger
@@ -104,7 +134,8 @@ public abstract class AbstractQuest implements Quest {
     public void unregisterListeners() {
 
         startTrigger.forEach(factory -> factory.unregisterListener(this));
-        completionTrigger.forEach(factory -> factory.unregisterListener(this));
+        activeTrigger.forEach(factory -> factory.unregisterListener(activeTriggerListener));
+        completionTrigger.forEach(factory -> factory.unregisterListener(completionTriggerListener));
         getObjectives().forEach(PlayerObjective::unregisterListeners);
     }
 
@@ -128,6 +159,9 @@ public abstract class AbstractQuest implements Quest {
             return;
         }
         setPhase(Phase.IN_PROGRESS);
+
+        getActiveTrigger().forEach(trigger -> trigger.registerListener(activeTriggerListener));
+
         for (PlayerObjective playerObjective : getUncompletedObjectives()) {
             if (!playerObjective.isCompleted()) {
                 // lets register the listeners of our objectives
@@ -214,6 +248,7 @@ public abstract class AbstractQuest implements Quest {
             getHolder().addQuest(this);
             setPhase(Phase.IN_PROGRESS);
             save();
+            getTemplate().getStartActions().forEach(playerAction -> playerAction.accept(getPlayer()));
             QuestStartedEvent event = new QuestStartedEvent(this);
             RaidCraft.callEvent(event);
             return true;
