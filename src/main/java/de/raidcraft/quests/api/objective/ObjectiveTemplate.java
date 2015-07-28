@@ -1,8 +1,8 @@
 package de.raidcraft.quests.api.objective;
 
+import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import org.bukkit.entity.Player;
 
@@ -22,6 +22,8 @@ public interface ObjectiveTemplate extends Comparable<ObjectiveTemplate> {
     boolean isOptional();
 
     boolean isHidden();
+
+    boolean isSilent();
 
     boolean isAutoCompleting();
 

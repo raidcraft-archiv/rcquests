@@ -1,9 +1,9 @@
 package de.raidcraft.quests.api.quest;
 
 import de.raidcraft.api.action.ActionAPI;
+import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,6 +31,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     private final boolean ordered;
     private final boolean locked;
     private final boolean repeatable;
+    private final boolean silent;
     private final long cooldown;
     private final Collection<Action<Player>> startActions;
     private final Collection<Action<Player>> completionActions;
@@ -52,6 +53,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.requiredObjectiveAmount = data.getInt("required", 0);
         this.ordered = data.getBoolean("ordered", false);
         this.locked = data.getBoolean("locked", true);
+        this.silent = data.getBoolean("silent", false);
         this.cooldown = data.getLong("cooldown", 0);
         this.repeatable = cooldown > 0 || data.getBoolean("repeatable", false);
         this.requirements = loadRequirements(data.getConfigurationSection("requirements"));

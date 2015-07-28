@@ -1,8 +1,8 @@
 package de.raidcraft.quests.api.quest;
 
+import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.trigger.TriggerListener;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import org.bukkit.entity.Player;
@@ -29,6 +29,8 @@ public interface QuestTemplate extends TriggerListener<Player> {
     int getRequiredObjectiveAmount();
 
     boolean isRepeatable();
+
+    boolean isSilent();
 
     long getCooldown();
 

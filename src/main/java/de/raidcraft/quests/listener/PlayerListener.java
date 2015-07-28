@@ -80,6 +80,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onObjectiveStarted(ObjectiveStartedEvent event) {
 
+        if (event.getObjective().getObjectiveTemplate().isSilent()) return;
         FancyMessage msg = QuestUtil.getQuestTooltip(new FancyMessage(""), event.getObjective().getQuest());
         msg.then(": ").color(ChatColor.YELLOW)
                 .then(event.getObjective().getObjectiveTemplate().getFriendlyName()).color(ChatColor.DARK_AQUA)
@@ -90,6 +91,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onObjectiveComplete(ObjectiveCompletedEvent event) {
 
+        if (event.getObjective().getObjectiveTemplate().isSilent()) return;
         PlayerObjective objective = event.getObjective();
         FancyMessage msg = QuestUtil.getQuestTooltip(new FancyMessage(""), event.getObjective().getQuest());
         msg.then(": ").color(ChatColor.YELLOW)
@@ -112,6 +114,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onQuestComplete(QuestCompleteEvent event) {
 
+        if (event.getQuest().getTemplate().isSilent()) return;
         FancyMessage msg = new FancyMessage(event.getQuest().getPlayer().getName()).color(ChatColor.AQUA)
                 .then(" hat die Quest ").color(ChatColor.YELLOW);
         msg = QuestUtil.getQuestTooltip(msg, event.getQuest());
@@ -122,6 +125,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onQuestAbort(QuestAbortedEvent event) {
 
+        if (event.getQuest().getTemplate().isSilent()) return;
         FancyMessage msg = new FancyMessage("Die Quest ").color(org.bukkit.ChatColor.RED);
         QuestUtil.getQuestTooltip(msg, event.getQuest())
                 .then(" wurde abgebrochen.").color(org.bukkit.ChatColor.RED)

@@ -1,8 +1,8 @@
 package de.raidcraft.quests.api.objective;
 
+import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
-import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,6 +27,7 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
     private final boolean optional;
     private final boolean hidden;
     private final boolean autoCompleting;
+    private final boolean silent;
     private final QuestTemplate questTemplate;
     private final Collection<Requirement<Player>> requirements;
     private final Collection<TriggerFactory> trigger;
@@ -39,6 +40,7 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
         this.description = data.getString("desc");
         this.optional = data.getBoolean("optional", false);
         this.hidden = data.getBoolean("hidden", false);
+        this.silent = data.getBoolean("silent", false);
         this.autoCompleting = data.getBoolean("auto-complete", true);
         this.questTemplate = questTemplate;
         this.requirements = loadRequirements(data.getConfigurationSection("requirements"));
