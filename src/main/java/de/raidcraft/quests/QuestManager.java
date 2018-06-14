@@ -3,9 +3,8 @@ package de.raidcraft.quests;
 import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
-import de.raidcraft.api.config.SimpleConfiguration;
+import de.raidcraft.api.config.ConfigLoader;
 import de.raidcraft.api.player.UnknownPlayerException;
-import de.raidcraft.api.quests.QuestConfigLoader;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestProvider;
 import de.raidcraft.quests.api.holder.QuestHolder;
@@ -24,13 +23,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -39,10 +32,10 @@ import java.util.stream.Collectors;
 public final class QuestManager implements QuestProvider, Component {
 
     private final QuestPlugin plugin;
-    private final Map<String, QuestConfigLoader> configLoader = new CaseInsensitiveMap<>();
+    private final Map<String, ConfigLoader> configLoader = new CaseInsensitiveMap<>();
     private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
     private final Map<String, QuestPool> loadedQuestPools = new CaseInsensitiveMap<>();
-    private final Map<QuestConfigLoader, Map<String, ConfigurationSection>> queuedConfigLoaders = new HashMap<>();
+    private final Map<ConfigLoader, Map<String, ConfigurationSection>> queuedConfigLoaders = new HashMap<>();
 
     private final Map<UUID, QuestHolder> questPlayers = new HashMap<>();
 
@@ -52,7 +45,7 @@ public final class QuestManager implements QuestProvider, Component {
         this.plugin = plugin;
         RaidCraft.registerComponent(QuestManager.class, this);
         // lets register our own config loader with a high priority to load it last
-        registerQuestConfigLoader(new QuestConfigLoader("quest", 100) {
+        registerQuestConfigLoader(new ConfigLoader(plugin, "quest", 100) {
             @Override
             public void loadConfig(String id, ConfigurationSection config) {
 
@@ -73,7 +66,7 @@ public final class QuestManager implements QuestProvider, Component {
                 plugin.info("Loaded quest: " + id + " - " + quest.getFriendlyName());
             }
         });
-        registerQuestConfigLoader(new QuestConfigLoader("pool", 1000) {
+        registerQuestConfigLoader(new ConfigLoader(plugin, "pool", 1000) {
             @Override
             public void loadConfig(String id, ConfigurationSection config) {
 
@@ -87,10 +80,17 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     public void load() {
-        // we need to look recursivly thru all folders under the defined base folder
-        File baseFolder = new File(plugin.getDataFolder(), plugin.getConfiguration().quests_base_folder);
-        baseFolder.mkdirs();
-        loadQuestConfigs(baseFolder, "");
+        ConfigUtil.loadRecursiveConfigs(plugin, plugin.getConfiguration().quests_base_folder, new ConfigLoader(plugin) {
+            @Override
+            public void loadConfig(String id, ConfigurationSection config) {
+                // repace "this." with the absolte path, feature: relative path
+                config = ConfigUtil.replacePathReferences(config, getPath());
+                if (!queuedConfigLoaders.containsKey(this)) {
+                    queuedConfigLoaders.put(this, new HashMap<>());
+                }
+                queuedConfigLoaders.get(this).put(id, config);
+            }
+        });
         // lets sort our loaders by priority
         queuedConfigLoaders.keySet().stream()
                 .sorted()
@@ -125,34 +125,8 @@ public final class QuestManager implements QuestProvider, Component {
         load();
     }
 
-    private void loadQuestConfigs(File baseFolder, String path) {
-
-        for (File file : baseFolder.listFiles()) {
-            String fileName = file.getName();
-            if (file.isDirectory()) {
-                loadQuestConfigs(file, path + "." + fileName.toLowerCase());
-            } else {
-                if (path.startsWith(".")) {
-                    path = path.replaceFirst("\\.", "");
-                }
-                for (QuestConfigLoader loader : configLoader.values()) {
-                    if (file.getName().toLowerCase().endsWith(loader.getSuffix())) {
-                        String id = (path + "." + file.getName().toLowerCase()).replace(loader.getSuffix(), "");
-                        ConfigurationSection configFile = plugin.configure(new SimpleConfiguration<>(plugin, file));
-                        // repace "this." with the absolte path, feature: relative path
-                        configFile = ConfigUtil.replacePathReferences(configFile, path);
-                        if (!queuedConfigLoaders.containsKey(loader)) {
-                            queuedConfigLoaders.put(loader, new HashMap<>());
-                        }
-                        queuedConfigLoaders.get(loader).put(id, configFile);
-                    }
-                }
-            }
-        }
-    }
-
     @Override
-    public void registerQuestConfigLoader(QuestConfigLoader loader) {
+    public void registerQuestConfigLoader(ConfigLoader loader) {
         if (configLoader.containsKey(loader.getSuffix())) {
             RaidCraft.LOGGER.warning("Config loader with the suffix " + loader.getSuffix() + " is already registered!");
             return;
@@ -165,9 +139,9 @@ public final class QuestManager implements QuestProvider, Component {
 
     @Nullable
     @Override
-    public QuestConfigLoader getQuestConfigLoader(String suffix) {
+    public ConfigLoader getQuestConfigLoader(String suffix) {
 
-        QuestConfigLoader loader = null;
+        ConfigLoader loader = null;
         if (configLoader.containsKey(suffix)) {
             loader = configLoader.get(suffix);
         } else if (configLoader.containsKey("." + suffix + ".yml")) {

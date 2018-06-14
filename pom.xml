@@ -18,53 +18,38 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>quests</artifactId>
     <packaging>jar</packaging>
-    <version>1.2.2-SNAPSHOT</version>
+    <version>1.12-0.1-SNAPSHOT</version>
     <name>Quests</name>
 
-    <parent>
-        <groupId>de.raidcraft</groupId>
-        <artifactId>masterpom</artifactId>
-        <version>5.0.0-SNAPSHOT</version>
-    </parent>
 
-    <scm>
-        <developerConnection>scm:git:ssh://git@raid-craft.de:22109/raid-craft-de/${project.artifactId}.git</developerConnection>
-        <tag>HEAD</tag>
-  </scm>
+    <parent>
+        <groupId>de.faldoria</groupId>
+        <artifactId>FaldoriaMasterPom</artifactId>
+        <version>1.12-0.3</version>
+    </parent>
 
     <repositories>
         <repository>
-            <id>raidcraft</id>
-            <url>http://repo.raid-craft.de/artifactory/repo/</url>
+            <id>faldoria-deps</id>
+            <url>https://repo.faldoria.de/artifactory/faldoria-repo/</url>
         </repository>
     </repositories>
 
     <dependencies>
         <dependency>
-            <groupId>de.raidcraft</groupId>
+            <groupId>de.faldoria</groupId>
             <artifactId>raidcraft-api</artifactId>
-            <version>1.6.3-SNAPSHOT</version>
+            <version>1.12-0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>de.raidcraft</groupId>
-            <artifactId>rcconversations</artifactId>
-            <version>1.2.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>de.raidcraft</groupId>
+            <groupId>de.faldoria</groupId>
             <artifactId>items</artifactId>
-            <version>1.2.0</version>
+            <version>1.12-0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>de.raidcraft</groupId>
+            <groupId>de.faldoria.mobs</groupId>
             <artifactId>mobs</artifactId>
-            <version>1.1.5</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.11</version>
-            <scope>test</scope>
+            <version>1.12-0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
