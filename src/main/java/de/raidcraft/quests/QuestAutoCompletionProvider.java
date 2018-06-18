@@ -7,7 +7,7 @@ import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.util.QuestUtil;
-import mkremins.fanciful.FancyMessage;
+import de.raidcraft.util.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 

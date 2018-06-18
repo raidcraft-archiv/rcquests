@@ -2,7 +2,7 @@ package de.raidcraft.quests.util;
 
 import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.api.quest.Quest;
-import mkremins.fanciful.FancyMessage;
+import de.raidcraft.util.fanciful.FancyMessage;
 import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
