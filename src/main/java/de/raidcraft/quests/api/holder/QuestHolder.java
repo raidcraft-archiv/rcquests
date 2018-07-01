@@ -50,7 +50,7 @@ public interface QuestHolder {
     }
 
     /**
-     * Gets the given quest by its full unique name.
+     * Gets the given quest by its full unique displayName.
      * To find a quest use {@link de.raidcraft.quests.QuestManager#findQuest(QuestHolder, String)}
      *
      * @param quest to get
@@ -60,7 +60,7 @@ public interface QuestHolder {
     Optional<Quest> getQuest(String quest);
 
     /**
-     * Gets the given quest of the unique name from the template
+     * Gets the given quest of the unique displayName from the template
      *
      * @param questTemplate to get quest for
      * @return quest or empty {@link java.util.Optional} if quest was not found

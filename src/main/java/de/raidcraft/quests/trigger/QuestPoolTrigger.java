@@ -23,7 +23,7 @@ public class QuestPoolTrigger extends Trigger implements Listener {
             desc = "Is triggered when a quest of a quest pool was started",
             conf = {
                     "quest: <id>",
-                    "pool: <name>"
+                    "pool: <displayName>"
             }
     )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -31,8 +31,7 @@ public class QuestPoolTrigger extends Trigger implements Listener {
 
         informListeners("quest.started", event.getQuest().getPlayer(), config -> {
             if (config.isSet("quest") && !event.getQuest().getFullName().equalsIgnoreCase(config.getString("quest"))) return false;
-            if (config.isSet("pool") && !event.getQuestPool().getQuestPool().equalsIgnoreCase(config.getString("pool"))) return false;
-            return true;
+            return !config.isSet("pool") || event.getQuestPool().getQuestPool().equalsIgnoreCase(config.getString("pool"));
         });
     }
 
@@ -41,7 +40,7 @@ public class QuestPoolTrigger extends Trigger implements Listener {
             desc = "Is triggered when the quest is about to complete, before rewards and messages are issued.",
             conf = {
                     "quest: <id>",
-                    "pool: <name>"
+                    "pool: <displayName>"
             }
     )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -49,8 +48,7 @@ public class QuestPoolTrigger extends Trigger implements Listener {
 
         informListeners("quest.aborted", event.getQuest().getPlayer(), config -> {
             if (config.isSet("quest") && !event.getQuest().getFullName().equalsIgnoreCase(config.getString("quest"))) return false;
-            if (config.isSet("pool") && !event.getQuestPool().getQuestPool().equalsIgnoreCase(config.getString("pool"))) return false;
-            return true;
+            return !config.isSet("pool") || event.getQuestPool().getQuestPool().equalsIgnoreCase(config.getString("pool"));
         });
     }
 
@@ -59,7 +57,7 @@ public class QuestPoolTrigger extends Trigger implements Listener {
             desc = "Is triggered when the quest was completed and after messages and rewards have been issued.",
             conf = {
                     "quest: <id>",
-                    "pool: <name>"
+                    "pool: <displayName>"
             }
     )
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -67,8 +65,7 @@ public class QuestPoolTrigger extends Trigger implements Listener {
 
         informListeners("quest.completed", event.getQuest().getPlayer(), config -> {
             if (config.isSet("quest") && !event.getQuest().getFullName().equalsIgnoreCase(config.getString("quest"))) return false;
-            if (config.isSet("pool") && !event.getQuestPool().getQuestPool().equalsIgnoreCase(config.getString("pool"))) return false;
-            return true;
+            return !config.isSet("pool") || event.getQuestPool().getQuestPool().equalsIgnoreCase(config.getString("pool"));
         });
     }
 }

@@ -291,10 +291,10 @@ public final class QuestManager implements QuestProvider, Component {
 
     /**
      * Tries to find the given quest using the following search order:
-     * * match of the full unique path to the quest (e.g. world.foo.bar.quest-name)
-     * * match of the unique name of the quest (e.g. quest-name)
-     * * full match of the friendly name in variants by replacing space with _ and - (e.g. Quest Name -> "Quest-Name" will match)
-     * * partial match of the quest name with contains (e.g. Quest Name -> "Quest" will match)
+     * * match of the full unique path to the quest (e.g. world.foo.bar.quest-displayName)
+     * * match of the unique displayName of the quest (e.g. quest-displayName)
+     * * full match of the friendly displayName in variants by replacing space with _ and - (e.g. Quest Name -> "Quest-Name" will match)
+     * * partial match of the quest displayName with contains (e.g. Quest Name -> "Quest" will match)
      *
      * @param holder of the quest
      * @param name   to match for
@@ -306,34 +306,34 @@ public final class QuestManager implements QuestProvider, Component {
     public Quest findQuest(QuestHolder holder, String name) throws QuestException {
 
         List<Quest> allQuests = getAllQuests(holder);
-        // match of the full unique path to the quest (e.g. world.foo.bar.quest-name)
+        // match of the full unique path to the quest (e.g. world.foo.bar.quest-displayName)
         Optional<Quest> first = allQuests.stream().filter(quest -> quest.getFullName().equalsIgnoreCase(name)).findFirst();
         if (first.isPresent()) return first.get();
-        // match of the unique name of the quest (e.g. quest-name)
+        // match of the unique displayName of the quest (e.g. quest-displayName)
         first = allQuests.stream().filter(quest -> quest.getName().equalsIgnoreCase(name)).findFirst();
         if (first.isPresent()) return first.get();
-        // full match of the friendly name in variants by replacing space with _ and -
+        // full match of the friendly displayName in variants by replacing space with _ and -
         // (e.g. Quest Name -> "Quest-Name" will match)
         List<Quest> quests = allQuests.stream().filter(quest -> quest.getFriendlyName().equalsIgnoreCase(name)
                         || quest.getFriendlyName().equalsIgnoreCase(name.replace("-", " "))
                         || quest.getFriendlyName().equalsIgnoreCase(name.replace("_", " "))
         ).collect(Collectors.toList());
         if (quests.size() > 1) {
-            throw new QuestException("Multiple Quests with the name " + name + " found: " +
+            throw new QuestException("Multiple Quests with the displayName " + name + " found: " +
                     StringUtils.join(quests.stream().map(Quest::getFriendlyName).collect(Collectors.toList()), ","));
         }
         if (quests.size() == 1) return quests.get(0);
-        // partial match of the quest name with contains (e.g. Quest Name -> "Quest" will match)
+        // partial match of the quest displayName with contains (e.g. Quest Name -> "Quest" will match)
         quests = allQuests.stream().filter(quest ->
                 quest.getFullName().endsWith(name)
                         || quest.getFriendlyName().contains(name))
                 .collect(Collectors.toList());
         if (quests.size() > 1) {
-            throw new QuestException("Multiple Quests with the name " + name + " found: " +
+            throw new QuestException("Multiple Quests with the displayName " + name + " found: " +
                     StringUtils.join(quests.stream().map(Quest::getFriendlyName).collect(Collectors.toList()), ","));
         }
         if (quests.size() == 1) return quests.get(0);
-        throw new QuestException("No matching Quest with the name " + name + " found!");
+        throw new QuestException("No matching Quest with the displayName " + name + " found!");
     }
 
     public Optional<QuestPool> getQuestPool(String identifier) {
