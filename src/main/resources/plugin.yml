@@ -1,5 +1,5 @@
 main: de.raidcraft.quests.QuestPlugin
-name: Quests
+name: RCQuests
 version: ${project.version}#${build.number}
 description: API for creating and using custom quests.
 author: Silthus
