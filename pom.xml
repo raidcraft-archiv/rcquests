@@ -19,7 +19,7 @@
     <artifactId>quests</artifactId>
     <packaging>jar</packaging>
     <version>1.12-0.1-SNAPSHOT</version>
-    <name>Quests</name>
+    <name>RCQuests</name>
 
 
     <parent>
