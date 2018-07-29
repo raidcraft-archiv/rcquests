@@ -22,14 +22,14 @@ public class RemoveQuestItemAction implements Action<Player> {
         try {
             QuestHolder questHolder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(player);
             String itemString = config.getString("item");
-            ItemStack item = RaidCraft.getItem(itemString);
+            ItemStack item = RaidCraft.getSafeItem(itemString);
             if (item == null) {
                 RaidCraft.LOGGER.warning("Invalid item id in " + ConfigUtil.getFileName(config) + " for " + itemString);
                 return;
             }
             int amount = config.getInt("amount", 1);
             while (amount > item.getMaxStackSize()) {
-                questHolder.getQuestInventory().removeItem(RaidCraft.getItem(itemString, item.getMaxStackSize()));
+                questHolder.getQuestInventory().removeItem(RaidCraft.getSafeItem(itemString, item.getMaxStackSize()));
                 amount -= item.getMaxStackSize();
             }
             questHolder.getQuestInventory().removeItem(item);
