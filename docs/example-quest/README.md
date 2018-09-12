@@ -24,6 +24,34 @@ Hier kann eine kurze Auflistung der in der Quest vorkommenden NPCs stehen.
 
 Beschreibung des NPCs in beliebiger Ausführung. Am besten mit Standardsatz, Charakterzügen etc. um ein wenig Hintergrund zu bekommen.
 
+#### Dialoge
+
+Dialoge die der NPC führen soll, z.B.:
+
+`Max: Na, wie geht es dir heute?`
+
+> 1. Super!
+
+`Max: Das freut mich. Einen schönen Tag noch. [ENDE]`
+
+> 2. [Was kann ich für dich tun?](#quest-dialog)
+> 3. Welche Waren bietest du heute an? (Handeln)
+
+##### Quest Dialog
+
+```yml
+Max: Ja da gibt es tatsächlich etwas wobei ich deine Hilfe benötigen könnte.
+2s
+Max: Meine Kieselsteine gehen zu Neige und ich benötige neue.
+Kannst du mir welche besorgen?
+```
+
+> 1. Ja klar! `[QUEST START]`
+
+`Max: Wunderbar! Der Dreck hinter dem Dorf enthält besonders viel Kies. Bau einfach etwas davon ab und du solltest mehr als genug Kieselsteine finden. 10 Stück sollten fürs Erste reichen.`
+
+> 2. Ich hab besseres zu tun als Kieselsteine zu sammeln... `[ENDE]`
+
 #### Ausrüstung
 
 ```yml
@@ -52,3 +80,40 @@ Hier eine kurze Auflistung der in der Quest verwendeten Items geben und ob das I
 
 ### Kieselsteine
 
+Soll vom Spieler in der Quest gesammelt werden. Droppt beim Abbau von Dirt (aber nur wenn man die Quest hat).
+
+```yml
+name: Kieselstein
+type: QUEST
+quality: COMMON
+item: FLINT
+lore: Beispiel Quest
+max-stack-size: 10
+```
+
+## Mobs
+
+Hier eine kurze Auflistung von den in der Quest verwendeten Mobs.
+
+### Kiesfloh
+
+Jedes Mal wenn ein Kieselstein droppt soll ein Kiesfloh spawnen.
+
+```yml
+name: Sandfloh
+type: silverfish
+min-level: 1
+max-level: 2
+min-health: 80
+max-health: 88
+min-damage: 3
+max-damage: 5
+spawn-chance: 1.0
+spawning-naturally: false
+loot-table: mobs.default-loottable
+aggro: true
+```
+
+## Referenzen
+
+Hier können Quer-Links zu anderen Quests, Quellen, Foren-Beiträgen, Karten etc. eingefügt werden.
