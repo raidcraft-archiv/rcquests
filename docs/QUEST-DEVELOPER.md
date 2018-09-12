@@ -79,8 +79,6 @@ Jede Quest benötigt mindestens eine Quest Config Datei die mit `.quest.yml` end
 * **Ende der Quest** - Was führt dazu, dass die Quest beendet wird.
 * **Belohnungen** - Was für Belohnungen erhält der Spieler für das Beenden der Quest.
 
-In den anschließenden Erklärungen wird folgende Beispiel Config verwendet.
+In den anschließenden Erklärungen wird folgende [Beispiel Quest](./example-quest/) verwendet. Die dort verwendete `README.md` sollte bei allen Quests von den Quest Schreibern als Vorlage verwendet werden.
 
-```yml
-
-```
+Die gesamte Config der Beispiel Quest befindet sich im [example-quest/](./example-quest) Ordner.
