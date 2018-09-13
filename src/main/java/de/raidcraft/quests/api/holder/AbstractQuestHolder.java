@@ -11,12 +11,7 @@ import lombok.ToString;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -119,7 +114,7 @@ public abstract class AbstractQuestHolder implements QuestHolder {
     @Override
     public Quest startQuest(QuestTemplate template) throws QuestException {
 
-        if (template.isLocked() && !getPlayer().hasPermission("rcquests.admin")) {
+        if (template.isLocked() && !getPlayer().hasPermission("rcquests.quest.start-locked")) {
             throw new QuestException("Diese Quest ist aktuell gesperrt und kann nicht angenommen werden.");
         }
         return null;
