@@ -53,9 +53,9 @@ public interface Quest extends TriggerListener<Player> {
         return getTemplate().getFriendlyName();
     }
 
-    default String getAuthor() {
+    default List<String> getAuthors() {
 
-        return getTemplate().getAuthor();
+        return getTemplate().getAuthors();
     }
 
     default String getDescription() {

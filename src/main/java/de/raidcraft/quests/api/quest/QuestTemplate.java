@@ -8,6 +8,7 @@ import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -22,7 +23,7 @@ public interface QuestTemplate extends TriggerListener<Player> {
 
     String getFriendlyName();
 
-    String getAuthor();
+    List<String> getAuthors();
 
     String getDescription();
 
@@ -37,6 +38,8 @@ public interface QuestTemplate extends TriggerListener<Player> {
     boolean isOrdered();
 
     boolean isLocked();
+
+    boolean isAutoCompleting();
 
     Collection<ObjectiveTemplate> getObjectiveTemplates();
 

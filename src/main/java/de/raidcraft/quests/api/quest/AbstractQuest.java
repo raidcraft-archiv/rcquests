@@ -4,11 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.trigger.TriggerListener;
-import de.raidcraft.quests.api.events.ObjectiveCompletedEvent;
-import de.raidcraft.quests.api.events.QuestAbortedEvent;
-import de.raidcraft.quests.api.events.QuestCompleteEvent;
-import de.raidcraft.quests.api.events.QuestCompletedEvent;
-import de.raidcraft.quests.api.events.QuestStartedEvent;
+import de.raidcraft.quests.api.events.*;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.PlayerObjective;
 import lombok.Data;
@@ -117,7 +113,7 @@ public abstract class AbstractQuest implements Quest {
         }
         if (hasCompletedAllObjectives()) {
             setPhase(Phase.OJECTIVES_COMPLETED);
-            if (completionTrigger.isEmpty()) {
+            if (completionTrigger.isEmpty() || getTemplate().isAutoCompleting()) {
                 // complete the quest
                 complete();
                 return;
