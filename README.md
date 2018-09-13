@@ -10,7 +10,7 @@ Durch die Nutzung der [ART API](https://git.faldoria.de/raidcraft/raidcraft-api)
 * [Source Code](https://git.faldoria.de/raidcraft/rcquests/tree/master)
 * [Latest Stable Download](https://ci.faldoria.de/view/RaidCraft/job/RCQuests/lastStableBuild)
 * [Issue Tracker](https://git.faldoria.de/raidcraft/rcquests/issues)
-* [Quest Developer Documentation](docs/QUEST-DEVELOPER.md)
+* [Quest Developer Documentation](https://git.faldoria.de/plugin-configs/quests/tree/master/docs/QUEST-DEVELOPER.md)
 * [Developer Documentation](docs/DEVELOPER.md)
 * [Admin Documentation](docs/ADMIN.md)
 
