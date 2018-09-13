@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Data()
 @EqualsAndHashCode(of = "id")
-@ToString(exclude = {"completionActions", "requirements", "objectiveTemplates", "startTrigger", "completionTrigger"})
+@ToString(exclude = {"completionActions", "startRequirements", "objectiveTemplates", "startTrigger", "completionTrigger"})
 public abstract class AbstractQuestTemplate implements QuestTemplate {
 
     private final String id;
@@ -38,7 +38,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     private final boolean autoCompleting;
     private final Collection<Action<Player>> startActions;
     private final Collection<Action<Player>> completionActions;
-    private final Collection<Requirement<Player>> requirements;
+    private final Collection<Requirement<Player>> startRequirements;
     private final Collection<ObjectiveTemplate> objectiveTemplates;
     private final Collection<TriggerFactory> startTrigger;
     private final Collection<TriggerFactory> activeTrigger;
@@ -60,9 +60,9 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.cooldown = data.getLong("cooldown", 0);
         this.autoCompleting = data.getBoolean("auto-complete", false);
         this.repeatable = cooldown > 0 || data.getBoolean("repeatable", false);
-        this.requirements = loadRequirements(data.getConfigurationSection("requirements"));
+        this.startRequirements = loadRequirements(data.getConfigurationSection("start-requirements"));
         this.objectiveTemplates = loadObjectives(data.getConfigurationSection("objectives"));
-        this.startTrigger = loadStartTrigger(data.getConfigurationSection("trigger"));
+        this.startTrigger = loadStartTrigger(data.getConfigurationSection("start-trigger"));
         this.activeTrigger = ActionAPI.createTrigger(data.getConfigurationSection("active-trigger"));
         this.completionTrigger = loadCompletionTrigger(data.getConfigurationSection("complete-trigger"));
         this.startActions = ActionAPI.createActions(data.getConfigurationSection("start-actions"), Player.class);

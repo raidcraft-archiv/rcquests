@@ -43,7 +43,7 @@ public interface QuestTemplate extends TriggerListener<Player> {
 
     Collection<ObjectiveTemplate> getObjectiveTemplates();
 
-    Collection<Requirement<Player>> getRequirements();
+    Collection<Requirement<Player>> getStartRequirements();
 
     Collection<TriggerFactory> getStartTrigger();
 

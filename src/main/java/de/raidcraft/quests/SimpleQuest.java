@@ -99,7 +99,7 @@ public class SimpleQuest extends AbstractQuest {
         if (quest != null) {
             database.delete(quest);
             // also delete all requirements
-            getTemplate().getRequirements().forEach(requirement -> requirement.delete(getPlayer()));
+            getTemplate().getStartRequirements().forEach(requirement -> requirement.delete(getPlayer()));
             getObjectives().forEach(objective -> {
                 objective.getObjectiveTemplate().getRequirements()
                         .forEach(requirement -> requirement.delete(getPlayer()));

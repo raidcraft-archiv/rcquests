@@ -96,7 +96,7 @@ public abstract class AbstractQuest implements Quest {
         if (!isActive()) {
             return false;
         }
-        Collection<Requirement<Player>> requirements = getTemplate().getRequirements();
+        Collection<Requirement<Player>> requirements = getTemplate().getStartRequirements();
         if (requirements.stream().allMatch(requirement -> requirement.test(player))) {
             unregisterListeners();
             registerListeners();
@@ -286,7 +286,7 @@ public abstract class AbstractQuest implements Quest {
         unregisterListeners();
         getObjectives().forEach(PlayerObjective::abort);
         // we need to remove all requirements tracked by the quest
-        getTemplate().getRequirements().forEach(playerRequirement -> playerRequirement.delete(getPlayer()));
+        getTemplate().getStartRequirements().forEach(playerRequirement -> playerRequirement.delete(getPlayer()));
         setAbortionTime(Timestamp.from(Instant.now()));
         setPhase(Phase.ABORTED);
         save();
