@@ -8,22 +8,13 @@ import de.raidcraft.api.config.Setting;
 import de.raidcraft.api.npc.NPC_Manager;
 import de.raidcraft.api.quests.Quests;
 import de.raidcraft.api.random.RDS;
-import de.raidcraft.quests.actions.AbortQuestAction;
-import de.raidcraft.quests.actions.AddQuestItemAction;
-import de.raidcraft.quests.actions.CompleteObjectiveAction;
-import de.raidcraft.quests.actions.CompleteQuestAction;
-import de.raidcraft.quests.actions.RemoveQuestItemAction;
-import de.raidcraft.quests.actions.StartQuestAction;
+import de.raidcraft.quests.actions.*;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.random.RDSQuestObject;
 import de.raidcraft.quests.requirements.ObjectiveCompletedRequirement;
-import de.raidcraft.quests.tables.TPlayer;
-import de.raidcraft.quests.tables.TPlayerObjective;
-import de.raidcraft.quests.tables.TPlayerQuest;
-import de.raidcraft.quests.tables.TPlayerQuestPool;
-import de.raidcraft.quests.tables.TQuestItem;
+import de.raidcraft.quests.tables.*;
 import de.raidcraft.quests.trigger.ObjectiveTrigger;
 import de.raidcraft.quests.trigger.QuestPoolTrigger;
 import de.raidcraft.quests.trigger.QuestTrigger;
@@ -104,7 +95,7 @@ public class QuestPlugin extends BasePlugin {
                         TPlayerQuestPool questPool = getDatabase().find(TPlayerQuestPool.class).where()
                                 .eq("player_id", questHolder.getId())
                                 .eq("quest_pool", config.getString("pool"))
-                                .findUnique();
+                                .findOne();
                         if (questPool == null) return false;
                         return questPool.getSuccessiveQuestCounter() >= config.getInt("count");
                     })

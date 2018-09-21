@@ -1,6 +1,5 @@
 package de.raidcraft.quests;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.TriggerFactory;
@@ -19,6 +18,7 @@ import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import de.raidcraft.quests.tables.TPlayerQuestPool;
 import de.raidcraft.util.ConfigUtil;
+import io.ebean.EbeanServer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import net.md_5.bungee.api.ChatColor;
@@ -107,7 +107,7 @@ public class QuestPool extends GenericRDSTable implements TriggerListener<Player
         return Optional.ofNullable(RaidCraft.getDatabase(QuestPlugin.class).find(TPlayerQuestPool.class).where()
                 .eq("player_id", questHolder.getId())
                 .eq("quest_pool", getName())
-                .findUnique());
+                .findOne());
     }
 
     public List<TPlayerQuest> getActiveQuests(TPlayerQuestPool pool) {

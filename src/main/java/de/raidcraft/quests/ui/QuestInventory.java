@@ -1,6 +1,5 @@
 package de.raidcraft.quests.ui;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomSkullType;
 import de.raidcraft.api.items.Skull;
@@ -9,6 +8,7 @@ import de.raidcraft.api.storage.StorageException;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.tables.TQuestItem;
+import io.ebean.EbeanServer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
@@ -270,7 +270,7 @@ public class QuestInventory implements Listener {
                 }
             }
         }
-        RaidCraft.getDatabase(QuestPlugin.class).save(items);
+        RaidCraft.getDatabase(QuestPlugin.class).saveAll(items);
     }
 
     public void load() {

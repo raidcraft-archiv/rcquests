@@ -1,11 +1,11 @@
 package de.raidcraft.quests;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.quests.api.objective.AbstractPlayerObjective;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.tables.TPlayerObjective;
+import io.ebean.EbeanServer;
 
 /**
  * @author Silthus

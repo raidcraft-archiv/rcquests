@@ -1,6 +1,5 @@
 package de.raidcraft.quests;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.action.RevertableAction;
 import de.raidcraft.quests.api.events.QuestPoolQuestAbortedEvent;
@@ -13,6 +12,7 @@ import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.tables.TPlayerObjective;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import de.raidcraft.quests.tables.TPlayerQuestPool;
+import io.ebean.EbeanServer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class SimpleQuest extends AbstractQuest {
         for (ObjectiveTemplate objectiveTemplate : getTemplate().getObjectiveTemplates()) {
             TPlayerObjective entry = database.find(TPlayerObjective.class).where()
                     .eq("quest_id", getId())
-                    .eq("objective_id", objectiveTemplate.getId()).findUnique();
+                    .eq("objective_id", objectiveTemplate.getId()).findOne();
             // create a new db entry if none exists
             if (entry == null) {
                 entry = new TPlayerObjective();

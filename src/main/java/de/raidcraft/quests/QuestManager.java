@@ -1,6 +1,5 @@
 package de.raidcraft.quests;
 
-import com.avaje.ebean.EbeanServer;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigLoader;
@@ -15,6 +14,7 @@ import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.ConfigUtil;
+import io.ebean.EbeanServer;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -197,7 +197,7 @@ public final class QuestManager implements QuestProvider, Component {
         String name = bukkitPlayer.getName();
         if (!questPlayers.containsKey(playerId)) {
             TPlayer table = plugin.getDatabase().find(TPlayer.class).where()
-                    .eq("player_id", playerId).findUnique();
+                    .eq("player_id", playerId).findOne();
             if (table == null) {
                 table = new TPlayer();
                 table.setPlayer(name.toLowerCase());
