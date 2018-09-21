@@ -3,6 +3,7 @@ package de.raidcraft.quests;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigLoader;
+import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestProvider;
@@ -23,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -80,24 +82,46 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     public void load() {
-        ConfigUtil.loadRecursiveConfigs(plugin, plugin.getConfiguration().quests_base_folder, new ConfigLoader(plugin) {
-            @Override
-            public void loadConfig(String id, ConfigurationSection config) {
-                // repace "this." with the absolte path, feature: relative path
-                config = ConfigUtil.replacePathReferences(config, getPath());
-                if (!queuedConfigLoaders.containsKey(this)) {
-                    queuedConfigLoaders.put(this, new HashMap<>());
-                }
-                queuedConfigLoaders.get(this).put(id, config);
-            }
-        });
+        plugin.getLogger().info("Loading quest configurations...");
+        // we need to look recursivly thru all folders under the defined base folder
+        File baseFolder = new File(plugin.getDataFolder(), plugin.getConfiguration().quests_base_folder);
+        baseFolder.mkdirs();
+        loadQuestConfigs(baseFolder, "");
+        plugin.getLogger().info("... queued " + queuedConfigLoaders.values().size() + " quest configs ...");
         // lets sort our loaders by priority
         queuedConfigLoaders.keySet().stream()
                 .sorted()
                 .forEachOrdered(loader -> queuedConfigLoaders.get(loader).entrySet()
                         .forEach(entry -> loader.loadConfig(entry.getKey(), entry.getValue())));
+        plugin.getLogger().info("... loaded " + loadedQuests.size() + " quests");
         queuedConfigLoaders.clear();
         loadedQuestFiles = true;
+    }
+
+    private void loadQuestConfigs(File baseFolder, String path) {
+
+        for (File file : baseFolder.listFiles()) {
+            String fileName = file.getName();
+            if (file.isDirectory()) {
+                loadQuestConfigs(file, path + "." + fileName.toLowerCase());
+            } else {
+                if (path.startsWith(".")) {
+                    path = path.replaceFirst("\\.", "");
+                }
+                for (ConfigLoader loader : configLoader.values()) {
+                    if (file.getName().toLowerCase().endsWith(loader.getSuffix())) {
+                        String id = (path + "." + file.getName().toLowerCase()).replace(loader.getSuffix(), "");
+                        ConfigurationSection configFile = plugin.configure(new SimpleConfiguration<>(plugin, file));
+                        // repace "this." with the absolte path, feature: relative path
+                        configFile = ConfigUtil.replacePathReferences(configFile, path);
+                        if (!queuedConfigLoaders.containsKey(loader)) {
+                            queuedConfigLoaders.put(loader, new HashMap<>());
+                        }
+                        queuedConfigLoaders.get(loader).put(id, configFile);
+                    }
+                }
+            }
+        }
     }
 
     public void unload() {
