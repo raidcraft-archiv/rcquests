@@ -1,6 +1,6 @@
 package de.raidcraft.quests.tables;
 
-import com.avaje.ebean.validation.NotNull;
+import io.ebean.annotation.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
