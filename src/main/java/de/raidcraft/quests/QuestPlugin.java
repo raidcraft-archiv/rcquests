@@ -13,7 +13,10 @@ import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.random.RDSQuestObject;
+import de.raidcraft.quests.requirements.HasQuestItemRequirement;
 import de.raidcraft.quests.requirements.ObjectiveCompletedRequirement;
+import de.raidcraft.quests.requirements.QuestActiveRequirement;
+import de.raidcraft.quests.requirements.QuestCompletedRequirement;
 import de.raidcraft.quests.tables.*;
 import de.raidcraft.quests.trigger.ObjectiveTrigger;
 import de.raidcraft.quests.trigger.QuestPoolTrigger;
@@ -99,20 +102,9 @@ public class QuestPlugin extends BasePlugin {
                         if (questPool == null) return false;
                         return questPool.getSuccessiveQuestCounter() >= config.getInt("count");
                     })
-                    .requirement("quest.completed", (Player player, ConfigurationSection config) -> {
-                        QuestHolder holder = getQuestManager().getQuestHolder(player);
-                        return holder != null && holder.hasCompletedQuest(config.getString("quest"));
-                    })
-                    .requirement("quest.active", (Player player, ConfigurationSection config) -> {
-                        QuestHolder holder = getQuestManager().getQuestHolder(player);
-                        return holder != null && holder.hasActiveQuest(config.getString("quest"));
-                    })
-                    .requirement("quest.item.has", (Player player, ConfigurationSection config) -> {
-                        QuestHolder holder = getQuestManager().getQuestHolder(player);
-                        return holder != null && holder.getQuestInventory().contains(config.getString("item"));
-                    });
-//        ActionAPI.register(RaidCraft.getComponent(RCConversationsPlugin.class))
-//                .action(new StartConversationAction());
+                .requirement(new QuestCompletedRequirement(getQuestManager()))
+                .requirement(new QuestActiveRequirement(getQuestManager()))
+                .requirement(new HasQuestItemRequirement(getQuestManager()));
     }
 
     @Override
