@@ -5,7 +5,6 @@ import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
-import de.raidcraft.util.ConfigUtil;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -15,7 +14,6 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @author Silthus
@@ -48,8 +46,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
 
     public AbstractQuestTemplate(String id, ConfigurationSection data) {
 
-        this.id = data.getString("id", UUID.randomUUID().toString());
-        ConfigUtil.saveConfig(data);
+        this.id = data.getString("id", id);
         String[] split = id.split("\\.");
         this.name = split[split.length - 1];
         this.basePath = id.replace("." + name, "");

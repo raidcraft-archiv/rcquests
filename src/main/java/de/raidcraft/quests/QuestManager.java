@@ -52,12 +52,13 @@ public final class QuestManager implements QuestProvider, Component {
             public void loadConfig(String id, ConfigurationSection config) {
 
                 if (config.isSet("worlds") && config.isList("worlds")) {
-                    List<String> worlds = config.getStringList("worlds");
+                    List<String> worlds = config.getStringList("worlds").stream().map(String::toLowerCase).collect(Collectors.toList());
                     Optional<World> any = Bukkit.getServer().getWorlds().stream()
-                            .filter(w -> worlds.contains(w.getName()))
+                            .filter(w -> worlds.contains(w.getName().toLowerCase()))
                             .findAny();
                     if (!any.isPresent()) {
-                        plugin.getLogger().info("Excluded Quest " + id + " because the required world is not loaded.");
+                        plugin.getLogger().info("Excluded Quest " + id + " because the required world (" + config.get("worlds") + ") is not loaded ." +
+                                "The following worlds are loaded: " + Bukkit.getServer().getWorlds().stream().map(World::getName).collect(Collectors.toList()));
                         return;
                     }
                 }
@@ -65,7 +66,7 @@ public final class QuestManager implements QuestProvider, Component {
                 // lets register the triggers of the quest
                 quest.registerListeners();
                 loadedQuests.put(id, quest);
-                plugin.info("Loaded quest: " + id + " - " + quest.getFriendlyName());
+                plugin.getLogger().info("Loaded quest: " + id + " - " + quest.getFriendlyName());
             }
         });
         registerQuestConfigLoader(new ConfigLoader(plugin, "pool", 1000) {
@@ -74,7 +75,7 @@ public final class QuestManager implements QuestProvider, Component {
 
                 QuestPool pool = new QuestPool(id, config);
                 loadedQuestPools.put(id, pool);
-                plugin.info("Loaded quest pool: " + id + " - " + pool.getFriendlyName());
+                plugin.getLogger().info("Loaded quest pool: " + id + " - " + pool.getFriendlyName());
             }
         });
         // and the quest host loader
