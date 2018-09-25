@@ -6,6 +6,7 @@ import de.raidcraft.quests.api.quest.Quest;
 import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -21,6 +22,10 @@ public interface PlayerObjective extends TriggerListener<Player>, Comparable<Pla
     int getId();
 
     Quest getQuest();
+
+    List<PlayerTask> getTasks();
+
+    void onTaskComplete(PlayerTask task);
 
     ObjectiveTemplate getObjectiveTemplate();
 

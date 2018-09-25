@@ -4,11 +4,9 @@ import io.ebean.annotation.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  * @author Silthus
@@ -28,4 +26,7 @@ public class TPlayerObjective {
     private int objectiveId;
     private Timestamp completionTime;
     private Timestamp abortionTime;
+    @JoinColumn(name = "objective_id")
+    @OneToMany(cascade = CascadeType.REMOVE)
+    private List<TPlayerTask> tasks;
 }
