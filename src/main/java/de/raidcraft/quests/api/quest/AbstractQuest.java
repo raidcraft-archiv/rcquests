@@ -158,7 +158,7 @@ public abstract class AbstractQuest implements Quest {
 
         getActiveTrigger().forEach(trigger -> trigger.registerListener(activeTriggerListener));
 
-        for (PlayerObjective playerObjective : getUncompletedObjectives()) {
+        for (PlayerObjective playerObjective : getObjectives()) {
             if (!playerObjective.isCompleted()) {
                 // lets register the listeners of our objectives
                 playerObjective.updateListeners();
