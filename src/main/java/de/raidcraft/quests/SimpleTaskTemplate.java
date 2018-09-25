@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.bukkit.configuration.ConfigurationSection;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 @Data
@@ -21,6 +22,6 @@ public class SimpleTaskTemplate extends SimpleObjectiveTemplate implements TaskT
 
     @Override
     protected Collection<TaskTemplate> loadTasks(ConfigurationSection data) {
-        throw new UnsupportedOperationException("Recursive tasks are not allowed.");
+        return new ArrayList<>();
     }
 }

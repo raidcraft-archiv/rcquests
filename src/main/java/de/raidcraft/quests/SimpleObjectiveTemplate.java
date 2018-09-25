@@ -47,10 +47,11 @@ public class SimpleObjectiveTemplate extends AbstractObjectiveTemplate {
     protected Collection<TaskTemplate> loadTasks(ConfigurationSection data) {
 
         ArrayList<TaskTemplate> tasks = new ArrayList<>();
+        if (data == null) return tasks;
 
         for (String key : data.getKeys(false)) {
             try {
-                tasks.add(new SimpleTaskTemplate(Integer.parseInt(key), this, data));
+                tasks.add(new SimpleTaskTemplate(Integer.parseInt(key), this, data.getConfigurationSection(key)));
             } catch (NumberFormatException e) {
                 RaidCraft.LOGGER.warning("Invalid task id " + key + " inside " + ConfigUtil.getFileName(data));
             }
