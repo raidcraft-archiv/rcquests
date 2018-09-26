@@ -48,7 +48,7 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
         this.questTemplate = questTemplate;
         this.requirements = loadRequirements(data.getConfigurationSection("requirements"));
         this.trigger = loadTrigger(data.getConfigurationSection("trigger"));
-        this.actions = loadActions(data.getConfigurationSection("actions"));
+        this.actions = loadActions(data.getConfigurationSection("complete-actions"));
         this.tasks = loadTasks(data.getConfigurationSection("tasks"));
     }
 
