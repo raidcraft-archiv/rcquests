@@ -33,6 +33,7 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
     private final Collection<Requirement<Player>> requirements;
     private final Collection<TriggerFactory> trigger;
     private final Collection<Action<Player>> actions;
+    private final Collection<Action<Player>> startActions;
     private final Collection<TaskTemplate> tasks;
 
     public AbstractObjectiveTemplate(int id, QuestTemplate questTemplate, ConfigurationSection data) {
@@ -48,7 +49,8 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
         this.questTemplate = questTemplate;
         this.requirements = loadRequirements(data.getConfigurationSection("requirements"));
         this.trigger = loadTrigger(data.getConfigurationSection("trigger"));
-        this.actions = loadActions(data.getConfigurationSection("actions"));
+        this.startActions = loadStartActions(data.getConfigurationSection("start-actions"));
+        this.actions = loadActions(data.getConfigurationSection("complete-actions"));
         this.tasks = loadTasks(data.getConfigurationSection("tasks"));
     }
 
@@ -57,6 +59,8 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
     protected abstract Collection<TriggerFactory> loadTrigger(ConfigurationSection data);
 
     protected abstract Collection<Action<Player>> loadActions(ConfigurationSection data);
+
+    protected abstract Collection<Action<Player>> loadStartActions(ConfigurationSection data);
 
     protected abstract Collection<TaskTemplate> loadTasks(ConfigurationSection data);
 

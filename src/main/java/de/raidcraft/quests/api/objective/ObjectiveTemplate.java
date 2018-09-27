@@ -67,5 +67,7 @@ public interface ObjectiveTemplate extends Comparable<ObjectiveTemplate> {
 
     Collection<Action<Player>> getActions();
 
+    Collection<Action<Player>> getStartActions();
+
     Collection<TaskTemplate> getTasks();
 }

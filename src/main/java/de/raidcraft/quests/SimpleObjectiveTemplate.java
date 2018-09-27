@@ -44,6 +44,11 @@ public class SimpleObjectiveTemplate extends AbstractObjectiveTemplate {
     }
 
     @Override
+    protected Collection<Action<Player>> loadStartActions(ConfigurationSection data) {
+        return ActionAPI.createActions(data, Player.class);
+    }
+
+    @Override
     protected Collection<TaskTemplate> loadTasks(ConfigurationSection data) {
 
         ArrayList<TaskTemplate> tasks = new ArrayList<>();

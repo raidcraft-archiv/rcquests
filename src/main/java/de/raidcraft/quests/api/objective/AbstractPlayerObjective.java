@@ -66,6 +66,8 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
 
         if (!isCompleted() && !isAborted()) {
             if (!isActive()) {
+                // execute our objective start actions
+                getObjectiveTemplate().getStartActions().forEach(action -> action.accept(getQuestHolder().getPlayer()));
                 // register our start trigger
                 getObjectiveTemplate().getTrigger().forEach(factory -> factory.registerListener(this));
                 getUncompletedTasks().forEach(PlayerTask::updateListeners);
