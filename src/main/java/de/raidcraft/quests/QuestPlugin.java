@@ -95,7 +95,7 @@ public class QuestPlugin extends BasePlugin {
                     .requirement("questpool.successive.count", (Player player, ConfigurationSection config) -> {
                         QuestHolder questHolder = getQuestManager().getQuestHolder(player);
                         if (questHolder == null) return false;
-                        TPlayerQuestPool questPool = getDatabase().find(TPlayerQuestPool.class).where()
+                        TPlayerQuestPool questPool = getRcDatabase().find(TPlayerQuestPool.class).where()
                                 .eq("player_id", questHolder.getId())
                                 .eq("quest_pool", config.getString("pool"))
                                 .findOne();

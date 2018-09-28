@@ -221,13 +221,13 @@ public final class QuestManager implements QuestProvider, Component {
         }
         String name = bukkitPlayer.getName();
         if (!questPlayers.containsKey(playerId)) {
-            TPlayer table = plugin.getDatabase().find(TPlayer.class).where()
+            TPlayer table = plugin.getRcDatabase().find(TPlayer.class).where()
                     .eq("player_id", playerId).findOne();
             if (table == null) {
                 table = new TPlayer();
                 table.setPlayer(name.toLowerCase());
                 table.setPlayerId(playerId);
-                plugin.getDatabase().save(table);
+                plugin.getRcDatabase().save(table);
             }
             questPlayers.put(playerId, new BukkitQuestHolder(table.getId(), playerId));
         }
@@ -283,7 +283,7 @@ public final class QuestManager implements QuestProvider, Component {
             throw new QuestException("Quest cannot be created because it is already present!");
         }
 
-        EbeanServer database = plugin.getDatabase();
+        EbeanServer database = plugin.getRcDatabase();
         TPlayerQuest playerQuest = new TPlayerQuest();
         playerQuest.setPlayer(database.find(TPlayer.class, holder.getId()));
         playerQuest.setQuest(template.getId());
