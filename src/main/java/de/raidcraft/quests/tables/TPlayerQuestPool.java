@@ -13,7 +13,7 @@ import java.util.List;
  * @author mdoering
  */
 @Entity
-@Table(name = "quests_player_pools")
+@Table(name = "rc_quests_player_pools")
 @Getter
 @Setter
 public class TPlayerQuestPool {

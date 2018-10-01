@@ -13,7 +13,7 @@ import java.util.UUID;
  * @author Silthus
  */
 @Entity
-@Table(name = "quests_players")
+@Table(name = "rc_quests_players")
 @Getter
 @Setter
 public class TPlayer {

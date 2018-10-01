@@ -12,7 +12,7 @@ import java.util.List;
  * @author Silthus
  */
 @Entity
-@Table(name = "quests_player_objectives")
+@Table(name = "rc_quests_player_objectives")
 @Getter
 @Setter
 public class TPlayerObjective {

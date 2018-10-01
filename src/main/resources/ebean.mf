@@ -1,0 +1,3 @@
+entity-packages: de.raidcraft.quests
+transactional-packages: de.raidcraft.quests
+querybean-packages: de.raidcraft.quests

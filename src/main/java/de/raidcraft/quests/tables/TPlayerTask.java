@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "quests_player_tasks")
+@Table(name = "rc_quests_player_tasks")
 @Getter
 @Setter
 public class TPlayerTask {

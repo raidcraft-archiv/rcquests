@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <createTable name="rc_quests_players" pkName="pk_rc_quests_players">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="player" type="varchar" notnull="true" unique="uq_rc_quests_players_player"/>
+            <column name="player_id" type="uuid"/>
+        </createTable>
+        <createTable name="rc_quests_player_objectives" pkName="pk_rc_quests_player_objectives">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="quest_id" type="integer" notnull="true" references="rc_quests_player_quests.id"
+                    foreignKeyName="fk_rc_quests_player_objectives_quest_id"
+                    foreignKeyIndex="ix_rc_quests_player_objectives_quest_id"/>
+            <column name="objective_id" type="integer" notnull="true"/>
+            <column name="completion_time" type="timestamp"/>
+            <column name="abortion_time" type="timestamp"/>
+        </createTable>
+        <createTable name="rc_quests_player_quests" pkName="pk_rc_quests_player_quests">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="player_id" type="integer" notnull="true" references="rc_quests_players.id"
+                    foreignKeyName="fk_rc_quests_player_quests_player_id"
+                    foreignKeyIndex="ix_rc_quests_player_quests_player_id"/>
+            <column name="quest" type="varchar"/>
+            <column name="phase" type="varchar(20)"
+                    checkConstraint="check ( phase in ('NOT_STARTED','IN_PROGRESS','OBJECTIVES_COMPLETED','COMPLETE','ABORTED'))"
+                    checkConstraintName="ck_rc_quests_player_quests_phase"/>
+            <column name="start_time" type="timestamp"/>
+            <column name="completion_time" type="timestamp"/>
+            <column name="abortion_time" type="timestamp"/>
+            <column name="quest_pool_id" type="integer" references="rc_quests_player_pools.id"
+                    foreignKeyName="fk_rc_quests_player_quests_quest_pool_id"
+                    foreignKeyIndex="ix_rc_quests_player_quests_quest_pool_id"/>
+        </createTable>
+        <createTable name="rc_quests_player_pools" pkName="pk_rc_quests_player_pools">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="player_id" type="integer" notnull="true" references="rc_quests_players.id"
+                    foreignKeyName="fk_rc_quests_player_pools_player_id"
+                    foreignKeyIndex="ix_rc_quests_player_pools_player_id"/>
+            <column name="quest_pool" type="varchar"/>
+            <column name="last_start" type="timestamp"/>
+            <column name="last_completion" type="timestamp"/>
+            <column name="last_reset" type="timestamp"/>
+            <column name="successive_quest_counter" type="integer" notnull="true"/>
+        </createTable>
+        <createTable name="rc_quests_player_tasks" pkName="pk_rc_quests_player_tasks">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="objective_id" type="integer" notnull="true" references="rc_quests_player_objectives.id"
+                    foreignKeyName="fk_rc_quests_player_tasks_objective_id"
+                    foreignKeyIndex="ix_rc_quests_player_tasks_objective_id"/>
+            <column name="task_id" type="integer" notnull="true"/>
+            <column name="completion_time" type="timestamp"/>
+            <column name="abortion_time" type="timestamp"/>
+        </createTable>
+        <createTable name="rc_quests_player_quest_items" pkName="pk_rc_quests_player_quest_items">
+            <column name="id" type="integer" primaryKey="true"/>
+            <column name="player" type="uuid"/>
+            <column name="slot" type="integer" notnull="true"/>
+            <column name="inventory_id" type="integer" notnull="true"/>
+            <column name="object_storage_id" type="integer" notnull="true"/>
+        </createTable>
+    </changeSet>
+</migration>
