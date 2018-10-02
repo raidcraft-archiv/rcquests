@@ -54,7 +54,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.authors.addAll(data.getStringList("authors"));
         this.description = data.getString("desc");
         this.requiredObjectiveAmount = data.getInt("required", 0);
-        this.ordered = data.getBoolean("ordered", false);
+        this.ordered = data.getBoolean("ordered", true);
         this.locked = data.getBoolean("locked", true);
         this.silent = data.getBoolean("silent", true);
         this.cooldown = data.getLong("cooldown", 0);
