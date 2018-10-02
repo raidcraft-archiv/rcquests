@@ -220,8 +220,9 @@ public class QuestInventory implements Listener {
     public boolean contains(String item) {
 
         for (Inventory inventory : inventories) {
-            ItemStack itemStack = RaidCraft.getUnsafeItem(item);
-            if (itemStack != null && inventory.contains(itemStack)) return true;
+            if (RaidCraft.getItem(item).map(inventory::contains).orElse(false)) {
+                return true;
+            }
         }
         return false;
     }
