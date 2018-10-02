@@ -14,10 +14,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -224,7 +221,7 @@ public abstract class AbstractQuest implements Quest {
         if (playerObjectives.size() > 1) {
             Collections.sort(playerObjectives);
         }
-        return playerObjectives;
+        return new ArrayList<>(playerObjectives);
     }
 
     @Override
