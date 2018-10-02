@@ -176,7 +176,7 @@ public class QuestPool extends GenericRDSTable implements TriggerListener<Player
                         }
                     });
 
-            List<QuestTemplate> result = super.getResult().stream()
+            List<QuestTemplate> result = super.loot().stream()
                     .filter(object -> object instanceof RDSQuestObject)
                     .map(object -> (RDSQuestObject) object)
                     .filter(rdsQuestObject -> rdsQuestObject.getValue().isPresent())
