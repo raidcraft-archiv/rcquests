@@ -159,12 +159,12 @@ public abstract class AbstractQuest implements Quest {
             if (!playerObjective.isCompleted()) {
                 // lets register the listeners of our objectives
                 playerObjective.updateListeners();
+                // abort if we are dealing with ordered required objectives
+                if (!playerObjective.getObjectiveTemplate().isOptional() && getTemplate().isOrdered()) {
+                    return;
+                }
             } else {
                 playerObjective.unregisterListeners();
-            }
-            // abort if we are dealing with ordered required objectives
-            if (!playerObjective.getObjectiveTemplate().isOptional() && getTemplate().isOrdered()) {
-                return;
             }
         }
     }

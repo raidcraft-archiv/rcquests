@@ -112,6 +112,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     }
 
     private boolean hasCompletedAllTasks() {
+        if (getTasks().isEmpty()) return true;
         List<PlayerTask> uncompletedTasks = getUncompletedTasks();
         boolean completed = uncompletedTasks.isEmpty()
                 || (getObjectiveTemplate().getRequiredTaskCount() > 0
