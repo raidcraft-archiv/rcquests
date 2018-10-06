@@ -23,6 +23,7 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
         super(tableEntry.getId(), quest, objectiveTemplate);
         setCompletionTime(tableEntry.getCompletionTime());
         setAbortionTime(tableEntry.getAbortionTime());
+        setStartTime(tableEntry.getStartTime());
     }
 
     @Override
@@ -57,6 +58,7 @@ public class SimplePlayerObjective extends AbstractPlayerObjective {
         TPlayerObjective objective = database.find(TPlayerObjective.class, getId());
         objective.setCompletionTime(getCompletionTime());
         objective.setAbortionTime(getAbortionTime());
+        objective.setStartTime(getStartTime());
         database.save(objective);
     }
 }

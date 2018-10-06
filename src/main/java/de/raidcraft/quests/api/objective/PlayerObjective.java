@@ -31,11 +31,15 @@ public interface PlayerObjective extends TriggerListener<Player>, Comparable<Pla
 
     QuestHolder getQuestHolder();
 
+    Timestamp getStartTime();
+
     Timestamp getCompletionTime();
 
     Timestamp getAbortionTime();
 
     boolean isActive();
+
+    boolean isStarted();
 
     boolean isCompleted();
 

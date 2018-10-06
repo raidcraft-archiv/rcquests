@@ -26,6 +26,7 @@ public class TPlayerObjective {
     private int objectiveId;
     private Timestamp completionTime;
     private Timestamp abortionTime;
+    private Timestamp startTime;
     @JoinColumn(name = "objective_id")
     @OneToMany(cascade = CascadeType.REMOVE)
     private List<TPlayerTask> tasks;

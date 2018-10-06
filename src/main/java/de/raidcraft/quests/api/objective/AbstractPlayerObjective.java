@@ -30,6 +30,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     private boolean active = false;
     private Timestamp completionTime;
     private Timestamp abortionTime;
+    private Timestamp startTime;
 
     public AbstractPlayerObjective(int id, Quest quest, ObjectiveTemplate objectiveTemplate) {
 
@@ -66,14 +67,18 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
 
         if (!isCompleted() && !isAborted()) {
             if (!isActive()) {
-                // execute our objective start actions
-                getObjectiveTemplate().getStartActions().forEach(action -> action.accept(getQuestHolder().getPlayer()));
+                if (!isStarted()) {
+                    // execute our objective start actions
+                    getObjectiveTemplate().getStartActions().forEach(action -> action.accept(getQuestHolder().getPlayer()));
+                    setStartTime(Timestamp.from(Instant.now()));
+                    ObjectiveStartedEvent event = new ObjectiveStartedEvent(this);
+                    RaidCraft.callEvent(event);
+                    save();
+                }
                 // register our start trigger
                 getObjectiveTemplate().getTrigger().forEach(factory -> factory.registerListener(this));
                 getUncompletedTasks().forEach(PlayerTask::updateListeners);
                 setActive(true);
-                ObjectiveStartedEvent event = new ObjectiveStartedEvent(this);
-                RaidCraft.callEvent(event);
             }
         } else {
             unregisterListeners();
@@ -153,6 +158,11 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     public boolean isAborted() {
 
         return abortionTime != null;
+    }
+
+    @Override
+    public boolean isStarted() {
+        return startTime != null;
     }
 
     @Override
