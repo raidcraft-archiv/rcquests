@@ -99,6 +99,7 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     protected Map<Quest.Phase, Map<String, String>> loadDefaultConversations(ConfigurationSection data) {
         HashMap<Quest.Phase, Map<String, String>> conversations = new HashMap<>();
         Arrays.stream(Quest.Phase.values()).forEach(phase -> conversations.put(phase, new HashMap<>()));
+        if (data == null) return conversations;
 
         ConfigurationSection defaultConvs = data.getConfigurationSection("default-convs");
         if (defaultConvs != null) {
