@@ -4,6 +4,9 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.trigger.TriggerListener;
+import de.raidcraft.api.conversations.Conversations;
+import de.raidcraft.api.conversations.conversation.ConversationTemplate;
+import de.raidcraft.api.conversations.host.ConversationHost;
 import de.raidcraft.quests.api.events.*;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.PlayerObjective;
@@ -84,6 +87,32 @@ public abstract class AbstractQuest implements Quest {
         return getTemplate().getListenerId() + "." + getId();
     }
 
+    public void setPhase(Phase phase) {
+        this.phase = phase;
+        this.updateDefaultConversations(phase);
+    }
+
+    protected void updateDefaultConversations(Phase phase) {
+        // remove all old phases
+        for (Phase otherPhase : Phase.values()) {
+            getTemplate().getDefaultConversations().get(otherPhase).forEach((hostId, conv) -> {
+                Optional<ConversationTemplate> template = Conversations.getConversationTemplate(conv);
+                Optional<ConversationHost<?>> conversationHost = Conversations.getConversationHost(hostId);
+                template.ifPresent(conversationTemplate -> conversationHost.ifPresent(host -> host.unsetConversation(getPlayer(), conversationTemplate)));
+                if (!template.isPresent()) RaidCraft.LOGGER.warning("Invalid default conversation template " + conv + " for host " + hostId + " in quest " + getFullName());
+                if (!conversationHost.isPresent()) RaidCraft.LOGGER.warning("Invalid default conversation host " + hostId + " in quest " + getFullName());
+            });
+        }
+        // add the new phase
+        getTemplate().getDefaultConversations().get(phase).forEach((hostId, conv) -> {
+            Optional<ConversationTemplate> template = Conversations.getConversationTemplate(conv);
+            Optional<ConversationHost<?>> conversationHost = Conversations.getConversationHost(hostId);
+            template.ifPresent(conversationTemplate -> conversationHost.ifPresent(host -> host.setConversation(getPlayer(), conversationTemplate)));
+            if (!template.isPresent()) RaidCraft.LOGGER.warning("Invalid default conversation template " + conv + " for host " + hostId + " in quest " + getFullName());
+            if (!conversationHost.isPresent()) RaidCraft.LOGGER.warning("Invalid default conversation host " + hostId + " in quest " + getFullName());
+        });
+    }
+
     @Override
     public boolean processTrigger(Player player) {
 
@@ -103,7 +132,7 @@ public abstract class AbstractQuest implements Quest {
 
     public void registerListeners() {
         if (isCompleted()) {
-            setPhase(Phase.COMPLETE);
+            setPhase(Phase.COMPLETED);
             // do not register anything if completed
             unregisterListeners();
             return;
@@ -136,7 +165,7 @@ public abstract class AbstractQuest implements Quest {
     public void updateObjectiveListeners() {
 
         if (isCompleted()) {
-            setPhase(Phase.COMPLETE);
+            setPhase(Phase.COMPLETED);
             unregisterListeners();
             return;
         }
@@ -151,7 +180,7 @@ public abstract class AbstractQuest implements Quest {
             registerListeners();
             return;
         }
-        setPhase(Phase.IN_PROGRESS);
+        setPhase(Phase.ACTIVE);
 
         getActiveTrigger().forEach(trigger -> trigger.registerListener(activeTriggerListener));
 
@@ -239,7 +268,7 @@ public abstract class AbstractQuest implements Quest {
         if (!isActive()) {
             setStartTime(new Timestamp(System.currentTimeMillis()));
             getHolder().addQuest(this);
-            setPhase(Phase.IN_PROGRESS);
+            setPhase(Phase.ACTIVE);
             save();
             getTemplate().getStartActions().forEach(playerAction -> playerAction.accept(getPlayer()));
             QuestStartedEvent event = new QuestStartedEvent(this);
@@ -263,7 +292,7 @@ public abstract class AbstractQuest implements Quest {
         if (event.isCancelled()) return false;
 
         setCompletionTime(new Timestamp(System.currentTimeMillis()));
-        setPhase(Phase.COMPLETE);
+        setPhase(Phase.COMPLETED);
         save();
         // give rewards and execute completion actions
         getTemplate().getCompletionActions()

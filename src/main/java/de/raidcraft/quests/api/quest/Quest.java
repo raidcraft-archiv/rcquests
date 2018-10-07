@@ -19,14 +19,18 @@ public interface Quest extends TriggerListener<Player> {
 
         @EnumValue("NOT_STARTED")
         NOT_STARTED,
-        @EnumValue("IN_PROGRESS")
-        IN_PROGRESS,
+        @EnumValue("ACTIVE")
+        ACTIVE,
         @EnumValue("OBJECTIVES_COMPLETED")
         OJECTIVES_COMPLETED,
-        @EnumValue("COMPLETE")
-        COMPLETE,
+        @EnumValue("COMPLETED")
+        COMPLETED,
         @EnumValue("ABORTED")
-        ABORTED
+        ABORTED;
+
+        public String getConfigName() {
+            return this.name().toLowerCase().replace("_", "-");
+        }
     }
 
     int getId();

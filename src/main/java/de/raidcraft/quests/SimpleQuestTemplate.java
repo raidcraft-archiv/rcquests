@@ -13,11 +13,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -97,5 +93,25 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     protected Collection<Action<Player>> loadActions(ConfigurationSection data) {
 
         return ActionAPI.createActions(data, Player.class);
+    }
+
+    @Override
+    protected Map<Quest.Phase, Map<String, String>> loadDefaultConversations(ConfigurationSection data) {
+        HashMap<Quest.Phase, Map<String, String>> conversations = new HashMap<>();
+        Arrays.stream(Quest.Phase.values()).forEach(phase -> conversations.put(phase, new HashMap<>()));
+
+        ConfigurationSection defaultConvs = data.getConfigurationSection("default-convs");
+        if (defaultConvs != null) {
+            for (Quest.Phase phase : Quest.Phase.values()) {
+                ConfigurationSection section = defaultConvs.getConfigurationSection(phase.getConfigName());
+                if (section != null) {
+                    for (String host : section.getKeys(false)) {
+                        conversations.get(phase).put(host, section.getString(host));
+                    }
+                }
+            }
+        }
+
+        return conversations;
     }
 }

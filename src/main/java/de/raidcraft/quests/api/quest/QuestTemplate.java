@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Silthus
@@ -54,4 +55,6 @@ public interface QuestTemplate extends TriggerListener<Player> {
     Collection<TriggerFactory> getCompletionTrigger();
 
     Collection<Action<Player>> getCompletionActions();
+
+    Map<Quest.Phase, Map<String, String>> getDefaultConversations();
 }

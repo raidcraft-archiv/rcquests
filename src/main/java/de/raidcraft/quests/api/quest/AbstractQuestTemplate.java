@@ -1,5 +1,6 @@
 package de.raidcraft.quests.api.quest;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
@@ -11,9 +12,7 @@ import lombok.ToString;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -43,6 +42,8 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     private final Collection<TriggerFactory> startTrigger;
     private final Collection<TriggerFactory> activeTrigger;
     private final Collection<TriggerFactory> completionTrigger;
+    // list of default conversations per phase and host - PHASE, HOST -> CONV
+    private final Map<Quest.Phase, Map<String, String>> defaultConversations;
 
     public AbstractQuestTemplate(String id, ConfigurationSection data) {
 
@@ -67,6 +68,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.completionTrigger = loadCompletionTrigger(data.getConfigurationSection("complete-trigger"));
         this.startActions = ActionAPI.createActions(data.getConfigurationSection("start-actions"), Player.class);
         this.completionActions = loadActions(data.getConfigurationSection("complete-actions"));
+        this.defaultConversations = loadDefaultConversations(data.getConfigurationSection("default-convs"));
     }
 
     @Override
@@ -89,4 +91,6 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     protected abstract Collection<TriggerFactory> loadCompletionTrigger(ConfigurationSection data);
 
     protected abstract Collection<Action<Player>> loadActions(ConfigurationSection data);
+
+    protected abstract Map<Quest.Phase, Map<String, String>> loadDefaultConversations(ConfigurationSection data);
 }
