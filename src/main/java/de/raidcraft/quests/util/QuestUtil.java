@@ -32,7 +32,7 @@ public class QuestUtil {
             if (objective.getObjectiveTemplate().isHidden()) continue;
             tooltip.then("  * ").color(ChatColor.GOLD).style(ChatColor.RESET)
                     .then(objective.getObjectiveTemplate().getFriendlyName())
-                    .style(objective.isCompleted() ? ChatColor.STRIKETHROUGH : ChatColor.UNDERLINE)
+                    .style(objective.isCompleted() ? ChatColor.STRIKETHROUGH : ChatColor.RESET)
                     .color(objective.isActive() ? ChatColor.AQUA : ChatColor.GRAY)
                     .newLine();
         }
