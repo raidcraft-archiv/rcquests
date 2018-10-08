@@ -276,7 +276,7 @@ public class QuestInventory implements Listener {
 
     public void load() {
 
-        inventories.forEach(Inventory::clear);
+        clear();
         inventories.clear();
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         List<TQuestItem> questItems = database.find(TQuestItem.class).where().eq("player", holder.getPlayerId()).findList();
@@ -299,5 +299,12 @@ public class QuestInventory implements Listener {
                 }
             }
         }
+    }
+
+    /**
+     * Clears out all quest items from the quest inventory.
+     */
+    public void clear() {
+        inventories.forEach(Inventory::clear);
     }
 }

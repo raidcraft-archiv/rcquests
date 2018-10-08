@@ -4,6 +4,7 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
+import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.api.holder.QuestHolder;
@@ -11,6 +12,7 @@ import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.util.CommandUtil;
 import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -115,6 +117,24 @@ public class AdminCommands {
             sender.sendMessage(ChatColor.GREEN + "Die Quest '" + quest.getFriendlyName() + "' wurde entfernt!");
         } catch (QuestException e) {
             throw new CommandException(e.getMessage());
+        }
+    }
+
+    @Command(
+            aliases = {"purge"},
+            desc = "Purges all quest history of the player.",
+            min = 1,
+            usage = "<Player>"
+    )
+    @CommandPermissions("rcquests.admin.purge")
+    public void purge(CommandContext args, CommandSender sender) throws CommandException {
+
+        try {
+            OfflinePlayer offlinePlayer = CommandUtil.grabOfflinePlayer(args.getString(0));
+            plugin.getQuestManager().purgePlayerHistory(offlinePlayer.getUniqueId());
+            sender.sendMessage(ChatColor.GREEN + "Purged Quest History of " + offlinePlayer.getName() + ". Please login and out again.");
+        } catch (UnknownPlayerException e) {
+            throw new CommandException(e);
         }
     }
 }

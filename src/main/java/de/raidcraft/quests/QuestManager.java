@@ -205,6 +205,19 @@ public final class QuestManager implements QuestProvider, Component {
         return questPlayers.remove(playerId);
     }
 
+    public void purgePlayerHistory(UUID playerId) throws UnknownPlayerException {
+        QuestHolder player = getPlayer(playerId);
+        for (Quest quest : player.getAllQuests()) {
+            quest.delete();
+        }
+        player.getQuestInventory().clear();
+        clearPlayerCache(playerId);
+        Player onlinePlayer = Bukkit.getPlayer(playerId);
+        if (onlinePlayer != null) {
+            onlinePlayer.kickPlayer("Quest History purged. Please login again.");
+        }
+    }
+
     public QuestHolder getQuestHolder(Player player) {
         try {
             return getPlayer(player.getUniqueId());
