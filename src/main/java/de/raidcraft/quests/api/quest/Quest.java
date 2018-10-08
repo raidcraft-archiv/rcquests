@@ -19,11 +19,11 @@ public interface Quest extends TriggerListener<Player> {
 
         @EnumValue("NOT_STARTED")
         NOT_STARTED,
-        @EnumValue("ACTIVE")
+        @EnumValue("IN_PROGRESS")
         ACTIVE,
         @EnumValue("OBJECTIVES_COMPLETED")
         OJECTIVES_COMPLETED,
-        @EnumValue("COMPLETED")
+        @EnumValue("COMPLETE")
         COMPLETED,
         @EnumValue("ABORTED")
         ABORTED;
