@@ -115,8 +115,9 @@ public abstract class AbstractQuest implements Quest {
         if (requirements.stream().allMatch(requirement -> requirement.test(player))) {
             unregisterListeners();
             registerListeners();
+            return true;
         }
-        return true;
+        return false;
     }
 
     public void registerListeners() {
