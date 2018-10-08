@@ -92,8 +92,8 @@ public final class QuestManager implements QuestProvider, Component {
         // lets sort our loaders by priority
         queuedConfigLoaders.keySet().stream()
                 .sorted()
-                .forEachOrdered(loader -> queuedConfigLoaders.get(loader).entrySet()
-                        .forEach(entry -> loader.loadConfig(entry.getKey(), entry.getValue())));
+                .forEachOrdered(loader -> queuedConfigLoaders.get(loader)
+                        .forEach(loader::loadConfig));
         plugin.getLogger().info("... loaded " + loadedQuests.size() + " quests");
         queuedConfigLoaders.clear();
         loadedQuestFiles = true;
