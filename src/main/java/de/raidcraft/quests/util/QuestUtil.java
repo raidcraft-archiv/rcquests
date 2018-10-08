@@ -23,14 +23,14 @@ public class QuestUtil {
                 .newLine();
 
         if (!Objects.isNull(quest.getDescription())) {
-            tooltip.then(quest.getDescription()).style(ChatColor.ITALIC).color(ChatColor.GOLD);
+            tooltip.then(quest.getDescription()).style(ChatColor.ITALIC).color(ChatColor.GOLD).newLine();
         }
 
-        tooltip.lineBreak();
+        tooltip.newLine();
 
         for (PlayerObjective objective : quest.getObjectives()) {
             if (objective.getObjectiveTemplate().isHidden()) continue;
-            tooltip.then("\t* ")
+            tooltip.then("  * ").color(ChatColor.GOLD).style(ChatColor.RESET)
                     .then(objective.getObjectiveTemplate().getFriendlyName())
                     .style(objective.isCompleted() ? ChatColor.STRIKETHROUGH : ChatColor.UNDERLINE)
                     .color(objective.isActive() ? ChatColor.AQUA : ChatColor.GRAY)
