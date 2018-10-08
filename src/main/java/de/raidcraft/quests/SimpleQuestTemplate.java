@@ -5,6 +5,7 @@ import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.conversations.conversation.DefaultConversation;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import de.raidcraft.quests.api.quest.AbstractQuestTemplate;
@@ -96,20 +97,15 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     }
 
     @Override
-    protected Map<Quest.Phase, Map<String, String>> loadDefaultConversations(ConfigurationSection data) {
-        HashMap<Quest.Phase, Map<String, String>> conversations = new HashMap<>();
-        Arrays.stream(Quest.Phase.values()).forEach(phase -> conversations.put(phase, new HashMap<>()));
+    protected Map<Quest.Phase, Collection<DefaultConversation>> loadDefaultConversations(ConfigurationSection data) {
+        HashMap<Quest.Phase, Collection<DefaultConversation>> conversations = new HashMap<>();
+        Arrays.stream(Quest.Phase.values()).forEach(phase -> conversations.put(phase, new ArrayList<>()));
         if (data == null) return conversations;
 
         ConfigurationSection defaultConvs = data.getConfigurationSection("default-convs");
         if (defaultConvs != null) {
             for (Quest.Phase phase : Quest.Phase.values()) {
-                ConfigurationSection section = defaultConvs.getConfigurationSection(phase.getConfigName());
-                if (section != null) {
-                    for (String host : section.getKeys(false)) {
-                        conversations.get(phase).put(host, section.getString(host));
-                    }
-                }
+                conversations.get(phase).addAll(DefaultConversation.fromConfig(defaultConvs.getConfigurationSection(phase.getConfigName())));
             }
         }
 

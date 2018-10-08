@@ -95,22 +95,10 @@ public abstract class AbstractQuest implements Quest {
     protected void updateDefaultConversations(Phase phase) {
         // remove all old phases
         for (Phase otherPhase : Phase.values()) {
-            getTemplate().getDefaultConversations().get(otherPhase).forEach((hostId, conv) -> {
-                Optional<ConversationTemplate> template = Conversations.getConversationTemplate(conv);
-                Optional<ConversationHost<?>> conversationHost = Conversations.getConversationHost(hostId);
-                template.ifPresent(conversationTemplate -> conversationHost.ifPresent(host -> host.unsetConversation(getPlayer(), conversationTemplate)));
-                if (!template.isPresent()) RaidCraft.LOGGER.warning("Invalid default conversation template " + conv + " for host " + hostId + " in quest " + getFullName());
-                if (!conversationHost.isPresent()) RaidCraft.LOGGER.warning("Invalid default conversation host " + hostId + " in quest " + getFullName());
-            });
+            getTemplate().getDefaultConversations().get(otherPhase).forEach(defaultConversation -> defaultConversation.unsetConversation(getPlayer()));
         }
         // add the new phase
-        getTemplate().getDefaultConversations().get(phase).forEach((hostId, conv) -> {
-            Optional<ConversationTemplate> template = Conversations.getConversationTemplate(conv);
-            Optional<ConversationHost<?>> conversationHost = Conversations.getConversationHost(hostId);
-            template.ifPresent(conversationTemplate -> conversationHost.ifPresent(host -> host.setConversation(getPlayer(), conversationTemplate)));
-            if (!template.isPresent()) RaidCraft.LOGGER.warning("Invalid default conversation template " + conv + " for host " + hostId + " in quest " + getFullName());
-            if (!conversationHost.isPresent()) RaidCraft.LOGGER.warning("Invalid default conversation host " + hostId + " in quest " + getFullName());
-        });
+        getTemplate().getDefaultConversations().get(phase).forEach(defaultConversation -> defaultConversation.setConversation(getPlayer()));
     }
 
     @Override

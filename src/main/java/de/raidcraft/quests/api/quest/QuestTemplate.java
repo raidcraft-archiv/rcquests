@@ -4,6 +4,7 @@ import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.api.action.trigger.TriggerListener;
+import de.raidcraft.api.conversations.conversation.DefaultConversation;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import org.bukkit.entity.Player;
 
@@ -56,5 +57,5 @@ public interface QuestTemplate extends TriggerListener<Player> {
 
     Collection<Action<Player>> getCompletionActions();
 
-    Map<Quest.Phase, Map<String, String>> getDefaultConversations();
+    Map<Quest.Phase, Collection<DefaultConversation>> getDefaultConversations();
 }

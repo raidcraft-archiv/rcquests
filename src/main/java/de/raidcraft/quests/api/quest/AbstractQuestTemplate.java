@@ -5,6 +5,7 @@ import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.conversations.conversation.DefaultConversation;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -43,7 +44,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     private final Collection<TriggerFactory> activeTrigger;
     private final Collection<TriggerFactory> completionTrigger;
     // list of default conversations per phase and host - PHASE, HOST -> CONV
-    private final Map<Quest.Phase, Map<String, String>> defaultConversations;
+    private final Map<Quest.Phase, Collection<DefaultConversation>> defaultConversations;
 
     public AbstractQuestTemplate(String id, ConfigurationSection data) {
 
@@ -92,5 +93,5 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
 
     protected abstract Collection<Action<Player>> loadActions(ConfigurationSection data);
 
-    protected abstract Map<Quest.Phase, Map<String, String>> loadDefaultConversations(ConfigurationSection data);
+    protected abstract Map<Quest.Phase, Collection<DefaultConversation>> loadDefaultConversations(ConfigurationSection data);
 }
