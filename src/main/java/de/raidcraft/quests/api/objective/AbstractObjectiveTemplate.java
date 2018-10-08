@@ -3,6 +3,8 @@ package de.raidcraft.quests.api.objective;
 import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.conversations.conversation.DefaultConversation;
+import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -12,6 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author Silthus
@@ -35,6 +38,8 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
     private final Collection<Action<Player>> actions;
     private final Collection<Action<Player>> startActions;
     private final Collection<TaskTemplate> tasks;
+    private final Map<Quest.Phase, Collection<DefaultConversation>> defaultConversations;
+    private final Map<Quest.Phase, Boolean> defaultConversationsClearingMap;
 
     public AbstractObjectiveTemplate(int id, QuestTemplate questTemplate, ConfigurationSection data) {
 
@@ -52,6 +57,8 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
         this.startActions = loadStartActions(data.getConfigurationSection("start-actions"));
         this.actions = loadActions(data.getConfigurationSection("complete-actions"));
         this.tasks = loadTasks(data.getConfigurationSection("tasks"));
+        this.defaultConversations = loadDefaultConversations(data.getConfigurationSection("default-convs"));
+        this.defaultConversationsClearingMap = loadDefaultConversationsClearingMap(data.getConfigurationSection("default-convs"));
     }
 
     protected abstract Collection<Requirement<Player>> loadRequirements(ConfigurationSection data);
@@ -63,6 +70,10 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
     protected abstract Collection<Action<Player>> loadStartActions(ConfigurationSection data);
 
     protected abstract Collection<TaskTemplate> loadTasks(ConfigurationSection data);
+
+    protected abstract Map<Quest.Phase, Collection<DefaultConversation>> loadDefaultConversations(ConfigurationSection data);
+
+    protected abstract Map<Quest.Phase, Boolean> loadDefaultConversationsClearingMap(ConfigurationSection data);
 
     @Override
     public int compareTo(@NonNull ObjectiveTemplate o) {

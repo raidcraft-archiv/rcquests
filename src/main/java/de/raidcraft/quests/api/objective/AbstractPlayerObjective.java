@@ -74,6 +74,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
                     ObjectiveStartedEvent event = new ObjectiveStartedEvent(this);
                     RaidCraft.callEvent(event);
                     save();
+                    updateDefaultConversations();
                 }
                 // register our start trigger
                 getObjectiveTemplate().getTrigger().forEach(factory -> factory.registerListener(this));
@@ -103,6 +104,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
         }
         if (hasCompletedAllTasks()) {
             unregisterTaskListeners();
+            this.updateDefaultConversations();
             return;
         }
 
@@ -149,6 +151,16 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     }
 
     @Override
+    public Quest.Phase getPhase() {
+        if (isAborted()) return Quest.Phase.ABORTED;
+        if (isCompleted()) return Quest.Phase.COMPLETED;
+        if (hasCompletedAllTasks()) return Quest.Phase.OJECTIVES_COMPLETED;
+        if (isActive()) return Quest.Phase.ACTIVE;
+        if (isStarted()) return Quest.Phase.ACTIVE;
+        return Quest.Phase.NOT_STARTED;
+    }
+
+    @Override
     public boolean isCompleted() {
 
         return completionTime != null;
@@ -183,9 +195,22 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
         unregisterListeners();
         this.completionTime = new Timestamp(System.currentTimeMillis());
         save();
+        // set our default conversations
+        this.updateDefaultConversations();
         // lets execute all objective actions
         getObjectiveTemplate().getActions().forEach(action -> action.accept(getQuestHolder().getPlayer()));
         getQuest().onObjectCompletion(this);
+    }
+
+    protected void updateDefaultConversations() {
+        if (getObjectiveTemplate().getDefaultConversationsClearingMap().get(getPhase())) {
+            for (Quest.Phase phase : Quest.Phase.values()) {
+                getObjectiveTemplate().getDefaultConversations().get(phase)
+                        .forEach(defaultConversation -> defaultConversation.unsetConversation(getQuestHolder().getPlayerId()));
+            }
+        }
+        getObjectiveTemplate().getDefaultConversations().get(getPhase())
+                .forEach(defaultConversation -> defaultConversation.setConversation(getQuestHolder().getPlayerId()));
     }
 
     @Override

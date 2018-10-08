@@ -5,15 +5,17 @@ import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.conversations.conversation.DefaultConversation;
 import de.raidcraft.quests.api.objective.AbstractObjectiveTemplate;
 import de.raidcraft.quests.api.objective.TaskTemplate;
+import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.util.QuestUtil;
 import de.raidcraft.util.ConfigUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * @author Silthus
@@ -63,5 +65,16 @@ public class SimpleObjectiveTemplate extends AbstractObjectiveTemplate {
         }
 
         return tasks;
+    }
+
+    @Override
+    protected Map<Quest.Phase, Collection<DefaultConversation>> loadDefaultConversations(ConfigurationSection data) {
+
+        return QuestUtil.loadDefaultConversations(data);
+    }
+
+    @Override
+    protected Map<Quest.Phase, Boolean> loadDefaultConversationsClearingMap(ConfigurationSection data) {
+        return QuestUtil.loadDefaultConversationsClearingMap(data);
     }
 }

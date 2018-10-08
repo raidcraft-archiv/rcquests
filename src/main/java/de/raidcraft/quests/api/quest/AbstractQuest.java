@@ -93,9 +93,10 @@ public abstract class AbstractQuest implements Quest {
     }
 
     protected void updateDefaultConversations(Phase phase) {
-        // remove all old phases
-        for (Phase otherPhase : Phase.values()) {
-            getTemplate().getDefaultConversations().get(otherPhase).forEach(defaultConversation -> defaultConversation.unsetConversation(getPlayer()));
+        if (getTemplate().getDefaultConversationsClearingMap().get(phase)) {
+            for (Phase otherPhase : Phase.values()) {
+                getTemplate().getDefaultConversations().get(otherPhase).forEach(defaultConversation -> defaultConversation.unsetConversation(getPlayer()));
+            }
         }
         // add the new phase
         getTemplate().getDefaultConversations().get(phase).forEach(defaultConversation -> defaultConversation.setConversation(getPlayer()));

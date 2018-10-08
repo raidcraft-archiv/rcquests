@@ -37,6 +37,8 @@ public interface PlayerObjective extends TriggerListener<Player>, Comparable<Pla
 
     Timestamp getAbortionTime();
 
+    Quest.Phase getPhase();
+
     boolean isActive();
 
     boolean isStarted();

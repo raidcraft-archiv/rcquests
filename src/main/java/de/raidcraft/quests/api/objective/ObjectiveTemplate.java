@@ -3,10 +3,13 @@ package de.raidcraft.quests.api.objective;
 import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.conversations.conversation.DefaultConversation;
+import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * @author Silthus
@@ -70,4 +73,13 @@ public interface ObjectiveTemplate extends Comparable<ObjectiveTemplate> {
     Collection<Action<Player>> getStartActions();
 
     Collection<TaskTemplate> getTasks();
+
+    /**
+     * Returns all {@link Quest.Phase}s and if all conversations should be cleared in this phase.
+     *
+     * @return map of phases and if conversations should be cleared.
+     */
+    Map<Quest.Phase, Boolean> getDefaultConversationsClearingMap();
+
+    Map<Quest.Phase, Collection<DefaultConversation>> getDefaultConversations();
 }

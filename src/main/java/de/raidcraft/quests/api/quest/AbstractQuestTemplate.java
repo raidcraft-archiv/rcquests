@@ -45,6 +45,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     private final Collection<TriggerFactory> completionTrigger;
     // list of default conversations per phase and host - PHASE, HOST -> CONV
     private final Map<Quest.Phase, Collection<DefaultConversation>> defaultConversations;
+    private final Map<Quest.Phase, Boolean> defaultConversationsClearingMap;
 
     public AbstractQuestTemplate(String id, ConfigurationSection data) {
 
@@ -70,6 +71,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.startActions = ActionAPI.createActions(data.getConfigurationSection("start-actions"), Player.class);
         this.completionActions = loadActions(data.getConfigurationSection("complete-actions"));
         this.defaultConversations = loadDefaultConversations(data.getConfigurationSection("default-convs"));
+        this.defaultConversationsClearingMap = loadDefaultConversationsClearingMap(data.getConfigurationSection("default-convs"));
     }
 
     @Override
@@ -94,4 +96,6 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     protected abstract Collection<Action<Player>> loadActions(ConfigurationSection data);
 
     protected abstract Map<Quest.Phase, Collection<DefaultConversation>> loadDefaultConversations(ConfigurationSection data);
+
+    protected abstract Map<Quest.Phase, Boolean> loadDefaultConversationsClearingMap(ConfigurationSection section);
 }

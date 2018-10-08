@@ -102,13 +102,26 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
         Arrays.stream(Quest.Phase.values()).forEach(phase -> conversations.put(phase, new ArrayList<>()));
         if (data == null) return conversations;
 
-        ConfigurationSection defaultConvs = data.getConfigurationSection("default-convs");
-        if (defaultConvs != null) {
-            for (Quest.Phase phase : Quest.Phase.values()) {
-                conversations.get(phase).addAll(DefaultConversation.fromConfig(defaultConvs.getConfigurationSection(phase.getConfigName())));
-            }
+        for (Quest.Phase phase : Quest.Phase.values()) {
+            conversations.get(phase).addAll(DefaultConversation.fromConfig(data.getConfigurationSection(phase.getConfigName())));
         }
 
         return conversations;
+    }
+
+    @Override
+    protected Map<Quest.Phase, Boolean> loadDefaultConversationsClearingMap(ConfigurationSection section) {
+        HashMap<Quest.Phase, Boolean> clearingMap = new HashMap<>();
+        Arrays.stream(Quest.Phase.values()).forEach(phase -> clearingMap.put(phase, true));
+        if (section == null) return clearingMap;
+
+        for (Quest.Phase phase : Quest.Phase.values()) {
+            ConfigurationSection phaseSection = section.getConfigurationSection(phase.getConfigName());
+            if (phaseSection != null) {
+                clearingMap.put(phase, phaseSection.getBoolean("clear", true));
+            }
+        }
+
+        return clearingMap;
     }
 }

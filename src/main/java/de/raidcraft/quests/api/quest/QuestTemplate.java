@@ -57,5 +57,12 @@ public interface QuestTemplate extends TriggerListener<Player> {
 
     Collection<Action<Player>> getCompletionActions();
 
+    /**
+     * Returns all {@link Quest.Phase}s and if all conversations should be cleared in this phase.
+     *
+     * @return map of phases and if conversations should be cleared.
+     */
+    Map<Quest.Phase, Boolean> getDefaultConversationsClearingMap();
+
     Map<Quest.Phase, Collection<DefaultConversation>> getDefaultConversations();
 }
