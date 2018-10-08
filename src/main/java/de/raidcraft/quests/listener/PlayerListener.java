@@ -8,6 +8,7 @@ import de.raidcraft.quests.QuestPool;
 import de.raidcraft.quests.api.events.*;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.PlayerObjective;
+import de.raidcraft.quests.api.objective.PlayerTask;
 import de.raidcraft.quests.util.QuestUtil;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.fanciful.FancyMessage;
@@ -72,18 +73,18 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onObjectiveStarted(ObjectiveStartedEvent event) {
 
         if (event.getObjective().getObjectiveTemplate().isSilent()) return;
         FancyMessage msg = QuestUtil.getQuestTooltip(new FancyMessage(""), event.getObjective().getQuest());
         msg.then(": ").color(ChatColor.YELLOW)
                 .then(event.getObjective().getObjectiveTemplate().getFriendlyName()).color(ChatColor.DARK_AQUA)
-                //.tooltip(event.getObjective().getObjectiveTemplate().getDescription().split("|"))
+                .tooltip(event.getObjective().getObjectiveTemplate().getDescription())
                 .send(event.getObjective().getQuest().getPlayer());
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onObjectiveComplete(ObjectiveCompletedEvent event) {
 
         if (event.getObjective().getObjectiveTemplate().isSilent()) return;
@@ -92,12 +93,12 @@ public class PlayerListener implements Listener {
         msg.then(": ").color(ChatColor.YELLOW)
                 .then("Aufgabe ").color(ChatColor.GREEN)
                 .then(objective.getObjectiveTemplate().getFriendlyName()).color(ChatColor.DARK_AQUA)
-                //.tooltip(objective.getObjectiveTemplate().getDescription().split("|"))
+                .tooltip(objective.getObjectiveTemplate().getDescription())
                 .then(" abgeschlossen").color(ChatColor.GREEN)
                 .send(event.getObjective().getQuest().getPlayer());
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onQuestStart(QuestStartedEvent event) {
 
         FancyMessage msg = new FancyMessage("Quest ").color(ChatColor.YELLOW);
@@ -107,7 +108,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onQuestComplete(QuestCompleteEvent event) {
+    public void onQuestComplete(QuestCompletedEvent event) {
 
         if (event.getQuest().getTemplate().isSilent()) return;
         FancyMessage msg = new FancyMessage(event.getQuest().getPlayer().getName()).color(ChatColor.AQUA)
@@ -127,12 +128,25 @@ public class PlayerListener implements Listener {
                 .send(event.getQuest().getPlayer());
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onQuestCompleted(QuestPoolQuestCompletedEvent event) {
 
         Optional<QuestPool> questPool = plugin.getQuestManager().getQuestPool(event.getQuestPool().getQuestPool());
-        if (questPool.isPresent()) {
-            questPool.get().getRewardActions().forEach(playerAction -> playerAction.accept(event.getQuest().getPlayer()));
-        }
+        questPool.ifPresent(questPool1 -> questPool1.getRewardActions()
+                .forEach(playerAction -> playerAction.accept(event.getQuest().getPlayer())));
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onTaskCompletion(TaskCompletedEvent event) {
+
+        if (event.getTask().getTaskTemplate().isSilent()) return;
+        PlayerTask task = event.getTask();
+        FancyMessage msg = QuestUtil.getQuestTooltip(new FancyMessage(""), task.getQuest());
+        msg.then(": ").color(ChatColor.YELLOW)
+                .then("Aufgabe ").color(ChatColor.GREEN)
+                .then(task.getTaskTemplate().getFriendlyName()).color(ChatColor.DARK_AQUA)
+                .tooltip(task.getTaskTemplate().getDescription())
+                .then(" abgeschlossen").color(ChatColor.GREEN)
+                .send(task.getQuest().getPlayer());
     }
 }

@@ -17,27 +17,29 @@ public class QuestUtil {
 
     public static FancyMessage getQuestTooltip(FancyMessage msg, Quest quest) {
 
-        List<FancyMessage> tooltip = new ArrayList<>();
-        tooltip.add(new FancyMessage(quest.getTemplate().getFriendlyName()).color(ChatColor.YELLOW));
+        FancyMessage tooltip = new FancyMessage();
+
+        tooltip.then(quest.getTemplate().getFriendlyName()).color(ChatColor.GOLD)
+                .newLine();
 
         if (!Objects.isNull(quest.getDescription())) {
-            String[] lines = quest.getDescription().split("\\|");
-            for (String line : lines) {
-                tooltip.add(new FancyMessage(line).style(ChatColor.ITALIC).color(ChatColor.GOLD));
-            }
+            tooltip.then(quest.getDescription()).style(ChatColor.ITALIC).color(ChatColor.GOLD);
         }
 
-        List<PlayerObjective> objectives = quest.getObjectives();
-        tooltip.addAll(objectives.stream()
-                .filter(objective -> !objective.getObjectiveTemplate().isHidden())
-                .map(objective -> new FancyMessage("  * ")
-                        .then(objective.getObjectiveTemplate().getFriendlyName())
-                        .style(objective.isCompleted() ? ChatColor.STRIKETHROUGH : ChatColor.UNDERLINE)
-                        .color(objective.isActive() ? ChatColor.AQUA : ChatColor.GRAY)).collect(Collectors.toList()));
+        tooltip.lineBreak();
+
+        for (PlayerObjective objective : quest.getObjectives()) {
+            if (objective.getObjectiveTemplate().isHidden()) continue;
+            tooltip.then("\t* ")
+                    .then(objective.getObjectiveTemplate().getFriendlyName())
+                    .style(objective.isCompleted() ? ChatColor.STRIKETHROUGH : ChatColor.UNDERLINE)
+                    .color(objective.isActive() ? ChatColor.AQUA : ChatColor.GRAY)
+                    .newLine();
+        }
 
         return msg.then("[").color(ChatColor.DARK_BLUE)
                 .then(quest.getTemplate().getFriendlyName()).color(ChatColor.GOLD)
-                .formattedTooltip(tooltip.toArray(new FancyMessage[tooltip.size()]))
+                .formattedTooltip(tooltip)
                 .then("]").color(ChatColor.DARK_BLUE);
     }
 
