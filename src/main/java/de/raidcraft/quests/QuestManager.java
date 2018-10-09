@@ -13,6 +13,7 @@ import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerQuest;
+import de.raidcraft.quests.ui.QuestUI;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.ConfigUtil;
 import io.ebean.EbeanServer;
@@ -382,5 +383,10 @@ public final class QuestManager implements QuestProvider, Component {
     public void clearCache(Player player) {
 
         questPlayers.remove(player.getUniqueId());
+    }
+
+    public void openQuestLog(Player player) {
+        QuestHolder questHolder = getQuestHolder(player);
+        new QuestUI(questHolder, questHolder.getActiveQuests(), QuestUI.Type.ACTIVE).open();
     }
 }
