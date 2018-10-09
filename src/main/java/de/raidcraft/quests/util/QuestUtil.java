@@ -4,8 +4,11 @@ import de.raidcraft.api.conversations.conversation.DefaultConversation;
 import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.util.fanciful.FancyMessage;
-import org.bukkit.ChatColor;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.configuration.ConfigurationSection;
+import xyz.upperlevel.spigot.book.BookUtil;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -15,8 +18,30 @@ import java.util.stream.Collectors;
  */
 public class QuestUtil {
 
+    /**
+     * Creates a new quest tooltip and appends it to the given message.
+     *
+     * @param msg to append tooltip to
+     * @param quest to create tooltip from
+     * @return quest tooltip with name
+     */
     public static FancyMessage getQuestTooltip(FancyMessage msg, Quest quest) {
 
+        FancyMessage tooltip = getQuestTooltip(quest);
+
+        return msg.then("[").color(ChatColor.DARK_BLUE)
+                .then(quest.getTemplate().getFriendlyName()).color(ChatColor.GOLD)
+                .formattedTooltip(tooltip)
+                .then("]").color(ChatColor.DARK_BLUE);
+    }
+
+    /**
+     * Gets a quest tooltip not wrapped in another text. Just the tooltip.
+     *
+     * @param quest to get tooltip for
+     * @return quest tooltip
+     */
+    public static FancyMessage getQuestTooltip(Quest quest) {
         FancyMessage tooltip = new FancyMessage();
 
         tooltip.then(quest.getTemplate().getFriendlyName()).color(ChatColor.GOLD)
@@ -37,10 +62,7 @@ public class QuestUtil {
                     .newLine();
         }
 
-        return msg.then("[").color(ChatColor.DARK_BLUE)
-                .then(quest.getTemplate().getFriendlyName()).color(ChatColor.GOLD)
-                .formattedTooltip(tooltip)
-                .then("]").color(ChatColor.DARK_BLUE);
+        return tooltip;
     }
 
     public static Map<Quest.Phase, Collection<DefaultConversation>> loadDefaultConversations(ConfigurationSection data) {

@@ -1,5 +1,6 @@
 package de.raidcraft.quests.listener;
 
+import com.google.common.base.Strings;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemType;
@@ -12,6 +13,9 @@ import de.raidcraft.quests.api.objective.PlayerTask;
 import de.raidcraft.quests.util.QuestUtil;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.fanciful.FancyMessage;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
@@ -20,6 +24,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import xyz.upperlevel.spigot.book.BookUtil;
 
 import java.util.Optional;
 
@@ -77,11 +82,23 @@ public class PlayerListener implements Listener {
     public void onObjectiveStarted(ObjectiveStartedEvent event) {
 
         if (event.getObjective().getObjectiveTemplate().isSilent()) return;
-        FancyMessage msg = QuestUtil.getQuestTooltip(new FancyMessage(""), event.getObjective().getQuest());
-        msg.then(": ").color(ChatColor.YELLOW)
-                .then(event.getObjective().getObjectiveTemplate().getFriendlyName()).color(ChatColor.DARK_AQUA)
-                .tooltip(event.getObjective().getObjectiveTemplate().getDescription())
-                .send(event.getObjective().getQuest().getPlayer());
+        if (event.getObjective().getQuest().getObjectives().get(0).equals(event.getObjective())) return;
+
+        FancyMessage message = new FancyMessage("[").color(ChatColor.DARK_GRAY)
+                .text(event.getObjective().getQuest().getFriendlyName()).color(ChatColor.GREEN)
+                .formattedTooltip(QuestUtil.getQuestTooltip(event.getObjective().getQuest()))
+                .text("]").color(ChatColor.DARK_GRAY)
+                .text(": ").color(ChatColor.YELLOW)
+                .text("Aufgabe ").color(ChatColor.YELLOW)
+                .text(event.getObjective().getObjectiveTemplate().getFriendlyName()).color(ChatColor.AQUA);
+
+        if (!Strings.isNullOrEmpty(event.getObjective().getObjectiveTemplate().getDescription())) {
+            message.formattedTooltip(new FancyMessage(event.getObjective().getObjectiveTemplate().getDescription()).color(ChatColor.GRAY));
+        }
+
+        message.text(" angenommen.").color(ChatColor.YELLOW);
+
+        event.getObjective().getQuest().getPlayer().spigot().sendMessage(message.create());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -101,10 +118,13 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onQuestStart(QuestStartedEvent event) {
 
-        FancyMessage msg = new FancyMessage("Quest ").color(ChatColor.YELLOW);
-        msg = QuestUtil.getQuestTooltip(msg, event.getQuest());
-        msg.then(" angenommen.").color(ChatColor.YELLOW)
-                .send(event.getQuest().getPlayer());
+        FancyMessage text = new FancyMessage("Quest").color(ChatColor.YELLOW)
+                .text(" [").color(ChatColor.DARK_GRAY)
+                .text(event.getQuest().getFriendlyName()).color(ChatColor.GREEN)
+                .formattedTooltip(QuestUtil.getQuestTooltip(event.getQuest()))
+                .text("]").color(ChatColor.DARK_GRAY)
+                .text(" angenommen.").color(ChatColor.YELLOW);
+        event.getQuest().getPlayer().spigot().sendMessage(text.create());
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
@@ -141,12 +161,13 @@ public class PlayerListener implements Listener {
 
         if (event.getTask().getTaskTemplate().isSilent()) return;
         PlayerTask task = event.getTask();
-        FancyMessage msg = QuestUtil.getQuestTooltip(new FancyMessage(""), task.getQuest());
-        msg.then(": ").color(ChatColor.YELLOW)
+        FancyMessage message = new FancyMessage(task.getQuest().getFriendlyName()).color(ChatColor.GOLD).formattedTooltip(QuestUtil.getQuestTooltip(task.getQuest())
+                .then(": ")
+                .color(ChatColor.YELLOW)
                 .then("Aufgabe ").color(ChatColor.GREEN)
                 .then(task.getTaskTemplate().getFriendlyName()).color(ChatColor.DARK_AQUA)
                 .tooltip(task.getTaskTemplate().getDescription())
-                .then(" abgeschlossen").color(ChatColor.GREEN)
-                .send(task.getQuest().getPlayer());
+                .then(" abgeschlossen").color(ChatColor.GREEN));
+        event.getPlayer().spigot().sendMessage(message.create());
     }
 }

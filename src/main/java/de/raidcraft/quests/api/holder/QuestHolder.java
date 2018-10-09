@@ -88,4 +88,10 @@ public interface QuestHolder {
     Quest startQuest(QuestTemplate template) throws QuestException;
 
     void save();
+
+    /**
+     * Unregisters all listeners of this {@link Player}.
+     * Should be called when the player logs out or clears his cache.
+     */
+    void unregister();
 }

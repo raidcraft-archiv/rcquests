@@ -1,5 +1,6 @@
 package de.raidcraft.quests.ui;
 
+import com.google.common.base.Strings;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.items.commands.BookUtilCommands;
 import de.raidcraft.quests.QuestPlugin;
@@ -7,6 +8,7 @@ import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.api.objective.PlayerTask;
 import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.quests.util.QuestUtil;
 import net.md_5.bungee.api.chat.BaseComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -50,8 +52,6 @@ public class QuestUI implements Listener {
     private final QuestHolder holder;
     private final List<Quest> quests;
     private final Type type;
-    private final Inventory inventory;
-    private final QuestBook[] questBooks;
     private final ItemStack questBook;
 
     public QuestUI(QuestHolder holder, List<Quest> quests, Type type) {
@@ -59,47 +59,52 @@ public class QuestUI implements Listener {
         this.holder = holder;
         this.quests = quests;
         this.type = type;
-        this.questBooks = new QuestBook[quests.size()];
-        this.inventory = Bukkit.createInventory(
-                holder.getPlayer(),
-                ((RaidCraft.getComponent(QuestPlugin.class).getConfiguration().maxQuests + 9) / 9) * 9,
-                type.getInventoryName());
-        // lets fill the inventory with our quest books
-        for (int i = 0; i < quests.size(); i++) {
-            QuestBook questBook = new QuestBook(quests.get(i));
-            inventory.setItem(i, questBook);
-            questBooks[i] = questBook;
-        }
 
         BookUtil.BookBuilder book = BookUtil.writtenBook().title("Quest Buch");
 
-        BookUtil.PageBuilder index = BookUtil.PageBuilder.of(BookUtil.TextBuilder.of("Quests").color(ChatColor.GOLD).build())
+        BookUtil.PageBuilder index = BookUtil.PageBuilder.of(BookUtil.TextBuilder.of("Aktive Quests").color(ChatColor.GOLD).build())
                 .newLine().newLine();
         ArrayList<BookUtil.PageBuilder> pages = new ArrayList<>();
         for (int i = 0; i < quests.size(); i++) {
             Quest quest = quests.get(i);
-            index.add(BookUtil.TextBuilder.of(quest.getFriendlyName()).color(ChatColor.AQUA)
-                    .onHover(BookUtil.HoverAction.showText(ChatColor.GRAY + "Klicke auf den Titel der Quest um zur Seite im Buch zu springen."))
+            index.add(BookUtil.TextBuilder.of(quest.getFriendlyName()).color(ChatColor.DARK_GRAY).style(ChatColor.UNDERLINE)
+                    .onHover(BookUtil.HoverAction.showText(QuestUtil.getQuestTooltip(quest).create()))
                     .onClick(BookUtil.ClickAction.changePage(i + 2))
                     .build()).newLine();
-            BookUtil.PageBuilder questText = BookUtil.PageBuilder.of(BookUtil.TextBuilder.of("Zurück zur Übersicht").color(ChatColor.GRAY).style(ChatColor.ITALIC).onClick(BookUtil.ClickAction.changePage(1)).build())
+            BookUtil.PageBuilder questText = BookUtil.PageBuilder.of(BookUtil.TextBuilder.of("Zur Übersicht").color(ChatColor.GRAY).style(ChatColor.ITALIC).style(ChatColor.UNDERLINE)
+                    .onClick(BookUtil.ClickAction.changePage(1)).build())
+                    .newLine()
                     .newLine()
                     .add(BookUtil.TextBuilder.of(quest.getFriendlyName()).color(ChatColor.GOLD).build())
-                    .newLine()
                     .newLine();
+            if (!Strings.isNullOrEmpty(quest.getDescription())) {
+                questText.add(BookUtil.TextBuilder.of(quest.getDescription()).color(ChatColor.GRAY).build()).newLine();
+            }
+            questText.newLine();
             for (PlayerObjective objective : quest.getObjectives()) {
-                BookUtil.PageBuilder objectiveText = questText.add(BookUtil.TextBuilder.of("  - ").color(ChatColor.GOLD).text(objective.getObjectiveTemplate().getFriendlyName())
-                        .color(objective.isCompleted() ? ChatColor.DARK_GREEN : objective.isActive() ? ChatColor.AQUA : ChatColor.DARK_GRAY).build())
-                        .newLine()
-                        .add(BookUtil.TextBuilder.of("    " + objective.getObjectiveTemplate().getDescription()).color(ChatColor.GRAY).style(ChatColor.ITALIC).build())
-                        .newLine();
-                for (PlayerTask playerTask : objective.getTasks()) {
-                    objectiveText.add(BookUtil.TextBuilder.of("     > ").color(ChatColor.GOLD).text(playerTask.getTaskTemplate().getFriendlyName())
-                            .color(playerTask.isCompleted() ? ChatColor.DARK_GREEN : playerTask.isActive() ? ChatColor.AQUA : ChatColor.DARK_GRAY).build())
-                            .add(BookUtil.TextBuilder.of("       " + playerTask.getTaskTemplate().getDescription()).color(ChatColor.GRAY).style(ChatColor.ITALIC).build())
-                            .newLine();
+
+                if (!objective.isActive() && objective.getObjectiveTemplate().isHidden()) continue;
+
+                BookUtil.TextBuilder objText;
+                if (objective.isCompleted()) {
+                    objText = BookUtil.TextBuilder.of("  - ").color(ChatColor.GRAY)
+                            .text(objective.getObjectiveTemplate().getFriendlyName()).style(ChatColor.STRIKETHROUGH).color(ChatColor.GRAY);
+
+
+                } else if (objective.isActive()) {
+                    objText = BookUtil.TextBuilder.of("  - ").color(ChatColor.DARK_GREEN)
+                            .text(objective.getObjectiveTemplate().getFriendlyName()).color(ChatColor.DARK_GRAY);
+                } else {
+                    objText = BookUtil.TextBuilder.of("  - ").color(ChatColor.GRAY)
+                            .text(objective.getObjectiveTemplate().getFriendlyName()).color(ChatColor.GRAY);
                 }
-                questText.add(objectiveText.build());
+
+                String description = objective.getObjectiveTemplate().getDescription();
+                if (!Strings.isNullOrEmpty(description)) {
+                    objText.onHover(BookUtil.HoverAction.showText(BookUtil.TextBuilder.of(description).color(ChatColor.GRAY).build()));
+                }
+
+                questText.add(objText.build());
             }
             pages.add(questText);
         }
@@ -110,31 +115,13 @@ public class QuestUI implements Listener {
         this.questBook = book.build();
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
-    public void onInventoryClick(InventoryClickEvent event) {
-
-        if (!event.getWhoClicked().equals(holder.getPlayer()) || !event.getInventory().equals(inventory)) {
-            return;
-        }
-        if (0 <= event.getSlot() && event.getSlot() < questBooks.length) {
-            questBooks[event.getSlot()].open();
-        }
-        event.setCancelled(true);
-    }
 
     public void open() {
 
         BookUtil.openPlayer(getHolder().getPlayer(), questBook);
-//        holder.getPlayer().openInventory(inventory);
-//        // also register ourselves as event listener to catch the clicks
-//        RaidCraft.getComponent(QuestPlugin.class).registerEvents(this);
     }
 
     public void close() {
-
-//        holder.getPlayer().closeInventory();
-//        // dont forget to unregister our listener
-//        HandlerList.unregisterAll(this);
     }
 
     public QuestHolder getHolder() {

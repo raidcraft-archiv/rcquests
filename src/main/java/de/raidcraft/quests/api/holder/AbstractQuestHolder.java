@@ -1,6 +1,7 @@
 package de.raidcraft.quests.api.holder;
 
 import de.raidcraft.api.quests.QuestException;
+import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
 import de.raidcraft.quests.ui.QuestInventory;
@@ -132,5 +133,15 @@ public abstract class AbstractQuestHolder implements QuestHolder {
     public void removeQuest(Quest quest) {
 
         activeQuests.remove(quest.getFullName());
+        unregister(quest);
+    }
+
+    @Override
+    public void unregister() {
+        getAllQuests().forEach(this::unregister);
+    }
+
+    private void unregister(Quest quest) {
+        quest.getObjectives().forEach(PlayerObjective::unregisterListeners);
     }
 }
