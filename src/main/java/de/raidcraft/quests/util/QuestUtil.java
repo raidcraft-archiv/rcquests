@@ -25,7 +25,7 @@ public class QuestUtil {
      */
     public static FancyMessage getQuestTooltip(FancyMessage msg, Quest quest) {
 
-        return msg.append(getQuestTag(quest));
+        return msg.append(getQuestTag(quest)).then().style(org.bukkit.ChatColor.RESET);
     }
 
     /**
@@ -62,7 +62,7 @@ public class QuestUtil {
         return new FancyMessage("[").color(org.bukkit.ChatColor.DARK_GRAY)
                 .text(quest.getFriendlyName()).color(org.bukkit.ChatColor.GREEN)
                 .formattedTooltip(QuestUtil.getQuestTooltip(quest))
-                .text("]").color(org.bukkit.ChatColor.DARK_GRAY);
+                .text("]").color(org.bukkit.ChatColor.DARK_GRAY).then().style(org.bukkit.ChatColor.RESET);
     }
 
     public static FancyMessage getQuestObjectiveTag(PlayerObjective objective) {
@@ -81,7 +81,7 @@ public class QuestUtil {
             message.formattedTooltip(new FancyMessage(description).color(org.bukkit.ChatColor.GRAY));
         }
 
-        return message;
+        return message.then().style(org.bukkit.ChatColor.RESET);
     }
 
     public static FancyMessage getQuestTaskTag(PlayerTask task) {
@@ -100,7 +100,7 @@ public class QuestUtil {
             message.formattedTooltip(new FancyMessage(description).color(org.bukkit.ChatColor.GRAY));
         }
 
-        return message;
+        return message.then().style(org.bukkit.ChatColor.RESET);
     }
 
     public static Map<Quest.Phase, Collection<DefaultConversation>> loadDefaultConversations(ConfigurationSection data) {
