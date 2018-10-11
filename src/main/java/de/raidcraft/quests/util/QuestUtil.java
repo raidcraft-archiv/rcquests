@@ -1,17 +1,15 @@
 package de.raidcraft.quests.util;
 
+import com.google.common.base.Strings;
 import de.raidcraft.api.conversations.conversation.DefaultConversation;
 import de.raidcraft.quests.api.objective.PlayerObjective;
+import de.raidcraft.quests.api.objective.PlayerTask;
 import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.util.fanciful.FancyMessage;
 import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.configuration.ConfigurationSection;
-import xyz.upperlevel.spigot.book.BookUtil;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Silthus
@@ -27,12 +25,7 @@ public class QuestUtil {
      */
     public static FancyMessage getQuestTooltip(FancyMessage msg, Quest quest) {
 
-        FancyMessage tooltip = getQuestTooltip(quest);
-
-        return msg.then("[").color(ChatColor.DARK_BLUE)
-                .then(quest.getTemplate().getFriendlyName()).color(ChatColor.GOLD)
-                .formattedTooltip(tooltip)
-                .then("]").color(ChatColor.DARK_BLUE);
+        return msg.append(getQuestTag(quest));
     }
 
     /**
@@ -63,6 +56,51 @@ public class QuestUtil {
         }
 
         return tooltip;
+    }
+
+    public static FancyMessage getQuestTag(Quest quest) {
+        return new FancyMessage("[").color(org.bukkit.ChatColor.DARK_GRAY)
+                .text(quest.getFriendlyName()).color(org.bukkit.ChatColor.GREEN)
+                .formattedTooltip(QuestUtil.getQuestTooltip(quest))
+                .text("]").color(org.bukkit.ChatColor.DARK_GRAY);
+    }
+
+    public static FancyMessage getQuestObjectiveTag(PlayerObjective objective) {
+
+        FancyMessage message = new FancyMessage(objective.getObjectiveTemplate().getFriendlyName());
+        if (objective.isCompleted()) {
+            message.color(org.bukkit.ChatColor.GRAY).style(org.bukkit.ChatColor.STRIKETHROUGH);
+        } else if (objective.isActive()) {
+            message.color(org.bukkit.ChatColor.AQUA).style(org.bukkit.ChatColor.UNDERLINE);
+        } else {
+            message.color(org.bukkit.ChatColor.AQUA);
+        }
+
+        String description = objective.getObjectiveTemplate().getDescription();
+        if (!Strings.isNullOrEmpty(description)) {
+            message.formattedTooltip(new FancyMessage(description).color(org.bukkit.ChatColor.GRAY));
+        }
+
+        return message;
+    }
+
+    public static FancyMessage getQuestTaskTag(PlayerTask task) {
+
+        FancyMessage message = new FancyMessage(task.getTaskTemplate().getFriendlyName());
+        if (task.isCompleted()) {
+            message.color(ChatColor.GRAY).style(org.bukkit.ChatColor.STRIKETHROUGH);
+        } else if (task.isActive()) {
+            message.color(ChatColor.BLUE).style(org.bukkit.ChatColor.UNDERLINE);
+        } else {
+            message.color(ChatColor.BLUE);
+        }
+
+        String description = task.getTaskTemplate().getDescription();
+        if (!Strings.isNullOrEmpty(description)) {
+            message.formattedTooltip(new FancyMessage(description).color(org.bukkit.ChatColor.GRAY));
+        }
+
+        return message;
     }
 
     public static Map<Quest.Phase, Collection<DefaultConversation>> loadDefaultConversations(ConfigurationSection data) {
