@@ -103,7 +103,7 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
         if (data == null) return conversations;
 
         for (Quest.Phase phase : Quest.Phase.values()) {
-            conversations.get(phase).addAll(DefaultConversation.fromConfig(data.getConfigurationSection(phase.getConfigName())));
+            conversations.get(phase).addAll(DefaultConversation.fromConfig(data.getStringList(phase.getConfigName()  + ".convs")));
         }
 
         return conversations;

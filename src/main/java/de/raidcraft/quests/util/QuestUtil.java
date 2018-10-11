@@ -109,7 +109,7 @@ public class QuestUtil {
         if (data == null) return conversations;
 
         for (Quest.Phase phase : Quest.Phase.values()) {
-            conversations.get(phase).addAll(DefaultConversation.fromConfig(data.getConfigurationSection(phase.getConfigName())));
+            conversations.get(phase).addAll(DefaultConversation.fromConfig(data.getStringList(phase.getConfigName())));
         }
 
         return conversations;
@@ -121,7 +121,7 @@ public class QuestUtil {
         if (section == null) return clearingMap;
 
         for (Quest.Phase phase : Quest.Phase.values()) {
-            ConfigurationSection phaseSection = section.getConfigurationSection(phase.getConfigName());
+            ConfigurationSection phaseSection = section.getConfigurationSection(phase.getConfigName() + ".convs");
             if (phaseSection != null) {
                 clearingMap.put(phase, phaseSection.getBoolean("clear", true));
             }
