@@ -217,8 +217,9 @@ public class QuestInventory implements Listener {
     public long count() {
         return inventories.stream()
                 .flatMap(inventory -> Arrays.stream(inventory.getContents()))
+                .filter(itemStack -> itemStack != null && itemStack.getType() != Material.AIR)
                 .mapToInt(ItemStack::getAmount)
-                .count();
+                .sum();
     }
 
     public boolean contains(String item) {
