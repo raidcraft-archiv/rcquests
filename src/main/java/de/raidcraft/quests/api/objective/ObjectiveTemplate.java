@@ -44,7 +44,19 @@ public interface ObjectiveTemplate extends Comparable<ObjectiveTemplate> {
      */
     boolean isOptional();
 
+    /**
+     * Objective is hidden from the player until activated and completed.
+     *
+     * @return true to hide an objective until activated
+     */
     boolean isHidden();
+
+    /**
+     * Never displays information about the objective.
+     *
+     * @return true if objective should not be know to the player
+     */
+    boolean isSecret();
 
     boolean isSilent();
 

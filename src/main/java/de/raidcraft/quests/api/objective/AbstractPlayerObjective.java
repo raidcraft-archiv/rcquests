@@ -173,6 +173,16 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     }
 
     @Override
+    public boolean isHidden() {
+
+        if (!getObjectiveTemplate().isHidden() && !getObjectiveTemplate().isSecret()) return false;
+        if (getObjectiveTemplate().isHidden()) {
+            return !isActive() && !isCompleted();
+        }
+        return getObjectiveTemplate().isSecret();
+    }
+
+    @Override
     public boolean isStarted() {
         return startTime != null;
     }

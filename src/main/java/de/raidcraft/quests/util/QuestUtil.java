@@ -47,7 +47,7 @@ public class QuestUtil {
         tooltip.newLine();
 
         for (PlayerObjective objective : quest.getObjectives()) {
-            if (objective.getObjectiveTemplate().isHidden()) continue;
+            if (objective.isHidden()) continue;
             tooltip.then("  * ").color(ChatColor.GOLD).style(ChatColor.RESET)
                     .then(objective.getObjectiveTemplate().getFriendlyName())
                     .style(objective.isCompleted() ? ChatColor.STRIKETHROUGH : ChatColor.RESET)

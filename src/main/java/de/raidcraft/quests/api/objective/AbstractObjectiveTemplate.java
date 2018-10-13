@@ -29,6 +29,7 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
     private final String description;
     private final boolean optional;
     private final boolean hidden;
+    private final boolean secret;
     private final boolean autoCompleting;
     private final boolean silent;
     private final int requiredTaskCount;
@@ -48,6 +49,7 @@ public abstract class AbstractObjectiveTemplate implements ObjectiveTemplate {
         this.description = data.getString("desc");
         this.optional = data.getBoolean("optional", false);
         this.hidden = data.getBoolean("hidden", false);
+        this.secret = data.getBoolean("secret", false);
         this.silent = data.getBoolean("silent", false);
         this.requiredTaskCount = data.getInt("required-tasks", 0);
         this.autoCompleting = data.getBoolean("auto-complete", true);

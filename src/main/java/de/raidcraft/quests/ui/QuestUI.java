@@ -83,7 +83,7 @@ public class QuestUI implements Listener {
             questText.newLine();
             for (PlayerObjective objective : quest.getObjectives()) {
 
-                if (!objective.isActive() && objective.getObjectiveTemplate().isHidden()) continue;
+                if (objective.isHidden()) continue;
 
                 BookUtil.TextBuilder objText;
                 if (objective.isCompleted()) {

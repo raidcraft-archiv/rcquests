@@ -36,7 +36,7 @@ public class QuestBook extends ItemStack {
         // add quest objectives
         for (PlayerObjective objective : quest.getObjectives()) {
             String friendlyName = objective.getObjectiveTemplate().getFriendlyName();
-            if (!objective.getObjectiveTemplate().isHidden() || objective.isActive()) {
+            if (!objective.isHidden()) {
                 if (objective.isCompleted()) {
                     lore.add(ChatColor.STRIKETHROUGH + "" + ChatColor.GRAY + friendlyName);
                 } else if (objective.getObjectiveTemplate().isOptional()) {

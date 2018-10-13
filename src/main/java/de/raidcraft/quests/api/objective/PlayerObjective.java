@@ -47,6 +47,15 @@ public interface PlayerObjective extends TriggerListener<Player>, Comparable<Pla
 
     boolean isAborted();
 
+    /**
+     * True if the objective should be hidden from the player.
+     * Depends on the current state of the objective and the values
+     * {@link ObjectiveTemplate#isHidden()} and {@link ObjectiveTemplate#isSecret()}.
+     *
+     * @return true if the objective should be hidden from the player
+     */
+    boolean isHidden();
+
     void complete();
 
     void abort();
