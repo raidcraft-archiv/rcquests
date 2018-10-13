@@ -22,10 +22,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author mdoering
@@ -215,6 +212,13 @@ public class QuestInventory implements Listener {
             }
         }
         return count >= amount;
+    }
+
+    public long count() {
+        return inventories.stream()
+                .flatMap(inventory -> Arrays.stream(inventory.getContents()))
+                .mapToInt(ItemStack::getAmount)
+                .count();
     }
 
     public boolean contains(String item) {
