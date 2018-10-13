@@ -82,7 +82,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onObjectiveStarted(ObjectiveStartedEvent event) {
 
-        if (event.getObjective().getObjectiveTemplate().isSilent()) return;
+        if (event.getObjective().getObjectiveTemplate().isSilent() || event.getObjective().isHidden()) return;
         if (event.getObjective().getQuest().getObjectives().get(0).equals(event.getObjective())) return;
 
         FancyMessage message = QuestUtil.getQuestTag(event.getObjective().getQuest())
@@ -97,7 +97,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onObjectiveComplete(ObjectiveCompletedEvent event) {
-        if (event.getObjective().getObjectiveTemplate().isSilent()) return;
+        if (event.getObjective().getObjectiveTemplate().isSilent() || event.getObjective().isHidden()) return;
 
         FancyMessage message = QuestUtil.getQuestTag(event.getObjective().getQuest())
                 .text(": Aufgabe ").color(ChatColor.YELLOW);
@@ -153,7 +153,7 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onTaskCompletion(TaskCompletedEvent event) {
 
-        if (event.getTask().getTaskTemplate().isSilent()) return;
+        if (event.getTask().getTaskTemplate().isSilent() || event.getTask().isHidden()) return;
         PlayerTask task = event.getTask();
 
         FancyMessage message = QuestUtil.getQuestTag(event.getTask().getQuest());

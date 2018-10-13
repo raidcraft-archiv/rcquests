@@ -83,6 +83,16 @@ public abstract class AbstractPlayerTask implements PlayerTask {
     }
 
     @Override
+    public boolean isHidden() {
+
+        if (!getTaskTemplate().isHidden() && !getTaskTemplate().isSecret()) return false;
+        if (getTaskTemplate().isHidden()) {
+            return !isActive() && !isCompleted();
+        }
+        return getTaskTemplate().isSecret();
+    }
+
+    @Override
     public void complete() {
 
         if (isCompleted()) return;

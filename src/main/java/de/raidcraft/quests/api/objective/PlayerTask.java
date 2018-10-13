@@ -59,6 +59,8 @@ public interface PlayerTask extends TriggerListener<Player>, Comparable<PlayerTa
 
     boolean isAborted();
 
+    boolean isHidden();
+
     void complete();
 
     void abort();
