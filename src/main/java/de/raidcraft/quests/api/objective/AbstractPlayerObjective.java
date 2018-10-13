@@ -54,13 +54,17 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
         if (!player.equals(getQuest().getHolder().getPlayer())) {
             return false;
         }
+        autoComplete(player);
+        return true;
+    }
+
+    private void autoComplete(Player player) {
         if (hasCompletedAllTasks() && getObjectiveTemplate().getRequirements().stream()
                 .allMatch(requirement -> requirement.test(player))) {
             if (getObjectiveTemplate().isAutoCompleting()) {
                 complete();
             }
         }
-        return true;
     }
 
     public void updateListeners() {
@@ -105,6 +109,11 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
         if (hasCompletedAllTasks()) {
             unregisterTaskListeners();
             this.updateDefaultConversations();
+            if (getObjectiveTemplate().getTrigger().isEmpty()) {
+                this.autoComplete(getQuest().getPlayer());
+            } else {
+                updateListeners();
+            }
             return;
         }
 
