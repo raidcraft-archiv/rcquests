@@ -73,6 +73,7 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
             if (!isActive()) {
                 if (!isStarted()) {
                     // execute our objective start actions
+                    setActive(true);
                     getObjectiveTemplate().getStartActions().forEach(action -> action.accept(getQuestHolder().getPlayer()));
                     setStartTime(Timestamp.from(Instant.now()));
                     ObjectiveStartedEvent event = new ObjectiveStartedEvent(this);
