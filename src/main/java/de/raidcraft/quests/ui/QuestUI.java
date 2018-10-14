@@ -75,12 +75,17 @@ public class QuestUI implements Listener {
                     .onClick(BookUtil.ClickAction.changePage(1)).build())
                     .newLine()
                     .newLine()
-                    .add(BookUtil.TextBuilder.of(quest.getFriendlyName()).color(ChatColor.GOLD).build())
-                    .newLine();
-            if (!Strings.isNullOrEmpty(quest.getDescription())) {
-                questText.add(BookUtil.TextBuilder.of(quest.getDescription()).color(ChatColor.GRAY).build()).newLine();
+                    .add(QuestUtil.getQuestTag(quest).create());
+
+            if (quest.getTemplate().isAbortable()) {
+                questText.add(BookUtil.TextBuilder.of(" [Quest abbrechen?]").color(ChatColor.RED).style(ChatColor.UNDERLINE)
+                        .onClick(BookUtil.ClickAction.runCommand("/quest abort " + quest.getFullName())).build());
             }
             questText.newLine();
+//            if (!Strings.isNullOrEmpty(quest.getDescription())) {
+//                questText.add(BookUtil.TextBuilder.of(quest.getDescription()).color(ChatColor.GRAY).build()).newLine();
+//            }
+//            questText.newLine();
             for (PlayerObjective objective : quest.getObjectives()) {
 
                 if (objective.isHidden()) continue;
