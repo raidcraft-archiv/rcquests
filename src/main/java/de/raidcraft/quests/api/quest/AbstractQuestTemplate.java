@@ -35,6 +35,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
     private final boolean repeatable;
     private final boolean silent;
     private final long cooldown;
+    private final boolean abortable;
     private final boolean autoCompleting;
     private final Collection<Action<Player>> startActions;
     private final Collection<Action<Player>> completionActions;
@@ -61,6 +62,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.locked = data.getBoolean("locked", true);
         this.silent = data.getBoolean("silent", true);
         this.cooldown = data.getLong("cooldown", 0);
+        this.abortable = data.getBoolean("abortable", true);
         this.autoCompleting = data.getBoolean("auto-complete", false);
         this.repeatable = cooldown > 0 || data.getBoolean("repeatable", false);
         this.startRequirements = loadRequirements(data.getConfigurationSection("requirements"));

@@ -299,6 +299,10 @@ public abstract class AbstractQuest implements Quest {
     @Override
     public boolean abort() {
 
+        QuestAbortEvent event = new QuestAbortEvent(this);
+        RaidCraft.callEvent(event);
+        if (event.isCancelled()) return false;
+
         // first unregister all listeners (includes complete listeners)
         unregisterListeners();
         getObjectives().forEach(PlayerObjective::abort);

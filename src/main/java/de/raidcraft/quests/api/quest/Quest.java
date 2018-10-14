@@ -113,6 +113,11 @@ public interface Quest extends TriggerListener<Player> {
 
     boolean complete();
 
+    /**
+     * Tries to abort the quest.
+     *
+     * @return true if the quest was aborted; false if not
+     */
     boolean abort();
 
     void delete();

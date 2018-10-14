@@ -43,6 +43,8 @@ public interface QuestTemplate extends TriggerListener<Player> {
 
     boolean isAutoCompleting();
 
+    boolean isAbortable();
+
     Collection<ObjectiveTemplate> getObjectiveTemplates();
 
     Collection<Requirement<Player>> getStartRequirements();

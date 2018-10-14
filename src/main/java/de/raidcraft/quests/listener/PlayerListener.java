@@ -124,6 +124,9 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onQuestComplete(QuestCompletedEvent event) {
 
+        QuestUtil.getQuestTag(event.getQuest()).then(" erfolgreich abgeschlossen.").color(ChatColor.GREEN)
+                .send(event.getQuest().getPlayer());
+
         if (event.getQuest().getTemplate().isSilent()) return;
         FancyMessage msg = new FancyMessage(event.getQuest().getPlayer().getName()).color(ChatColor.AQUA)
                 .then(" hat die Quest ").color(ChatColor.YELLOW);
@@ -132,8 +135,15 @@ public class PlayerListener implements Listener {
         event.getQuest().getPlayer().spigot().sendMessage(msg.create());
     }
 
+    @EventHandler
+    public void onQuestAbort(QuestAbortEvent event) {
+
+        if (event.getQuest().getTemplate().isAbortable()) return;
+        event.setCancelled(!event.getQuest().getPlayer().hasPermission("rcquests.admin.abort"));
+    }
+
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onQuestAbort(QuestAbortedEvent event) {
+    public void onQuestAborted(QuestAbortedEvent event) {
 
         if (event.getQuest().getTemplate().isSilent()) return;
         FancyMessage msg = new FancyMessage("Die Quest ").color(ChatColor.RED);
