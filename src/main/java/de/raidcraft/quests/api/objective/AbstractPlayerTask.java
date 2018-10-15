@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.util.Optional;
 
 @Data
 @EqualsAndHashCode(of = {"id", "objective", "taskTemplate"})
@@ -30,11 +31,13 @@ public abstract class AbstractPlayerTask implements PlayerTask {
     }
 
     @Override
+    public Optional<Player> getEntity() {
+        return Optional.ofNullable(getQuestHolder().getPlayer());
+    }
+
+    @Override
     public boolean processTrigger(Player player, TriggerListenerConfigWrapper trigger) {
 
-        if (!player.equals(getQuest().getHolder().getPlayer())) {
-            return false;
-        }
         if (getTaskTemplate().getRequirements().stream()
                 .allMatch(requirement -> requirement.test(player))) {
             if (getTaskTemplate().isAutoCompleting()) {

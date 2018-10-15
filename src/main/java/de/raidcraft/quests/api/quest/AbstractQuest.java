@@ -50,6 +50,12 @@ public abstract class AbstractQuest implements Quest {
         this.startTrigger = template.getStartTrigger();
         this.activeTrigger = template.getActiveTrigger();
         this.activeTriggerListener = new TriggerListener<Player>() {
+
+            @Override
+            public Optional<Player> getEntity() {
+                return Optional.ofNullable(getPlayer());
+            }
+
             @Override
             public Class<Player> getTriggerEntityType() {
 
@@ -64,6 +70,12 @@ public abstract class AbstractQuest implements Quest {
         };
         this.completionTrigger = template.getCompletionTrigger();
         this.completionTriggerListener = new TriggerListener<Player>() {
+
+            @Override
+            public Optional<Player> getEntity() {
+                return Optional.ofNullable(getPlayer());
+            }
+
             @Override
             public Class<Player> getTriggerEntityType() {
 
@@ -86,6 +98,11 @@ public abstract class AbstractQuest implements Quest {
         return getTemplate().getListenerId() + "." + getId();
     }
 
+    @Override
+    public Optional<Player> getEntity() {
+        return Optional.ofNullable(getPlayer());
+    }
+
     public void setPhase(Phase phase) {
         this.phase = phase;
         this.updateDefaultConversations(phase);
@@ -105,12 +122,10 @@ public abstract class AbstractQuest implements Quest {
     @Override
     public boolean processTrigger(Player player, TriggerListenerConfigWrapper trigger) {
 
-        if (!getPlayer().equals(player)) {
-            return false;
-        }
         if (!isActive()) {
             return false;
         }
+
         Collection<Requirement<Player>> requirements = getTemplate().getStartRequirements();
         if (requirements.stream().allMatch(requirement -> requirement.test(player))) {
             unregisterListeners();

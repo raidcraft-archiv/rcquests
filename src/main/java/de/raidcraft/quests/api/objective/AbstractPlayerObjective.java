@@ -46,8 +46,13 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
 
     @Override
     public String getListenerId() {
-
         return getQuest().getListenerId() + "." + getId();
+    }
+
+
+    @Override
+    public Optional<Player> getEntity() {
+        return Optional.ofNullable(getQuest().getPlayer());
     }
 
     @Override
@@ -59,10 +64,6 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
 
     @Override
     public boolean processTrigger(Player player, TriggerListenerConfigWrapper trigger) {
-
-        if (!player.equals(getQuest().getHolder().getPlayer())) {
-            return false;
-        }
         autoComplete(player);
         return true;
     }
