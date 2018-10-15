@@ -1,7 +1,7 @@
 package de.raidcraft.quests.api.objective;
 
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.action.trigger.Trigger;
+import de.raidcraft.api.action.trigger.TriggerListenerConfigWrapper;
 import de.raidcraft.quests.api.events.TaskCompleteEvent;
 import de.raidcraft.quests.api.events.TaskStartedEvent;
 import de.raidcraft.quests.api.holder.QuestHolder;
@@ -30,7 +30,7 @@ public abstract class AbstractPlayerTask implements PlayerTask {
     }
 
     @Override
-    public boolean processTrigger(Player player, Trigger trigger) {
+    public boolean processTrigger(Player player, TriggerListenerConfigWrapper trigger) {
 
         if (!player.equals(getQuest().getHolder().getPlayer())) {
             return false;
