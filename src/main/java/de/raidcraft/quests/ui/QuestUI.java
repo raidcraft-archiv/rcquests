@@ -73,35 +73,30 @@ public class QuestUI implements Listener {
                     .build()).newLine();
             BookUtil.PageBuilder questText = BookUtil.PageBuilder.of(BookUtil.TextBuilder.of("Zur Übersicht").color(ChatColor.GRAY).style(ChatColor.ITALIC).style(ChatColor.UNDERLINE)
                     .onClick(BookUtil.ClickAction.changePage(1)).build())
-                    .newLine()
-                    .newLine()
-                    .add(QuestUtil.getQuestTag(quest).create());
-
+                    .newLine();
             if (quest.getTemplate().isAbortable()) {
                 questText.add(BookUtil.TextBuilder.of(" [Quest abbrechen?]").color(ChatColor.RED).style(ChatColor.UNDERLINE)
                         .onClick(BookUtil.ClickAction.runCommand("/quest abort " + quest.getFullName())).build());
             }
+
+            questText.newLine().add(QuestUtil.getQuestTag(quest).create());
+
             questText.newLine();
-//            if (!Strings.isNullOrEmpty(quest.getDescription())) {
-//                questText.add(BookUtil.TextBuilder.of(quest.getDescription()).color(ChatColor.GRAY).build()).newLine();
-//            }
-//            questText.newLine();
+            questText.newLine();
             for (PlayerObjective objective : quest.getObjectives()) {
 
                 if (objective.isHidden()) continue;
 
                 BookUtil.TextBuilder objText;
                 if (objective.isCompleted()) {
-                    objText = BookUtil.TextBuilder.of("  - ").color(ChatColor.GRAY)
-                            .text(objective.getObjectiveTemplate().getFriendlyName()).style(ChatColor.STRIKETHROUGH).color(ChatColor.GRAY);
-
-
+                    objText = BookUtil.TextBuilder.of(objective.getObjectiveTemplate().getFriendlyName())
+                            .color(ChatColor.GRAY).style(ChatColor.STRIKETHROUGH);
                 } else if (objective.isActive()) {
-                    objText = BookUtil.TextBuilder.of("  - ").color(ChatColor.DARK_GREEN)
-                            .text(objective.getObjectiveTemplate().getFriendlyName()).color(ChatColor.DARK_GRAY);
+                    objText = BookUtil.TextBuilder.of(objective.getObjectiveTemplate().getFriendlyName())
+                            .color(ChatColor.DARK_GRAY);
                 } else {
-                    objText = BookUtil.TextBuilder.of("  - ").color(ChatColor.GRAY)
-                            .text(objective.getObjectiveTemplate().getFriendlyName()).color(ChatColor.GRAY);
+                    objText = BookUtil.TextBuilder.of(objective.getObjectiveTemplate().getFriendlyName())
+                            .color(ChatColor.GRAY);
                 }
 
                 String description = objective.getObjectiveTemplate().getDescription();
@@ -109,7 +104,7 @@ public class QuestUI implements Listener {
                     objText.onHover(BookUtil.HoverAction.showText(BookUtil.TextBuilder.of(description).color(ChatColor.GRAY).build()));
                 }
 
-                questText.add(objText.build());
+                questText.add(objText.build()).newLine();
             }
             pages.add(questText);
         }

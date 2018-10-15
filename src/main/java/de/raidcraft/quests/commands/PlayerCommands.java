@@ -79,6 +79,6 @@ public class PlayerCommands {
 
         Conversations.askYesNo(player, "Ja, ich möchte die Quest abbrechen.", "Nein, ich behalte die Quest.", result -> {
             if (result) quest.abort();
-        }, "Möchtest du wirklich die Quest " + quest.getFriendlyName() + " abbrechen?");
+        }, "Möchtest du die Quest " + quest.getFriendlyName() + " wirklich abbrechen?");
     }
 }
