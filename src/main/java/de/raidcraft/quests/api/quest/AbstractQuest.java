@@ -8,6 +8,7 @@ import de.raidcraft.api.action.trigger.TriggerListenerConfigWrapper;
 import de.raidcraft.quests.api.events.*;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.PlayerObjective;
+import de.raidcraft.quests.api.objective.PlayerTask;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -205,13 +206,26 @@ public abstract class AbstractQuest implements Quest {
         return getStartTime() != null && !isCompleted();
     }
 
+    private Optional<PlayerObjective> getObjective(int id) {
+        return getObjectives().stream()
+                .filter(playerObjective -> playerObjective.getObjectiveTemplate().getId() == id)
+                .findAny();
+    }
+
     @Override
     public boolean isObjectiveCompleted(int id) {
 
-        Optional<PlayerObjective> objective = getObjectives().stream()
-                .filter(playerObjective -> playerObjective.getObjectiveTemplate().getId() == id)
-                .findAny();
-        return objective.isPresent() && objective.get().isCompleted();
+        return getObjective(id)
+                .map(PlayerObjective::isCompleted)
+                .orElse(false);
+    }
+
+    @Override
+    public boolean isTaskCompleted(int objectiveId, int taskId) {
+        return getObjective(objectiveId)
+                .flatMap(objective -> objective.getTask(taskId))
+                .map(PlayerTask::isCompleted)
+                .orElse(false);
     }
 
     @Override

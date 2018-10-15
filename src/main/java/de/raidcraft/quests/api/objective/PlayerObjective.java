@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Silthus
@@ -24,6 +25,8 @@ public interface PlayerObjective extends TriggerListener<Player>, Comparable<Pla
     Quest getQuest();
 
     List<PlayerTask> getTasks();
+
+    Optional<PlayerTask> getTask(int id);
 
     void onTaskComplete(PlayerTask task);
 

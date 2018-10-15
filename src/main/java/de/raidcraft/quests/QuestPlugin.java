@@ -13,10 +13,7 @@ import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.commands.BaseCommands;
 import de.raidcraft.quests.listener.PlayerListener;
 import de.raidcraft.quests.random.RDSQuestObject;
-import de.raidcraft.quests.requirements.HasQuestItemRequirement;
-import de.raidcraft.quests.requirements.ObjectiveCompletedRequirement;
-import de.raidcraft.quests.requirements.QuestActiveRequirement;
-import de.raidcraft.quests.requirements.QuestCompletedRequirement;
+import de.raidcraft.quests.requirements.*;
 import de.raidcraft.quests.tables.*;
 import de.raidcraft.quests.trigger.ObjectiveTrigger;
 import de.raidcraft.quests.trigger.QuestPoolTrigger;
@@ -82,29 +79,30 @@ public class QuestPlugin extends BasePlugin {
 
         ActionAPI.register(this)
                 .global()
-                    .trigger(new QuestTrigger())
-                    .trigger(new ObjectiveTrigger())
-                    .trigger(new QuestPoolTrigger())
-                    .action(new StartQuestAction())
+                .trigger(new QuestTrigger())
+                .trigger(new ObjectiveTrigger())
+                .trigger(new QuestPoolTrigger())
+                .action(new StartQuestAction())
                 .action(new AbortQuestAction())
-                    .action(new CompleteQuestAction())
-                    .action(new CompleteObjectiveAction())
-                    .action("quest.item.remove", new RemoveQuestItemAction())
-                    .action("quest.item.add", new AddQuestItemAction())
+                .action(new CompleteQuestAction())
+                .action(new CompleteObjectiveAction())
+                .action("quest.item.remove", new RemoveQuestItemAction())
+                .action("quest.item.add", new AddQuestItemAction())
                 .requirement(new ObjectiveCompletedRequirement())
-                    .requirement("questpool.successive.count", (Player player, ConfigurationSection config) -> {
-                        QuestHolder questHolder = getQuestManager().getQuestHolder(player);
-                        if (questHolder == null) return false;
-                        TPlayerQuestPool questPool = getRcDatabase().find(TPlayerQuestPool.class).where()
-                                .eq("player_id", questHolder.getId())
-                                .eq("quest_pool", config.getString("pool"))
-                                .findOne();
-                        if (questPool == null) return false;
-                        return questPool.getSuccessiveQuestCounter() >= config.getInt("count");
-                    })
+                .requirement("questpool.successive.count", (Player player, ConfigurationSection config) -> {
+                    QuestHolder questHolder = getQuestManager().getQuestHolder(player);
+                    if (questHolder == null) return false;
+                    TPlayerQuestPool questPool = getRcDatabase().find(TPlayerQuestPool.class).where()
+                            .eq("player_id", questHolder.getId())
+                            .eq("quest_pool", config.getString("pool"))
+                            .findOne();
+                    if (questPool == null) return false;
+                    return questPool.getSuccessiveQuestCounter() >= config.getInt("count");
+                })
                 .requirement(new QuestCompletedRequirement(getQuestManager()))
                 .requirement(new QuestActiveRequirement(getQuestManager()))
-                .requirement(new HasQuestItemRequirement(getQuestManager()));
+                .requirement(new HasQuestItemRequirement(getQuestManager()))
+                .requirement(new TaskCompletedRequirement());
     }
 
     @Override

@@ -95,6 +95,8 @@ public interface Quest extends TriggerListener<Player> {
 
     boolean isObjectiveCompleted(int id);
 
+    boolean isTaskCompleted(int objectiveId, int taskId);
+
     boolean hasCompletedAllObjectives();
 
     void onObjectCompletion(PlayerObjective objective);

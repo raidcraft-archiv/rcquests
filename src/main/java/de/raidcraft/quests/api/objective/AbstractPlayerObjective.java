@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -47,6 +48,13 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
     public String getListenerId() {
 
         return getQuest().getListenerId() + "." + getId();
+    }
+
+    @Override
+    public Optional<PlayerTask> getTask(int id) {
+        return getTasks().stream()
+                .filter(task -> task.getId() == id)
+                .findAny();
     }
 
     @Override

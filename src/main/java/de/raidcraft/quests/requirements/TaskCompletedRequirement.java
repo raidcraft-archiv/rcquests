@@ -10,25 +10,25 @@ import org.bukkit.entity.Player;
 
 import java.util.Optional;
 
-/**
- * @author Silthus
- */
-public class ObjectiveCompletedRequirement implements Requirement<Player> {
+public class TaskCompletedRequirement implements Requirement<Player> {
 
-    @Override
     @Information(
-            value = "objective.completed",
-            desc = "Tests if the player has completed the given objective of the given quest.",
+            value = "task.completed",
+            aliases = {"task.complete"},
+            desc = "Tests if the player has completed the given task.",
             conf = {
-                    "quest: <quest id>",
-                    "objective: <objective id>"
+                    "quest: id of the quest",
+                    "objective: id of the objective the task belongs to",
+                    "task: id of the task"
             }
     )
+    @Override
     public boolean test(Player player, ConfigurationSection config) {
-
         QuestHolder questHolder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(player);
         if (questHolder == null) return false;
+
         return questHolder.getQuest(config.getString("quest"))
-                .map(quest -> quest.isObjectiveCompleted(config.getInt("objective"))).orElse(false);
+                .map(quest -> quest.isTaskCompleted(config.getInt("objective"), config.getInt("task")))
+                .orElse(false);
     }
 }
