@@ -5,6 +5,7 @@ import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
 import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.action.trigger.Trigger;
 import de.raidcraft.api.conversations.conversation.DefaultConversation;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.ObjectiveTemplate;
@@ -33,7 +34,7 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     }
 
     @Override
-    public boolean processTrigger(Player player) {
+    public boolean processTrigger(Player player, Trigger trigger) {
 
         QuestHolder questHolder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(player);
         Optional<Quest> quest = questHolder.getQuest(this);

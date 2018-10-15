@@ -3,6 +3,7 @@ package de.raidcraft.quests.api.quest;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.requirement.Requirement;
+import de.raidcraft.api.action.trigger.Trigger;
 import de.raidcraft.api.action.trigger.TriggerListener;
 import de.raidcraft.api.conversations.Conversations;
 import de.raidcraft.api.conversations.conversation.ConversationTemplate;
@@ -58,7 +59,7 @@ public abstract class AbstractQuest implements Quest {
             }
 
             @Override
-            public boolean processTrigger(Player entity) {
+            public boolean processTrigger(Player entity, Trigger trigger) {
 
                 return isActive();
             }
@@ -72,7 +73,7 @@ public abstract class AbstractQuest implements Quest {
             }
 
             @Override
-            public boolean processTrigger(Player entity) {
+            public boolean processTrigger(Player entity, Trigger trigger) {
 
                 return hasCompletedAllObjectives() && !isCompleted() && isActive();
             }
@@ -104,7 +105,7 @@ public abstract class AbstractQuest implements Quest {
     }
 
     @Override
-    public boolean processTrigger(Player player) {
+    public boolean processTrigger(Player player, Trigger trigger) {
 
         if (!getPlayer().equals(player)) {
             return false;

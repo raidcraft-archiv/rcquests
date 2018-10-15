@@ -4,6 +4,7 @@ import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.ActionAPI;
 import de.raidcraft.api.action.TriggerFactory;
 import de.raidcraft.api.action.action.Action;
+import de.raidcraft.api.action.trigger.Trigger;
 import de.raidcraft.api.action.trigger.TriggerListener;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.random.GenericRDSTable;
@@ -194,7 +195,7 @@ public class QuestPool extends GenericRDSTable implements TriggerListener<Player
     }
 
     @Override
-    public boolean processTrigger(Player entity) {
+    public boolean processTrigger(Player entity, Trigger trigger) {
 
         if (!isEnabled()) return false;
 
