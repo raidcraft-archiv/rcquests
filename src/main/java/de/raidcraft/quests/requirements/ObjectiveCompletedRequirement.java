@@ -19,6 +19,7 @@ public class ObjectiveCompletedRequirement implements Requirement<Player> {
     @Information(
             value = "objective.completed",
             desc = "Tests if the player has completed the given objective of the given quest.",
+            aliases = {"objective.complete", "obj.complete", "obj.completed"},
             conf = {
                     "quest: <quest id>",
                     "objective: <objective id>"

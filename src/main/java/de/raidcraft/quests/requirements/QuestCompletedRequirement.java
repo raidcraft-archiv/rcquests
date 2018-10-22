@@ -14,7 +14,7 @@ public class QuestCompletedRequirement implements Requirement<Player> {
 
     @Information(
             value = "quest.completed",
-            aliases = "quest.complete",
+            aliases = {"quest.complete"},
             desc = "Checks if the given quest was completed.",
             conf = {
                     "quest: <id>"
