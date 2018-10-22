@@ -151,6 +151,9 @@ public abstract class AbstractQuest implements Quest {
             }
             // register the completion trigger
             completionTrigger.forEach(factory -> factory.registerListener(completionTriggerListener));
+        } else if (isActive()) {
+            setPhase(Phase.ACTIVE);
+            updateObjectiveListeners();
         } else {
             setPhase(Phase.NOT_STARTED);
             // we need to register the objective trigger
@@ -218,7 +221,7 @@ public abstract class AbstractQuest implements Quest {
     @Override
     public boolean isActive() {
 
-        return getStartTime() != null && !isCompleted();
+        return (getStartTime() != null && !isCompleted());
     }
 
     private Optional<PlayerObjective> getObjective(int id) {

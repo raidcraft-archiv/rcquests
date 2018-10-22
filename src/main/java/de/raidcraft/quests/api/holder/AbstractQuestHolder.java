@@ -51,13 +51,13 @@ public abstract class AbstractQuestHolder implements QuestHolder {
     public boolean hasQuest(String quest) {
 
         return activeQuests.containsKey(quest)
-                || getAllQuests().stream().filter(q -> q.getFullName().equals(quest)).findAny().isPresent();
+                || getAllQuests().stream().anyMatch(q -> q.getFullName().equals(quest));
     }
 
     @Override
     public boolean hasActiveQuest(String name) {
 
-        return activeQuests.containsKey(name) && activeQuests.get(name).isActive();
+        return getQuest(name).map(Quest::isActive).orElse(false);
     }
 
     @Override
@@ -86,13 +86,7 @@ public abstract class AbstractQuestHolder implements QuestHolder {
             Optional<Quest> first = foundQuests.stream().filter(Quest::isActive).findFirst();
             if (first.isPresent()) return first;
             // now we only have completed quest
-            foundQuests.sort(new Comparator<Quest>() {
-                @Override
-                public int compare(Quest o1, Quest o2) {
-
-                    return o1.getCompletionTime().compareTo(o2.getCompletionTime());
-                }
-            });
+            foundQuests.sort(Comparator.comparing(Quest::getCompletionTime));
             return Optional.of(foundQuests.get(foundQuests.size() - 1));
         }
         return Optional.of(foundQuests.get(0));
