@@ -89,15 +89,16 @@ public abstract class AbstractPlayerObjective implements PlayerObjective {
                     ObjectiveStartedEvent event = new ObjectiveStartedEvent(this);
                     RaidCraft.callEvent(event);
                     save();
-                    updateDefaultConversations();
                 }
                 // register our start trigger
+                updateDefaultConversations();
                 getObjectiveTemplate().getTrigger().forEach(factory -> factory.registerListener(this));
                 getUncompletedTasks().forEach(PlayerTask::updateListeners);
                 setActive(true);
             }
         } else {
             unregisterListeners();
+            updateDefaultConversations();
         }
     }
 
