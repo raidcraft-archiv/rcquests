@@ -123,16 +123,37 @@ public class AdminCommands {
     @Command(
             aliases = {"purge"},
             desc = "Purges all quest history of the player.",
-            min = 1,
-            usage = "<Player>"
+            min = 0,
+            usage = "[Player]"
     )
     @CommandPermissions("rcquests.admin.purge")
     public void purge(CommandContext args, CommandSender sender) throws CommandException {
 
         try {
-            OfflinePlayer offlinePlayer = CommandUtil.grabOfflinePlayer(args.getString(0));
+            OfflinePlayer offlinePlayer = CommandUtil.grabOfflinePlayer(args.getString(0, sender.getName()));
             plugin.getQuestManager().purgePlayerHistory(offlinePlayer.getUniqueId());
             sender.sendMessage(ChatColor.GREEN + "Purged Quest History of " + offlinePlayer.getName() + ". Please login and out again.");
+        } catch (UnknownPlayerException e) {
+            throw new CommandException(e);
+        }
+    }
+
+    @Command(
+            aliases = {"clearinv"},
+            desc = "Clears the quest inventory of the player.",
+            min = 0,
+            usage = "[Player]"
+    )
+    @CommandPermissions("rcquests.admin.clearinv")
+    public void clearinv(CommandContext args, CommandSender sender) throws CommandException {
+
+        try {
+            OfflinePlayer offlinePlayer = CommandUtil.grabOfflinePlayer(args.getString(0, sender.getName()));
+            QuestHolder questHolder = plugin.getQuestManager().getPlayer(offlinePlayer.getUniqueId());
+            if (questHolder == null)
+                throw new CommandException("Player " + args.getString(0) + " is not a quest player!");
+            questHolder.getQuestInventory().clear();
+            sender.sendMessage(ChatColor.GREEN + "Purged Quest Inventory of " + offlinePlayer.getName() + ". Please login and out again.");
         } catch (UnknownPlayerException e) {
             throw new CommandException(e);
         }

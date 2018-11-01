@@ -216,10 +216,6 @@ public final class QuestManager implements QuestProvider, Component {
         }
         player.getQuestInventory().clear();
         clearPlayerCache(playerId);
-        Player onlinePlayer = Bukkit.getPlayer(playerId);
-        if (onlinePlayer != null) {
-            onlinePlayer.kickPlayer("Quest History purged. Please login again.");
-        }
     }
 
     public QuestHolder getQuestHolder(Player player) {

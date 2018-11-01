@@ -88,9 +88,9 @@ public class QuestInventory implements Listener {
         event.setCancelled(true);
     }
 
-    private Inventory createInventory() {
+    private void createInventory() {
 
-        return createInventory(inventories.size());
+        createInventory(inventories.size());
     }
 
     private Inventory createInventory(int id) {
@@ -169,7 +169,7 @@ public class QuestInventory implements Listener {
                 HashMap<Integer, ItemStack> map = inventory.addItem(items);
                 if (map.isEmpty()) return;
                 Collection<ItemStack> values = map.values();
-                addItem(values.toArray(new ItemStack[values.size()]));
+                addItem(values.toArray(new ItemStack[0]));
                 return;
             }
         }
@@ -189,7 +189,7 @@ public class QuestInventory implements Listener {
                 emptyInventories.add(inventory);
             }
             if (unremovedItems.isEmpty()) break;
-            itemStack = unremovedItems.values().toArray(new ItemStack[unremovedItems.size()]);
+            itemStack = unremovedItems.values().toArray(new ItemStack[0]);
         }
         emptyInventories.forEach(this::removeInventory);
     }
@@ -232,7 +232,7 @@ public class QuestInventory implements Listener {
         return false;
     }
 
-    public void open(int index) {
+    private void open(int index) {
 
         currentInventory = index;
         open();
@@ -279,14 +279,14 @@ public class QuestInventory implements Listener {
         RaidCraft.getDatabase(QuestPlugin.class).saveAll(items);
     }
 
-    public void load() {
+    private void load() {
 
         clear();
         inventories.clear();
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         List<TQuestItem> questItems = database.find(TQuestItem.class).where().eq("player", holder.getPlayerId()).findList();
         if (!questItems.isEmpty()) {
-            questItems.sort((q1, q2) -> Integer.compare(q1.getInventoryId(), q2.getInventoryId()));
+            questItems.sort(Comparator.comparingInt(TQuestItem::getInventoryId));
             for (TQuestItem questItem : questItems) {
                 try {
                     Inventory inventory;
@@ -311,5 +311,6 @@ public class QuestInventory implements Listener {
      */
     public void clear() {
         inventories.forEach(Inventory::clear);
+        save();
     }
 }
