@@ -123,15 +123,20 @@ public class AdminCommands {
     @Command(
             aliases = {"purge"},
             desc = "Purges all quest history of the player.",
-            min = 0,
-            usage = "[Player]"
+            usage = "[Player]",
+            flags = "r:t",
+            help = "Use the -r flag to purge quests of a specific region only.\nSet the -t flag to teleport the player to the start location of the region."
     )
     @CommandPermissions("rcquests.admin.purge")
     public void purge(CommandContext args, CommandSender sender) throws CommandException {
 
         try {
             OfflinePlayer offlinePlayer = CommandUtil.grabOfflinePlayer(args.getString(0, sender.getName()));
-            plugin.getQuestManager().purgePlayerHistory(offlinePlayer.getUniqueId());
+            plugin.getQuestManager().purgePlayerHistory(
+                    offlinePlayer.getUniqueId(),
+                    plugin.getQuestManager().getQuestRegion(args.getFlag('r')).orElse(null),
+                    args.hasFlag('t')
+            );
             sender.sendMessage(ChatColor.GREEN + "Purged Quest History of " + offlinePlayer.getName() + ". Please login and out again.");
         } catch (UnknownPlayerException e) {
             throw new CommandException(e);

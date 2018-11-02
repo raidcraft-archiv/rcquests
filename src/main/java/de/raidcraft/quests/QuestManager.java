@@ -11,9 +11,12 @@ import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.api.quest.QuestTemplate;
+import de.raidcraft.quests.api.regions.QuestRegion;
+import de.raidcraft.quests.configs.ConfiguredQuestRegion;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import de.raidcraft.quests.ui.QuestUI;
+import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.ConfigUtil;
 import io.ebean.EbeanServer;
@@ -38,6 +41,7 @@ public final class QuestManager implements QuestProvider, Component {
     private final Map<String, ConfigLoader> configLoader = new CaseInsensitiveMap<>();
     private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
     private final Map<String, QuestPool> loadedQuestPools = new CaseInsensitiveMap<>();
+    private final Map<String, QuestRegion> questRegions = new CaseInsensitiveMap<>();
     private final Map<ConfigLoader, Map<String, ConfigurationSection>> queuedConfigLoaders = new HashMap<>();
 
     private final Map<UUID, QuestHolder> questPlayers = new HashMap<>();
@@ -51,23 +55,7 @@ public final class QuestManager implements QuestProvider, Component {
         registerQuestConfigLoader(new ConfigLoader(plugin, "quest", 100) {
             @Override
             public void loadConfig(String id, ConfigurationSection config) {
-
-                if (config.isSet("worlds") && config.isList("worlds")) {
-                    List<String> worlds = config.getStringList("worlds").stream().map(String::toLowerCase).collect(Collectors.toList());
-                    Optional<World> any = Bukkit.getServer().getWorlds().stream()
-                            .filter(w -> worlds.contains(w.getName().toLowerCase()))
-                            .findAny();
-                    if (!any.isPresent()) {
-                        plugin.getLogger().info("Excluded Quest " + id + " because the required world (" + config.get("worlds") + ") is not loaded ." +
-                                "The following worlds are loaded: " + Bukkit.getServer().getWorlds().stream().map(World::getName).collect(Collectors.toList()));
-                        return;
-                    }
-                }
-                SimpleQuestTemplate quest = new SimpleQuestTemplate(id, config);
-                // lets register the triggers of the quest
-                quest.registerListeners();
-                loadedQuests.put(id, quest);
-                plugin.getLogger().info("Loaded quest: " + id + " - " + quest.getFriendlyName());
+                registerQuest(id, config);
             }
         });
         registerQuestConfigLoader(new ConfigLoader(plugin, "pool", 1000) {
@@ -79,8 +67,12 @@ public final class QuestManager implements QuestProvider, Component {
                 plugin.getLogger().info("Loaded quest pool: " + id + " - " + pool.getFriendlyName());
             }
         });
-        // and the quest host loader
-        // registerQuestConfigLoader(new QuestHostConfigLoader(plugin));
+        registerQuestConfigLoader(new ConfigLoader(plugin, "region") {
+            @Override
+            public void loadConfig(String id, ConfigurationSection config) {
+                registerQuestRegion(id, config);
+            }
+        });
     }
 
     public void load() {
@@ -205,17 +197,67 @@ public final class QuestManager implements QuestProvider, Component {
         questHolder.getQuestInventory().addItem(itemStack);
     }
 
+    public void registerQuest(String identifier, ConfigurationSection config) {
+        if (config.isSet("worlds") && config.isList("worlds")) {
+            List<String> worlds = config.getStringList("worlds").stream().map(String::toLowerCase).collect(Collectors.toList());
+            Optional<World> any = Bukkit.getServer().getWorlds().stream()
+                    .filter(w -> worlds.contains(w.getName().toLowerCase()))
+                    .findAny();
+            if (!any.isPresent()) {
+                plugin.getLogger().info("Excluded Quest " + identifier + " because the required world (" + config.get("worlds") + ") is not loaded ." +
+                        "The following worlds are loaded: " + Bukkit.getServer().getWorlds().stream().map(World::getName).collect(Collectors.toList()));
+                return;
+            }
+        }
+        SimpleQuestTemplate quest = new SimpleQuestTemplate(identifier, config);
+        // lets register the triggers of the quest
+        quest.registerListeners();
+        loadedQuests.put(identifier, quest);
+        if (questRegions.containsKey(config.getString("region"))) {
+            questRegions.get(config.getString("region")).addQuest(quest);
+        }
+        plugin.getLogger().info("Loaded quest: " + identifier + " - " + quest.getFriendlyName());
+    }
+
+    public QuestRegion registerQuestRegion(String identifier, ConfigurationSection config) {
+        if (questRegions.containsKey(identifier)) {
+            plugin.getLogger().warning("Cannot register duplicate quest region " + identifier + ": " + ConfigUtil.getFileName(config));
+            return questRegions.get(identifier);
+        }
+        ConfiguredQuestRegion region = new ConfiguredQuestRegion(identifier, config);
+        questRegions.put(identifier, region);
+        plugin.getLogger().info("Registered quest region: " + identifier);
+        return region;
+    }
+
     public QuestHolder clearPlayerCache(UUID playerId) {
         return questPlayers.remove(playerId);
     }
 
-    public void purgePlayerHistory(UUID playerId) throws UnknownPlayerException {
+    public void purgePlayerHistory(UUID playerId, @Nullable QuestRegion region, boolean teleport) throws UnknownPlayerException {
         QuestHolder player = getPlayer(playerId);
         for (Quest quest : player.getAllQuests()) {
-            quest.delete();
+            if (region != null) {
+                if (region.getQuests().contains(quest.getTemplate())) quest.delete();
+            } else {
+                quest.delete();
+            }
         }
         player.getQuestInventory().clear();
         clearPlayerCache(playerId);
+
+        Player onlinePlayer = Bukkit.getPlayer(playerId);
+        if (region != null && teleport && onlinePlayer != null) {
+            region.getStartLocation().ifPresent(onlinePlayer::teleport);
+        }
+    }
+
+    public Optional<QuestRegion> getQuestRegion(String identifier) {
+        return Optional.ofNullable(questRegions.get(identifier));
+    }
+
+    public Collection<QuestRegion> getQuestRegions() {
+        return questRegions.values();
     }
 
     public QuestHolder getQuestHolder(Player player) {
