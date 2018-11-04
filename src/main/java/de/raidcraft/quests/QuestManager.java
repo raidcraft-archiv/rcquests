@@ -91,7 +91,6 @@ public final class QuestManager implements QuestProvider, Component {
         queuedConfigLoaders.keySet().forEach(ConfigLoader::onLoadingComplete);
 
         plugin.getLogger().info("... loaded " + loadedQuests.size() + " quests");
-        queuedConfigLoaders.clear();
         loadedQuestFiles = true;
     }
 
@@ -122,6 +121,12 @@ public final class QuestManager implements QuestProvider, Component {
     }
 
     public void unload() {
+
+        queuedConfigLoaders.keySet().stream()
+                .sorted()
+                .forEachOrdered(loader -> queuedConfigLoaders.get(loader)
+                        .forEach((id, configurationSection) -> loader.unloadConfig(id)));
+        queuedConfigLoaders.clear();
 
         loadedQuestPools.values()
                 .forEach(questPool -> questPool.getTriggers()
