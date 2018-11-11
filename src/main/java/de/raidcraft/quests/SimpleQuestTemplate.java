@@ -37,8 +37,12 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
     public boolean processTrigger(Player player, TriggerListenerConfigWrapper trigger) {
 
         QuestHolder questHolder = RaidCraft.getComponent(QuestManager.class).getQuestHolder(player);
+        if (questHolder == null) return false;
         Optional<Quest> quest = questHolder.getQuest(this);
-        if (!quest.isPresent()) return true;
+        if (!quest.isPresent()) {
+            // only start the quest if all start-requirements match
+            return getStartRequirements().stream().allMatch(requirement -> requirement.test(player));
+        }
         // lets check if we already have a quest that is started
         // and do not execute actions if the quest is started
         if (quest.get().isActive()) {
@@ -49,7 +53,8 @@ public class SimpleQuestTemplate extends AbstractQuestTemplate {
             // lets check if the quest is repeatable and allow the trigger if the cooldown is over
             if (isRepeatable()
                     && quest.get().getCompletionTime().toInstant().plusSeconds(getCooldown()).isBefore(Instant.now())) {
-                return true;
+                // only start the quest if all start-requirements match
+                return getStartRequirements().stream().allMatch(requirement -> requirement.test(player));
             }
         }
         return false;
