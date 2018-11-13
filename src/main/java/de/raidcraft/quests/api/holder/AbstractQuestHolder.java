@@ -61,6 +61,14 @@ public abstract class AbstractQuestHolder implements QuestHolder {
     }
 
     @Override
+    public boolean hasCompletedQuest(String questId) {
+        return getCompletedQuests().stream()
+                .map(Quest::getTemplate)
+                .map(QuestTemplate::getId)
+                .anyMatch(id -> id.equalsIgnoreCase(questId));
+    }
+
+    @Override
     public Optional<Quest> getQuest(QuestTemplate questTemplate) {
 
         String id = questTemplate.getId();

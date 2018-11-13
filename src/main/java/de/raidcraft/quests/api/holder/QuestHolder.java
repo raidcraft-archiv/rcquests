@@ -35,15 +35,13 @@ public interface QuestHolder {
         return hasActiveQuest(template.getId());
     }
 
-    // TODO: do it better in AbstractQuestHolder class
-    default boolean hasCompletedQuest(String questId) {
-        for (Quest quest : getCompletedQuests()) {
-            if (quest.getTemplate().getId().equals(questId)) {
-                return true;
-            }
-        }
-        return false;
-    }
+    /**
+     * Checks if the {@link QuestHolder} has completed the given {@link Quest} with the given id.
+     *
+     * @param questId of the quest
+     * @return true if quest was completed
+     */
+    boolean hasCompletedQuest(String questId);
 
     default boolean hasCompletedQuest(QuestTemplate template) {
         return hasCompletedQuest(template.getId());

@@ -1,11 +1,15 @@
 package de.raidcraft.quests.requirements;
 
+import de.raidcraft.RaidCraft;
 import de.raidcraft.api.action.requirement.Requirement;
 import de.raidcraft.quests.QuestManager;
 import de.raidcraft.quests.api.holder.QuestHolder;
+import de.raidcraft.quests.api.quest.Quest;
 import lombok.Data;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+
+import java.util.Optional;
 
 @Data
 public class QuestCompletedRequirement implements Requirement<Player> {
@@ -23,6 +27,11 @@ public class QuestCompletedRequirement implements Requirement<Player> {
     @Override
     public boolean test(Player player, ConfigurationSection config) {
         QuestHolder holder = getQuestManager().getQuestHolder(player);
-        return holder != null && holder.hasCompletedQuest(config.getString("quest"));
+        if (holder == null) return false;
+        Optional<Quest> quest = holder.getQuest(config.getString("quest"));
+        if (!quest.isPresent()) {
+            RaidCraft.LOGGER.warning("Could not check quest.completed requirement. Quest " + config.getString("quest") + " not found!");
+        }
+        return quest.map(Quest::isCompleted).orElse(false);
     }
 }
