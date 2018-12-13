@@ -2,6 +2,7 @@ package de.raidcraft.quests.listener;
 
 import com.google.common.base.Strings;
 import de.raidcraft.RaidCraft;
+import de.raidcraft.api.action.requirement.tables.TTag;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemType;
 import de.raidcraft.quests.QuestPlugin;
@@ -112,6 +113,9 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onQuestStart(QuestStartedEvent event) {
 
+        TTag.findOrCreateTag("quest-start:" + event.getQuest().getFullName(),
+                "Quest START: " + event.getQuest().getFriendlyName() + " (" + event.getQuest().getFullName() + ")");
+
         FancyMessage text = new FancyMessage("Quest").color(ChatColor.YELLOW)
                 .text(" [").color(ChatColor.DARK_GRAY)
                 .text(event.getQuest().getFriendlyName()).color(ChatColor.GREEN)
@@ -145,6 +149,9 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onQuestAborted(QuestAbortedEvent event) {
 
+        TTag.findOrCreateTag("quest-abort:" + event.getQuest().getFullName(),
+                "Quest ABORTED: " + event.getQuest().getFriendlyName() + " (" + event.getQuest().getFullName() + ")");
+
         if (event.getQuest().getTemplate().isSilent()) return;
         FancyMessage msg = new FancyMessage("Die Quest ").color(ChatColor.RED);
         QuestUtil.getQuestTooltip(msg, event.getQuest())
@@ -155,6 +162,9 @@ public class PlayerListener implements Listener {
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onQuestCompleted(QuestPoolQuestCompletedEvent event) {
 
+        TTag.findOrCreateTag("quest-complete:" + event.getQuest().getFullName(),
+                "Quest COMPLETE: " + event.getQuest().getFriendlyName() + " (" + event.getQuest().getFullName() + ")");
+
         Optional<QuestPool> questPool = plugin.getQuestManager().getQuestPool(event.getQuestPool().getQuestPool());
         questPool.ifPresent(questPool1 -> questPool1.getRewardActions()
                 .forEach(playerAction -> playerAction.accept(event.getQuest().getPlayer())));
@@ -164,7 +174,6 @@ public class PlayerListener implements Listener {
     public void onTaskCompletion(TaskCompletedEvent event) {
 
         if (event.getTask().getTaskTemplate().isSilent() || event.getTask().isHidden()) return;
-        PlayerTask task = event.getTask();
 
         FancyMessage message = QuestUtil.getQuestTag(event.getTask().getQuest());
         message.then(": Task ").color(ChatColor.YELLOW)
