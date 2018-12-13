@@ -114,7 +114,7 @@ public class PlayerListener implements Listener {
     public void onQuestStart(QuestStartedEvent event) {
 
         TTag.findOrCreateTag("quest-start:" + event.getQuest().getFullName(),
-                "Quest START: " + event.getQuest().getFriendlyName() + " (" + event.getQuest().getFullName() + ")");
+                "Quest START: " + event.getQuest().getFriendlyName() + " (" + event.getQuest().getFullName() + ")", true);
 
         FancyMessage text = new FancyMessage("Quest").color(ChatColor.YELLOW)
                 .text(" [").color(ChatColor.DARK_GRAY)
@@ -150,7 +150,7 @@ public class PlayerListener implements Listener {
     public void onQuestAborted(QuestAbortedEvent event) {
 
         TTag.findOrCreateTag("quest-abort:" + event.getQuest().getFullName(),
-                "Quest ABORTED: " + event.getQuest().getFriendlyName() + " (" + event.getQuest().getFullName() + ")");
+                "Quest ABORTED: " + event.getQuest().getFriendlyName() + " (" + event.getQuest().getFullName() + ")", true);
 
         if (event.getQuest().getTemplate().isSilent()) return;
         FancyMessage msg = new FancyMessage("Die Quest ").color(ChatColor.RED);
@@ -163,7 +163,7 @@ public class PlayerListener implements Listener {
     public void onQuestCompleted(QuestPoolQuestCompletedEvent event) {
 
         TTag.findOrCreateTag("quest-complete:" + event.getQuest().getFullName(),
-                "Quest COMPLETE: " + event.getQuest().getFriendlyName() + " (" + event.getQuest().getFullName() + ")");
+                "Quest COMPLETE: " + event.getQuest().getFriendlyName() + " (" + event.getQuest().getFullName() + ")", true);
 
         Optional<QuestPool> questPool = plugin.getQuestManager().getQuestPool(event.getQuestPool().getQuestPool());
         questPool.ifPresent(questPool1 -> questPool1.getRewardActions()
