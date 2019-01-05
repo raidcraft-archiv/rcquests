@@ -85,7 +85,7 @@ public abstract class AbstractQuestHolder implements QuestHolder {
             return Optional.of(activeQuests.get(name));
         }
         List<Quest> foundQuests = getAllQuests().stream()
-                .filter(quest -> quest.getFullName().equalsIgnoreCase(name)).collect(Collectors.toList());
+                .filter(quest -> quest.getFullName().equalsIgnoreCase(name) || quest.getFullName().startsWith(name)).collect(Collectors.toList());
         if (foundQuests.isEmpty()) {
             return Optional.empty();
         }

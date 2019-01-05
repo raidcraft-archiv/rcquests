@@ -21,6 +21,7 @@ import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.ConfigUtil;
 import io.ebean.EbeanServer;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
@@ -30,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -297,13 +299,12 @@ public final class QuestManager implements QuestProvider, Component {
     public QuestTemplate getQuestTemplate(String name) throws QuestException {
 
         String questName = name.toLowerCase().replace(".quest", "").trim();
-        if (loadedQuests.containsKey(questName)) {
-            return loadedQuests.get(questName);
-        }
+
+        Optional<QuestTemplate> questTemplate = getQuestTemplateById(questName);
+        if (questTemplate.isPresent()) return questTemplate.get();
 
         List<QuestTemplate> foundQuests = loadedQuests.values().stream()
                 .filter(quest -> quest.getFriendlyName().toLowerCase().contains(questName))
-                .map(quest -> quest)
                 .collect(Collectors.toList());
 
         if (foundQuests.isEmpty()) {
@@ -313,6 +314,19 @@ public final class QuestManager implements QuestProvider, Component {
             throw new QuestException("Du hast mehrere Quests mit dem Namen " + questName + ": " + StringUtils.join(foundQuests, ", "));
         }
         return foundQuests.get(0);
+    }
+
+    public Optional<QuestTemplate> getQuestTemplateById(String id) {
+
+        Validate.notNull(id);
+        String key = id.toLowerCase().trim();
+
+        if (loadedQuests.containsKey(key)) return Optional.ofNullable(loadedQuests.get(key));
+
+        return Optional.ofNullable(loadedQuests.keySet().stream()
+                .filter(questId -> questId.startsWith(key))
+                .map(loadedQuests::get)
+                .collect(toSingleton()));
     }
 
     /**
@@ -327,7 +341,7 @@ public final class QuestManager implements QuestProvider, Component {
      *
      * @return new quest if no active quest is found. If the quest is repeatable the old quest must be completed
      *
-     * @throws de.raidcraft.api.quests.QuestException if quest is active or not repeatable and completed
+     * @throws QuestException if quest is active or not repeatable and completed
      */
     public Quest createQuest(QuestHolder holder, QuestTemplate template) throws QuestException {
 
@@ -386,7 +400,7 @@ public final class QuestManager implements QuestProvider, Component {
      *
      * @return matching quest
      *
-     * @throws de.raidcraft.api.quests.QuestException is thrown if no or more than one quest matches
+     * @throws QuestException is thrown if no or more than one quest matches
      */
     public Quest findQuest(QuestHolder holder, String name) throws QuestException {
 
@@ -434,5 +448,17 @@ public final class QuestManager implements QuestProvider, Component {
     public void openQuestLog(Player player) {
         QuestHolder questHolder = getQuestHolder(player);
         new QuestUI(questHolder, questHolder.getActiveQuests(), QuestUI.Type.ACTIVE).open();
+    }
+
+    public static <T> Collector<T, ?, T> toSingleton() {
+        return Collectors.collectingAndThen(
+                Collectors.toList(),
+                list -> {
+                    if (list.size() != 1) {
+                        throw new IllegalStateException();
+                    }
+                    return list.get(0);
+                }
+        );
     }
 }
