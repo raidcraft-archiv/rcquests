@@ -455,7 +455,7 @@ public final class QuestManager implements QuestProvider, Component {
                 Collectors.toList(),
                 list -> {
                     if (list.size() != 1) {
-                        throw new IllegalStateException();
+                        return null;
                     }
                     return list.get(0);
                 }
