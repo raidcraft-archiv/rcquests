@@ -86,6 +86,7 @@ public class QuestPlugin extends BasePlugin {
                 .action(new AbortQuestAction())
                 .action(new CompleteQuestAction())
                 .action(new CompleteObjectiveAction())
+                .action(new CompleteTaskAction())
                 .action("quest.item.remove", new RemoveQuestItemAction())
                 .action("quest.item.add", new AddQuestItemAction())
                 .requirement(new ObjectiveCompletedRequirement())
