@@ -49,6 +49,7 @@ public final class QuestManager implements QuestProvider, Component {
     private final Map<UUID, QuestHolder> questPlayers = new HashMap<>();
 
     private boolean loadedQuestFiles = false;
+    private int notLoadedQuests = 0;
 
     protected QuestManager(final QuestPlugin plugin) {
         this.plugin = plugin;
@@ -92,7 +93,7 @@ public final class QuestManager implements QuestProvider, Component {
 
         queuedConfigLoaders.keySet().forEach(ConfigLoader::onLoadingComplete);
 
-        plugin.getLogger().info("... loaded " + loadedQuests.size() + " quests");
+        plugin.getLogger().info("... loaded " + loadedQuests.size() + "/" + (loadedQuests.size() + notLoadedQuests) + " quests");
         loadedQuestFiles = true;
     }
 
@@ -211,8 +212,11 @@ public final class QuestManager implements QuestProvider, Component {
                     .filter(w -> worlds.contains(w.getName().toLowerCase()))
                     .findAny();
             if (!any.isPresent()) {
-                plugin.getLogger().info("Excluded Quest " + identifier + " because the required world (" + config.get("worlds") + ") is not loaded ." +
-                        "The following worlds are loaded: " + Bukkit.getServer().getWorlds().stream().map(World::getName).collect(Collectors.toList()));
+                notLoadedQuests++;
+                if (plugin.getConfiguration().debugQuestLoading) {
+                    plugin.getLogger().info("Excluded Quest " + identifier + " because the required world (" + config.get("worlds") + ") is not loaded ." +
+                            "The following worlds are loaded: " + Bukkit.getServer().getWorlds().stream().map(World::getName).collect(Collectors.toList()));
+                }
                 return;
             }
         }

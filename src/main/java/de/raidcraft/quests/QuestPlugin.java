@@ -129,6 +129,8 @@ public class QuestPlugin extends BasePlugin {
         public int questLoadDelay = 30;
         @Setting("quest-pool-delay")
         public int questPoolDelay = 100;
+        @Setting("debug-quest-loading")
+        public boolean debugQuestLoading = false;
 
         public LocalConfiguration(QuestPlugin plugin) {
 
