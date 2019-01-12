@@ -104,13 +104,11 @@ public final class QuestManager implements QuestProvider, Component {
             if (file.isDirectory()) {
                 loadQuestConfigs(file, path + "." + fileName.toLowerCase());
             } else {
-                if (path.startsWith(".")) {
-                    path = path.replaceFirst("\\.", "");
-                }
+                path = StringUtils.strip(path, ".");
                 for (ConfigLoader loader : configLoader.values()) {
                     if (file.getName().toLowerCase().endsWith(loader.getSuffix())) {
                         String id = (path + "." + file.getName().toLowerCase()).replace(loader.getSuffix(), "");
-                        StringUtils.strip(id, ".");
+                        id = StringUtils.strip(id, ".");
                         ConfigurationSection configFile = plugin.configure(new SimpleConfiguration<>(plugin, file));
                         // repace "this." with the absolte path, feature: relative path
                         configFile = ConfigUtil.replacePathReferences(configFile, path);
