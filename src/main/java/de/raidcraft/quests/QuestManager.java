@@ -3,6 +3,7 @@ package de.raidcraft.quests;
 import de.raidcraft.RaidCraft;
 import de.raidcraft.api.Component;
 import de.raidcraft.api.config.ConfigLoader;
+import de.raidcraft.api.config.ConfigurationBase;
 import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.QuestException;
@@ -44,7 +45,7 @@ public final class QuestManager implements QuestProvider, Component {
     private final Map<String, QuestTemplate> loadedQuests = new CaseInsensitiveMap<>();
     private final Map<String, QuestPool> loadedQuestPools = new CaseInsensitiveMap<>();
     private final Map<String, QuestRegion> questRegions = new CaseInsensitiveMap<>();
-    private final Map<ConfigLoader, Map<String, ConfigurationSection>> queuedConfigLoaders = new HashMap<>();
+    private final Map<ConfigLoader, Map<String, ConfigurationBase<QuestPlugin>>> queuedConfigLoaders = new HashMap<>();
 
     private final Map<UUID, QuestHolder> questPlayers = new HashMap<>();
 
@@ -55,24 +56,24 @@ public final class QuestManager implements QuestProvider, Component {
         this.plugin = plugin;
         RaidCraft.registerComponent(QuestManager.class, this);
         // lets register our own config loader with a high priority to load it last
-        registerQuestConfigLoader(new ConfigLoader(plugin, "quest", 100) {
+        registerQuestConfigLoader(new ConfigLoader<QuestPlugin>(plugin, "quest", 100) {
             @Override
-            public void loadConfig(String id, ConfigurationSection config) {
+            public void loadConfig(String id, ConfigurationBase<QuestPlugin> config) {
                 registerQuest(id, config);
             }
         });
-        registerQuestConfigLoader(new ConfigLoader(plugin, "pool", 1000) {
+        registerQuestConfigLoader(new ConfigLoader<QuestPlugin>(plugin, "pool", 1000) {
             @Override
-            public void loadConfig(String id, ConfigurationSection config) {
+            public void loadConfig(String id, ConfigurationBase<QuestPlugin> config) {
 
                 QuestPool pool = new QuestPool(id, config);
                 loadedQuestPools.put(id, pool);
                 plugin.getLogger().info("Loaded quest pool: " + id + " - " + pool.getFriendlyName());
             }
         });
-        registerQuestConfigLoader(new ConfigLoader(plugin, "region") {
+        registerQuestConfigLoader(new ConfigLoader<QuestPlugin>(plugin, "region") {
             @Override
-            public void loadConfig(String id, ConfigurationSection config) {
+            public void loadConfig(String id, ConfigurationBase<QuestPlugin> config) {
                 registerQuestRegion(id, config);
             }
         });
@@ -110,7 +111,7 @@ public final class QuestManager implements QuestProvider, Component {
                     if (file.getName().toLowerCase().endsWith(loader.getSuffix())) {
                         String id = (path + "." + file.getName().toLowerCase()).replace(loader.getSuffix(), "");
                         id = StringUtils.strip(id, ".");
-                        ConfigurationSection configFile = plugin.configure(new SimpleConfiguration<>(plugin, file));
+                        ConfigurationBase<QuestPlugin> configFile = plugin.configure(new SimpleConfiguration<>(plugin, file));
                         // repace "this." with the absolte path, feature: relative path
                         configFile = ConfigUtil.replacePathReferences(configFile, path);
                         if (!queuedConfigLoaders.containsKey(loader)) {
