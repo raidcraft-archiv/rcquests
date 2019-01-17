@@ -137,7 +137,7 @@ public class AdminCommands {
                     plugin.getQuestManager().getQuestRegion(args.getFlag('r')).orElse(null),
                     args.hasFlag('t')
             );
-            sender.sendMessage(ChatColor.GREEN + "Purged Quest History of " + offlinePlayer.getName() + ". Please login and out again.");
+            sender.sendMessage(ChatColor.GREEN + "Purged Quest History of " + offlinePlayer.getName() + ".");
         } catch (UnknownPlayerException e) {
             throw new CommandException(e);
         }

@@ -97,6 +97,7 @@ public class SimpleQuest extends AbstractQuest {
         EbeanServer database = RaidCraft.getDatabase(QuestPlugin.class);
         TPlayerQuest quest = database.find(TPlayerQuest.class, getId());
         if (quest != null) {
+            abort();
             database.delete(quest);
             // also delete all requirements
             getTemplate().getStartRequirements().forEach(requirement -> requirement.delete(getPlayer()));
