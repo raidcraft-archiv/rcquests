@@ -7,6 +7,7 @@ import de.raidcraft.api.config.SimpleConfiguration;
 import de.raidcraft.api.player.UnknownPlayerException;
 import de.raidcraft.api.quests.QuestException;
 import de.raidcraft.api.quests.QuestProvider;
+import de.raidcraft.api.quests.RCQuestConfigsLoaded;
 import de.raidcraft.quests.api.holder.QuestHolder;
 import de.raidcraft.quests.api.objective.PlayerObjective;
 import de.raidcraft.quests.api.quest.Quest;
@@ -16,7 +17,6 @@ import de.raidcraft.quests.configs.ConfiguredQuestRegion;
 import de.raidcraft.quests.tables.TPlayer;
 import de.raidcraft.quests.tables.TPlayerQuest;
 import de.raidcraft.quests.ui.QuestUI;
-import de.raidcraft.skills.api.hero.Option;
 import de.raidcraft.util.CaseInsensitiveMap;
 import de.raidcraft.util.ConfigUtil;
 import io.ebean.EbeanServer;
@@ -95,6 +95,7 @@ public final class QuestManager implements QuestProvider, Component {
 
         plugin.getLogger().info("... loaded " + loadedQuests.size() + "/" + (loadedQuests.size() + notLoadedQuests) + " quests");
         loadedQuestFiles = true;
+        RaidCraft.callEvent(new RCQuestConfigsLoaded());
     }
 
     private void loadQuestConfigs(File baseFolder, String path) {
