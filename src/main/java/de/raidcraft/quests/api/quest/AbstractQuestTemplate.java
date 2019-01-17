@@ -67,7 +67,7 @@ public abstract class AbstractQuestTemplate implements QuestTemplate {
         this.repeatable = cooldown > 0 || data.getBoolean("repeatable", false);
         this.startRequirements = loadRequirements(data.getConfigurationSection("requirements"));
         this.objectiveTemplates = loadObjectives(data.getConfigurationSection("objectives"));
-        this.startTrigger = loadStartTrigger(data.getConfigurationSection("start-trigger"));
+        this.startTrigger = loadStartTrigger(data.isConfigurationSection("start-trigger") ? data.getConfigurationSection("start-trigger") : data.getConfigurationSection("trigger"));
         this.activeTrigger = ActionAPI.createTrigger(data.getConfigurationSection("active-trigger"));
         this.completionTrigger = loadCompletionTrigger(data.getConfigurationSection("complete-trigger"));
         this.startActions = ActionAPI.createActions(data.getConfigurationSection("start-actions"), Player.class);
