@@ -1,24 +1,16 @@
 package de.raidcraft.quests.listener;
 
-import com.google.common.base.Strings;
 import de.raidcraft.RaidCraft;
-import de.raidcraft.api.action.requirement.tables.TTag;
 import de.raidcraft.api.items.CustomItemStack;
 import de.raidcraft.api.items.ItemType;
+import de.raidcraft.api.tags.TTag;
 import de.raidcraft.quests.QuestPlugin;
 import de.raidcraft.quests.QuestPool;
 import de.raidcraft.quests.api.events.*;
 import de.raidcraft.quests.api.holder.QuestHolder;
-import de.raidcraft.quests.api.objective.PlayerObjective;
-import de.raidcraft.quests.api.objective.PlayerTask;
-import de.raidcraft.quests.api.quest.Quest;
 import de.raidcraft.quests.util.QuestUtil;
 import de.raidcraft.util.CustomItemUtil;
 import de.raidcraft.util.fanciful.FancyMessage;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
-import net.md_5.bungee.api.chat.HoverEvent;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,7 +18,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import xyz.upperlevel.spigot.book.BookUtil;
 
 import java.util.Optional;
 
