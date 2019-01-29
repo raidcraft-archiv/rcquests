@@ -101,6 +101,7 @@ public class QuestPlugin extends BasePlugin {
                     return questPool.getSuccessiveQuestCounter() >= config.getInt("count");
                 })
                 .requirement(new QuestCompletedRequirement(getQuestManager()))
+                .requirement(new QuestActiveOrCompletedRequirement(getQuestManager()))
                 .requirement(new QuestActiveRequirement(getQuestManager()))
                 .requirement(new HasQuestItemRequirement(getQuestManager()))
                 .requirement(new TaskCompletedRequirement());

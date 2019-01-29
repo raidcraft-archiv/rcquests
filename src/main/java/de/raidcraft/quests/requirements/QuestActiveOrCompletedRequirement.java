@@ -12,14 +12,13 @@ import org.bukkit.entity.Player;
 import java.util.Optional;
 
 @Data
-public class QuestCompletedRequirement implements Requirement<Player> {
+public class QuestActiveOrCompletedRequirement implements Requirement<Player> {
 
     private final QuestManager questManager;
 
     @Information(
-            value = "quest.completed",
-            aliases = {"quest.complete"},
-            desc = "Checks if the given quest was completed.",
+            value = "quest",
+            desc = "Checks if the given quest was completed or is active.",
             conf = {
                     "quest: <id>"
             }
@@ -32,6 +31,6 @@ public class QuestCompletedRequirement implements Requirement<Player> {
         if (!quest.isPresent()) {
             RaidCraft.LOGGER.warning("Could not check quest.completed requirement. Quest " + config.getString("quest") + " not found!");
         }
-        return quest.map(activeQuest -> activeQuest.isActive() || activeQuest.isCompleted()).orElse(false);
+        return quest.map(Quest::isCompleted).orElse(false);
     }
 }
